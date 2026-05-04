@@ -1,0 +1,21 @@
+{
+  "name": "terminal-observatory",
+  "version": "1.0.0",
+  "description": "终端日志 · 实时观测站 - 个人学习数据监控中心",
+  "type": "module",
+  "scripts": {
+    "dev": "eleventy --serve",
+    "build": "eleventy",
+    "parse-git": "node scripts/git-parser.mjs",
+    "gen-summary": "node scripts/summary-gen.mjs",
+    "auto-update": "npm run parse-git && npm run gen-summary"
+  },
+  "dependencies": {
+    "@11ty/eleventy": "^3.0.0",
+    "markdown-it": "^14.1.0"
+  },
+  "devDependencies": {},
+  "keywords": ["blog", "terminal", "learning", "eleventy"],
+  "author": "student",
+  "license": "MIT"
+}

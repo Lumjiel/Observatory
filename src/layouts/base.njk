@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+    <title>{{ title or "观测站 · 一个CS学生的实时学习宇宙" }}</title>
+    <link rel="stylesheet" href="/assets/css/main.css">
+</head>
+<body>
+    <div class="particle-layer" id="particleLayer"></div>
+
+    <header class="status-bar">
+        <div class="status-bar-left">
+            <div class="logo-dot"></div>
+            <span class="site-name">&gt; observatory<span class="highlight">.log</span></span>
+        </div>
+        <div class="status-bar-right">
+            <span class="status-stat">🕒 运行 <span class="val" id="uptime">--</span></span>
+            <span class="status-stat">📡 信号 <span class="val" id="activeCount">--</span></span>
+            <button id="themeToggle" class="theme-btn">🌙</button>
+        </div>
+    </header>
+
+    <div class="main-container" id="mainContainer">
+        <div class="command-area" id="desktopCmd">
+            <span class="prompt">$</span>
+            <input type="text" class="cmd-input" id="cmdInput" placeholder="输入命令... (help 查看全部)" autofocus>
+            <span class="cmd-hint">↑↓ 历史 | Tab 补全 | Enter 执行</span>
+        </div>
+
+        <div class="signal-overview" id="signalOverview"></div>
+
+        <div class="content-layout">
+            <div class="main-content">
+                {{ content | safe }}
+            </div>
+
+            <aside class="universe-sidebar">
+                <div class="sidebar-card">
+                    <h4>🌳 技能场强</h4>
+                    <div id="skillList"></div>
+                </div>
+                <div class="sidebar-card">
+                    <h4>⚠️ 最近异常</h4>
+                    <ul class="mini-log-list" id="recentErrors"></ul>
+                </div>
+                <div class="sidebar-card">
+                    <h4>📡 宇宙回响</h4>
+                    <div class="quote-box" id="randomQuote"></div>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <nav class="mobile-nav" id="mobileNav">
+        <button class="active" data-view="log"><span class="nav-icon">📋</span>日志</button>
+        <button data-view="dashboard"><span class="nav-icon">📊</span>仪表盘</button>
+        <button data-view="skills"><span class="nav-icon">🌳</span>技能</button>
+        <button data-view="about"><span class="nav-icon">👤</span>关于</button>
+    </nav>
+
+    <script>
+        window.LOGS_DATA = {{ logs | jsonify | safe }};
+        window.PROJECTS_DATA = {{ projects | jsonify | safe }};
+        window.SKILLS_DATA = {{ skills | jsonify | safe }};
+    </script>
+    <script src="/assets/js/app.js"></script>
+</body>
+</html>
