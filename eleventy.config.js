@@ -17,17 +17,6 @@ export default function(eleventyConfig) {
 
   eleventyConfig.addFilter("jsonify", (data) => JSON.stringify(data));
 
-  eleventyConfig.addFilter("filterByType", (logs, type) => {
-    return logs.filter(log => log.type === type);
-  });
-
-  eleventyConfig.addFilter("sortByDate", (logs) => {
-    return [...logs].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-  });
-
-  eleventyConfig.addFilter("recentLogs", (logs, count = 20) => {
-    return [...logs].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)).slice(0, count);
-  });
 
   eleventyConfig.addFilter("categoryLabel", (cat) => {
     return CATEGORY_LABELS[cat] || cat;
@@ -65,14 +54,6 @@ export default function(eleventyConfig) {
   eleventyConfig.addFilter('getNextArticle', (articles, current) => {
     const idx = articles.findIndex(a => a.slug === current.slug && a.category === current.category);
     return idx < articles.length - 1 ? articles[idx + 1] : null;
-  });
-
-  eleventyConfig.addCollection('logs', () => {
-    const logsFile = path.join(process.cwd(), 'src', '_data', 'logs.json');
-    if (fs.existsSync(logsFile)) {
-      return JSON.parse(fs.readFileSync(logsFile, 'utf-8'));
-    }
-    return [];
   });
 
   eleventyConfig.addFilter('truncate', (str, len) => {

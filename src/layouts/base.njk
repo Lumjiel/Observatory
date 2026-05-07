@@ -60,9 +60,7 @@
     </nav>
 
     <script>
-        window.LOGS_DATA = {{ logs | jsonify | safe }};
-        window.PROJECTS_DATA = {{ projects | jsonify | safe }};
-        window.SKILLS_DATA = {{ skills | jsonify | safe }};
+        window.ARTICLES_DATA = {{ collections.articles | jsonify | safe }};
     </script>
     <script src="/assets/js/app.js"></script>
 </body>

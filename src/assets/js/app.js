@@ -1,21 +1,32 @@
 (function() {
-    const rawLogs = window.LOGS_DATA;
-    const rawProjects = window.PROJECTS_DATA;
-    const rawSkills = window.SKILLS_DATA;
+    const rawArticles = window.ARTICLES_DATA;
 
-    if (!rawLogs || !Array.isArray(rawLogs)) {
-        console.error('[Observatory] logs.json 数据格式错误或为空，请检查 src/_data/logs.json');
-    }
-    if (!rawProjects || !Array.isArray(rawProjects)) {
-        console.warn('[Observatory] projects.json 数据格式错误或为空');
-    }
-    if (!rawSkills || !rawSkills.categories) {
-        console.warn('[Observatory] skills.json 数据格式错误');
+    if (!rawArticles || !Array.isArray(rawArticles)) {
+        console.error('[Observatory] articles.json 数据为空，请运行 npm run scan:articles');
     }
 
-    const logs = Array.isArray(rawLogs) ? rawLogs : [];
-    const projects = Array.isArray(rawProjects) ? rawProjects : [];
-    const skills = rawSkills && rawSkills.categories ? rawSkills : { categories: [] };
+    const articles = Array.isArray(rawArticles) ? rawArticles : [];
+
+    // 将 articles 映射为统一 feed 条目
+    const CATEGORY_TYPE_MAP = { tech: 'INFO', reading: 'READ', essays: 'READ', projects: 'BUILD' };
+    const feed = articles.map(a => ({
+        id: a.id,
+        slug: a.slug,
+        type: CATEGORY_TYPE_MAP[a.category] || 'READ',
+        typeLabel: a.category,
+        description: a.title,
+        timestamp: a.date,
+        tags: a.tags || [],
+        detail: a.excerpt || '',
+        status: 'done',
+        href: `/articles/${a.category}/${a.slug}/`,
+        isArticle: true,
+    }));
+
+    // logs 保留为空数组（兼容旧代码中的类型判断）
+    const logs = [];
+    const projects = [];
+    const skills = { categories: [] };
 
     let currentView = 'log';
     let openLogId = null;
@@ -80,45 +91,42 @@
     function renderSignalOverview() {
         const container = document.getElementById('signalOverview');
         if (!container) return;
-        const total = logs.length;
-        const done = logs.filter(l => l.status === 'done').length;
-        const wip = logs.filter(l => l.status === 'wip').length;
-        const errors = logs.filter(l => l.type === 'ERROR' && l.status !== 'done').length;
-        const milestones = logs.filter(l => l.type === 'MILESTONE').length;
+        const total = feed.length;
+        const techCount = feed.filter(a => a.typeLabel === 'tech').length;
+        const readingCount = feed.filter(a => a.typeLabel === 'reading' || a.typeLabel === 'essays').length;
+        const projectsCount = feed.filter(a => a.typeLabel === 'projects').length;
 
         container.innerHTML = `
-            <div class="signal-card green" onclick="executeCommand('filter INFO')">
+            <div class="signal-card green" onclick="executeCommand('filter all')">
                 <span class="sig-value">${total}</span>
-                <span class="sig-label">总信号</span>
+                <span class="sig-label">全部文章</span>
             </div>
-            <div class="signal-card blue" onclick="executeCommand('status')">
-                <span class="sig-value">${done}</span>
-                <span class="sig-label">已完成</span>
+            <div class="signal-card blue" onclick="executeCommand('filter tech')">
+                <span class="sig-value">${techCount}</span>
+                <span class="sig-label">技术</span>
             </div>
-            <div class="signal-card amber" onclick="executeCommand('errors')">
-                <span class="sig-value">${errors}</span>
-                <span class="sig-label">待解决</span>
+            <div class="signal-card amber" onclick="executeCommand('filter reading')">
+                <span class="sig-value">${readingCount}</span>
+                <span class="sig-label">读书</span>
             </div>
-            <div class="signal-card magenta" onclick="executeCommand('milestones')">
-                <span class="sig-value">${milestones}</span>
-                <span class="sig-label">里程碑</span>
+            <div class="signal-card magenta" onclick="executeCommand('filter projects')">
+                <span class="sig-value">${projectsCount}</span>
+                <span class="sig-label">项目</span>
             </div>`;
     }
 
     function renderFilterChips() {
         const container = document.getElementById('filterChips');
         if (!container) return;
-        const types = [
+        const categories = [
             { key: 'all', label: '全部' },
-            { key: 'INFO', label: 'INFO' },
-            { key: 'READ', label: 'READ' },
-            { key: 'BUILD', label: 'BUILD' },
-            { key: 'ERROR', label: 'ERROR' },
-            { key: 'MILESTONE', label: 'MILESTONE' },
-            { key: 'THINK', label: 'THINK' }
+            { key: 'tech', label: '技术' },
+            { key: 'reading', label: '读书' },
+            { key: 'essays', label: '随笔' },
+            { key: 'projects', label: '项目' },
         ];
-        container.innerHTML = types.map(t =>
-            `<button class="filter-chip ${activeFilter === t.key || (!activeFilter && t.key === 'all') ? 'active' : ''}" data-filter="${t.key}">${t.label}</button>`
+        container.innerHTML = categories.map(c =>
+            `<button class="filter-chip ${activeFilter === c.key || (!activeFilter && c.key === 'all') ? 'active' : ''}" data-filter="${c.key}">${c.label}</button>`
         ).join('');
         container.querySelectorAll('.filter-chip').forEach(chip => {
             chip.addEventListener('click', function() {
@@ -138,26 +146,24 @@
     function renderSidebarSkills() {
         const container = document.getElementById('skillList');
         if (!container) return;
-        const skills = [
-            { name: 'C', level: 75, color: 'green' },
-            { name: 'Python', level: 70, color: 'green' },
-            { name: '数据结构', level: 60, color: 'blue' },
-            { name: 'Linux', level: 50, color: 'green' },
-            { name: 'JavaScript', level: 30, color: 'amber' },
-            { name: '机器学习', level: 20, color: 'amber' },
+        const cats = [
+            { name: '技术', count: feed.filter(a => a.typeLabel === 'tech').length, color: 'green' },
+            { name: '读书', count: feed.filter(a => a.typeLabel === 'reading' || a.typeLabel === 'essays').length, color: 'blue' },
+            { name: '项目', count: feed.filter(a => a.typeLabel === 'projects').length, color: 'amber' },
         ];
-        container.innerHTML = skills.map(s => `
-            <div class="skill-row"><span>${s.name}</span><span>${s.level}%</span></div>
-            <div class="skill-bar-wrap"><div class="skill-bar-fill ${s.color}" style="width:${s.level}%"></div></div>
+        const total = feed.length;
+        container.innerHTML = cats.map(c => `
+            <div class="skill-row"><span>${c.name}</span><span>${c.count}篇</span></div>
+            <div class="skill-bar-wrap"><div class="skill-bar-fill ${c.color}" style="width:${total > 0 ? (c.count / total * 100) : 0}%"></div></div>
         `).join('');
     }
 
     function renderRecentErrors() {
         const container = document.getElementById('recentErrors');
         if (!container) return;
-        const errs = logs.filter(l => l.type === 'ERROR').slice(-4);
-        container.innerHTML = errs.map(e => `
-            <li><span>⚠</span> ${formatTimestamp(e.timestamp)} ${e.description}</li>
+        const recent = [...feed].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)).slice(0, 4);
+        container.innerHTML = recent.map(a => `
+            <li><span style="color:var(--blue);">📄</span> ${a.description.slice(0, 20)}${a.description.length > 20 ? '...' : ''}</li>
         `).join('');
     }
 
@@ -191,20 +197,9 @@
         } catch (e) {}
     }
 
-    function detectStaleLogs() {
-        const now = new Date();
-        logs.forEach(l => {
-            if (l.status === 'wip') {
-                const days = (now - new Date(l.timestamp)) / (1000 * 60 * 60 * 24);
-                if (days > 14) l.stale = true;
-            }
-        });
-    }
-    detectStaleLogs();
-
     function getTagCounts() {
         const counts = {};
-        logs.forEach(l => l.tags.forEach(t => { counts[t] = (counts[t] || 0) + 1; }));
+        feed.forEach(l => l.tags.forEach(t => { counts[t] = (counts[t] || 0) + 1; }));
         return counts;
     }
     const tagCounts = getTagCounts();
@@ -222,7 +217,7 @@
         const uptime = document.getElementById('uptime');
         const activeCount = document.getElementById('activeCount');
         if (uptime) uptime.textContent = '🕒 ' + formatUptime();
-        if (activeCount) activeCount.textContent = '📋 ' + logs.length + '条日志';
+        if (activeCount) activeCount.textContent = '📋 ' + feed.length + '篇文章';
     }
     updateStatusBar();
     setInterval(updateStatusBar, 60000);
@@ -258,21 +253,28 @@
     window.addEventListener('hashchange', handleHashRoute);
 
     function renderLogStream(filterType = null, keyword = null, page = 1) {
-        filteredLogs = [...logs].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-        if (filterType) filteredLogs = filteredLogs.filter(l => l.type === filterType);
+        filteredLogs = [...feed].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+        // filterType 是 category: tech/reading/essays/projects
+        if (filterType && filterType !== 'all') {
+            if (filterType === 'reading') {
+                filteredLogs = filteredLogs.filter(l => l.typeLabel === 'reading' || l.typeLabel === 'essays');
+            } else {
+                filteredLogs = filteredLogs.filter(l => l.typeLabel === filterType);
+            }
+        }
         if (keyword) {
             const kw = keyword.toLowerCase();
             filteredLogs = filteredLogs.filter(l =>
                 l.description.toLowerCase().includes(kw) ||
                 l.tags.some(t => t.toLowerCase().includes(kw)) ||
-                l.type.toLowerCase().includes(kw)
+                l.typeLabel.toLowerCase().includes(kw)
             );
         }
         currentPage = page;
         const container = viewContainers['log'];
         container.innerHTML = '';
         if (filteredLogs.length === 0) {
-            container.innerHTML = '<p style="color:var(--gray)">没有匹配的日志条目。</p>';
+            container.innerHTML = '<p style="color:var(--gray)">没有匹配的文章。</p>';
             return;
         }
         const totalPages = Math.ceil(filteredLogs.length / PAGE_SIZE);
@@ -286,21 +288,19 @@
             entry.className = 'log-entry';
             entry.dataset.logId = log.id;
             entry.dataset.index = startIdx + idx;
+            entry.dataset.href = log.href;
             const statusSymbol = log.status === 'done' ? '✓' : log.status === 'wip' ? '⚠' : log.stale ? '⏳' : '★';
             const descHtml = keyword ? highlightText(log.description, keyword) : log.description;
-            const staleBadge = log.stale ? '<span class="stale-badge">⏳ 停滞</span>' : '';
-            const typeClass = log.type === 'INFO' ? 'green' : log.type === 'READ' ? 'blue' : log.type === 'BUILD' ? 'amber' : log.type === 'ERROR' ? 'amber' : log.type === 'MILESTONE' ? 'magenta' : 'gray';
+            const typeClass = log.typeLabel === 'tech' ? 'green' : log.typeLabel === 'reading' || log.typeLabel === 'essays' ? 'blue' : log.typeLabel === 'projects' ? 'amber' : 'gray';
+            const catLabel = { tech: '技术', reading: '读书', essays: '随笔', projects: '项目' }[log.typeLabel] || log.typeLabel;
             entry.innerHTML = `
-                ${staleBadge}
                 <div class="log-line">
                   <span class="event-type-dot ${typeClass}"></span>
                   <span class="log-time" data-timestamp="${log.id}">[${formatTimestamp(log.timestamp)}]</span>
-                  <span class="log-tag ${log.type}" data-tag="${log.type}">[${log.type}]</span>
-                  <span class="log-desc"><a href="/logs/${log.slug}/" class="log-link">${descHtml}</a></span>
-                  <span class="log-meta">${log.tags.map(t => `<span class="tag-hover" data-tag="${t}" title="${tagCounts[t] || 0} 条日志">#${t}</span>`).join(' ')}</span>
-                  <span class="log-status ${log.status === 'error' ? 'error-status' : log.status}" data-status="${log.status}" title="${getStatusHint(log.status)}">${statusSymbol}</span>
-                </div>
-                <div class="detail-panel">${renderDetail(log)}</div>`;
+                  <span class="log-tag ${log.typeLabel}" data-tag="${log.typeLabel}">[${catLabel}]</span>
+                  <span class="log-desc"><a href="${log.href}" class="log-link">${descHtml}</a></span>
+                  <span class="log-meta">${log.tags.slice(0, 3).map(t => `<span class="tag-hover" data-tag="${t}">#${t}</span>`).join(' ')}</span>
+                </div>`;
             stream.appendChild(entry);
         });
         container.appendChild(stream);
@@ -320,10 +320,7 @@
             });
         }
         attachLogEvents();
-        attachMobileGestures();
         attachTagHoverEvents();
-        attachTimestampEvents();
-        attachStatusHintEvents();
     }
 
     function renderPaginationButtons(totalPages, current) {
@@ -413,15 +410,23 @@
     function attachLogEvents() {
         document.querySelectorAll('.log-entry').forEach(entry => {
             entry.addEventListener('click', function(e) {
-                if (e.target.closest('.tag-hover') || e.target.closest('.log-time') || e.target.closest('.log-status') || e.target.closest('.log-link')) return;
+                if (e.target.closest('.tag-hover') || e.target.closest('.log-time') || e.target.closest('.log-link')) return;
+                // 文章条目直接跳转，不展开详情
+                const href = this.dataset.href;
+                if (href) {
+                    window.location.href = href;
+                    return;
+                }
                 const logId = this.dataset.logId;
                 toggleDetail(logId, this);
             });
             let pressTimer;
             entry.addEventListener('touchstart', function(e) {
-                if (e.target.closest('.tag-hover')) return;
-                const logId = this.dataset.logId;
-                pressTimer = setTimeout(() => showLongPressMenu(logId, e.touches[0].clientX, e.touches[0].clientY), 500);
+                if (e.target.closest('.tag-hover') || e.target.closest('.log-link')) return;
+                const href = this.dataset.href;
+                pressTimer = setTimeout(() => {
+                    if (href) window.location.href = href;
+                }, 500);
             }, { passive: true });
             entry.addEventListener('touchend', () => clearTimeout(pressTimer));
             entry.addEventListener('touchmove', () => clearTimeout(pressTimer));
@@ -442,7 +447,7 @@
         document.body.appendChild(menu);
         menu.querySelectorAll('div').forEach(item => {
             item.addEventListener('click', function() {
-                const log = logs.find(l => l.id === logId);
+                const log = feed.find(l => l.id === logId);
                 if (!log) return;
                 const action = this.dataset.action;
                 if (action === 'copy') {
@@ -560,159 +565,115 @@
 
     function renderDashboard() {
         const container = viewContainers['dashboard'];
-        const total = logs.length;
-        const done = logs.filter(l => l.status === 'done').length;
-        const wip = logs.filter(l => l.status === 'wip').length;
-        const errors = logs.filter(l => l.type === 'ERROR').length;
-        const milestones = logs.filter(l => l.type === 'MILESTONE').length;
-        const resolvedErrors = logs.filter(l => l.type === 'ERROR' && l.status === 'done').length;
-        const staleCount = logs.filter(l => l.stale).length;
-
-        const updateFrequency = Math.min(100, (total / 90) * 100);
-        const errorResolutionRate = errors > 0 ? (resolvedErrors / errors) * 100 : 100;
-        const activeTaskPenalty = Math.max(0, 100 - (wip * 15) - (staleCount * 10));
-        const healthScore = Math.floor((updateFrequency * 0.4) + (errorResolutionRate * 0.3) + (activeTaskPenalty * 0.3));
-        const healthBar = '█'.repeat(Math.floor(healthScore / 5)) + '░'.repeat(20 - Math.floor(healthScore / 5));
-
-        const days = ['一', '二', '三', '四', '五', '六', '日'];
-        const hours = [2.5, 1.8, 3.0, 2.2, 2.8, 1.5, 2.1];
-        const maxHours = Math.max(...hours);
-        const heatmapHTML = days.map((d, i) => `
-            <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
-                <div class="heat-bar" style="height:${(hours[i]/maxHours)*80}px;opacity:${0.4 + (hours[i]/maxHours)*0.6};"></div>
-                <span class="heat-label">${d}</span>
-                <span class="heat-label">${hours[i]}h</span>
-            </div>`).join('');
-
-        const typeCounts = {};
-        logs.forEach(l => { typeCounts[l.type] = (typeCounts[l.type] || 0) + 1; });
-        const typeStatsHTML = Object.entries(typeCounts)
-            .sort((a, b) => b[1] - a[1])
-            .map(([type, count]) => '<span style="color:var(--' + (type === 'ERROR' ? 'amber' : type === 'MILESTONE' ? 'magenta' : 'green') + ')">' + type + ': ' + count + '</span>')
-            .join(' | ');
+        const total = feed.length;
+        const techCount = feed.filter(a => a.typeLabel === 'tech').length;
+        const readingCount = feed.filter(a => a.typeLabel === 'reading' || a.typeLabel === 'essays').length;
+        const projectsCount = feed.filter(a => a.typeLabel === 'projects').length;
 
         const allTags = {};
-        logs.forEach(l => l.tags.forEach(t => { allTags[t] = (allTags[t] || 0) + 1; }));
-        const tagHTML = Object.entries(allTags).sort((a, b) => b[1] - a[1]).slice(0, 15)
-            .map(([t]) => '<span onclick="executeCommand(\'grep ' + t + '\')">#' + t + '</span>').join('');
+        feed.forEach(l => l.tags.forEach(t => { allTags[t] = (allTags[t] || 0) + 1; }));
+        const tagHTML = Object.entries(allTags).sort((a, b) => b[1] - a[1]).slice(0, 20)
+            .map(([t]) => `<span class="tag-hover" data-tag="${t}">#${t}</span>`).join(' ');
 
         container.innerHTML = `
             <div class="dashboard-grid">
                 <div class="dash-card">
-                    <h3>📊 学习统计</h3>
-                    <p>总日志: ${total} | 已完成: ${done} | 进行中: ${wip}</p>
-                    <p>错误记录: ${errors} | 里程碑: ${milestones}${staleCount ? ' | <span style="color:var(--amber);">停滞: ' + staleCount + '</span>' : ''}</p>
-                    <p style="margin-top:0.5rem;color:var(--gray);">${typeStatsHTML}</p>
+                    <h3>📊 文章统计</h3>
+                    <p>总文章: ${total} | 技术: ${techCount} | 读书: ${readingCount} | 项目: ${projectsCount}</p>
                 </div>
                 <div class="dash-card">
-                    <h3>💚 系统健康度</h3>
-                    <p style="font-size:1.2rem;margin:0.5rem 0;">${healthBar} ${healthScore}%</p>
-                    <p style="color:var(--gray);font-size:0.8rem;">更新频率: ${Math.floor(updateFrequency)}% | 错误解决率: ${Math.floor(errorResolutionRate)}% | 活跃任务: ${wip}</p>
-                </div>
-                <div class="dash-card">
-                    <h3>📅 近7天学习时长</h3>
-                    <div class="heatmap">${heatmapHTML}</div>
-                </div>
-                <div class="dash-card">
-                    <h3>🏷️ 活跃标签</h3>
+                    <h3>🏷️ 标签分布</h3>
                     <div class="tag-cloud">${tagHTML}</div>
                 </div>
                 <div class="dash-card" style="grid-column: 1 / -1;">
-                    <h3>⚠️ 最近错误</h3>
-                    <ul style="color:var(--amber); padding-left:1.5rem; list-style: none;">
-                        ${logs.filter(l => l.type === 'ERROR').slice(-3).reverse().map(l =>
-                            '<li style="margin:0.3rem 0;"><span style="color:var(--gray);">[' + formatTimestamp(l.timestamp) + ']</span> ' + l.description + ' <span style="color:var(--green);">' + (l.status === 'done' ? '✓已解决' : '⚠未解决') + '</span></li>'
-                        ).join('')}
+                    <h3>📝 最近文章</h3>
+                    <ul style="list-style:none;padding:0;">
+                        ${feed.slice(0, 5).map(l => {
+                            const catLabel = { tech: '技术', reading: '读书', essays: '随笔', projects: '项目' }[l.typeLabel] || l.typeLabel;
+                            return `<li style="margin:0.4rem 0;display:flex;gap:0.5rem;align-items:center;">
+                                <span style="color:var(--gray);font-size:0.75rem;">[${catLabel}]</span>
+                                <a href="${l.href}" style="color:var(--text);">${l.description}</a>
+                            </li>`;
+                        }).join('')}
                     </ul>
                 </div>
             </div>`;
         showView('dashboard');
     }
 
-    function renderErrors(filter = 'all') {
+    function renderErrors() {
         const container = viewContainers['errors'];
-        let errorLogs = logs.filter(l => l.type === 'ERROR');
-        if (filter === 'unresolved') errorLogs = errorLogs.filter(l => l.status !== 'done');
-        else if (filter === 'resolved') errorLogs = errorLogs.filter(l => l.status === 'done');
-        const unresolvedCount = logs.filter(l => l.type === 'ERROR' && l.status !== 'done').length;
-        const resolvedCount = logs.filter(l => l.type === 'ERROR' && l.status === 'done').length;
-
-        container.innerHTML = errorLogs.length ? `
-            <h2 style="color:var(--amber);margin-bottom:0.5rem;">⚠️ 错误看板</h2>
-            <p style="color:var(--gray);margin-bottom:1rem;font-size:0.8rem;">
-                总计: ${logs.filter(l => l.type === 'ERROR').length} |
-                已解决: <span style="color:var(--green);">${resolvedCount}</span> |
-                未解决: <span style="color:var(--amber);">${unresolvedCount}</span>
-            </p>
-            <div style="margin-bottom:1rem;display:flex;gap:0.5rem;flex-wrap:wrap;">
-                <button onclick="renderErrors('all')" style="background:${filter === 'all' ? 'var(--amber)' : 'transparent'};color:var(--amber);border:1px solid var(--amber);padding:0.3rem 0.8rem;cursor:pointer;font-family:var(--font-mono);font-size:0.8rem;">全部</button>
-                <button onclick="renderErrors('unresolved')" style="background:${filter === 'unresolved' ? 'var(--amber)' : 'transparent'};color:var(--amber);border:1px solid var(--amber);padding:0.3rem 0.8rem;cursor:pointer;font-family:var(--font-mono);font-size:0.8rem;">未解决</button>
-                <button onclick="renderErrors('resolved')" style="background:${filter === 'resolved' ? 'var(--amber)' : 'transparent'};color:var(--amber);border:1px solid var(--amber);padding:0.3rem 0.8rem;cursor:pointer;font-family:var(--font-mono);font-size:0.8rem;">已解决</button>
-            </div>
-            <table>
-                <tr><th>时间</th><th>描述</th><th>标签</th><th>状态</th></tr>
-                ${errorLogs.map(l => `<tr style="${l.status !== 'done' ? 'background:rgba(255,170,0,0.05);' : ''}">
-                    <td style="color:var(--gray);white-space:nowrap;">${formatTimestamp(l.timestamp)}</td>
-                    <td>${l.description}</td>
-                    <td style="color:var(--gray);font-size:0.75rem;">${l.tags.map(t => '#' + t).join(' ')}</td>
-                    <td>${l.status === 'done' ? '<span style="color:var(--green);">✓ 已解决</span>' : '<span style="color:var(--amber);">⚠ 未解决</span>'}</td>
-                </tr>`).join('')}
-            </table>` : '<p style="color:var(--gray);">暂无错误记录。</p>';
+        // errors 视图改为显示全部文章（按分类）
+        const tech = feed.filter(a => a.typeLabel === 'tech');
+        const reading = feed.filter(a => a.typeLabel === 'reading' || a.typeLabel === 'essays');
+        const projects = feed.filter(a => a.typeLabel === 'projects');
+        container.innerHTML = `
+            <h2 style="color:var(--green);margin-bottom:1rem;">📚 文章总览</h2>
+            <h3 style="color:var(--green);margin-top:1rem;">🛠️ 技术 (${tech.length})</h3>
+            <ul style="list-style:none;padding:0;">${tech.map(l => `<li style="margin:0.3rem 0;"><a href="${l.href}" style="color:var(--text);">${l.description}</a></li>`).join('')}</ul>
+            <h3 style="color:var(--blue);margin-top:1rem;">📖 读书 (${reading.length})</h3>
+            <ul style="list-style:none;padding:0;">${reading.map(l => `<li style="margin:0.3rem 0;"><a href="${l.href}" style="color:var(--text);">${l.description}</a></li>`).join('')}</ul>
+            <h3 style="color:var(--amber);margin-top:1rem;">🛠️ 项目 (${projects.length})</h3>
+            <ul style="list-style:none;padding:0;">${projects.map(l => `<li style="margin:0.3rem 0;"><a href="${l.href}" style="color:var(--text);">${l.description}</a></li>`).join('')}</ul>`;
         showView('errors');
     }
 
     function renderMilestones() {
         const container = viewContainers['milestones'];
-        const mLogs = logs.filter(l => l.type === 'MILESTONE');
-        container.innerHTML = mLogs.length ? `
-            <h2 style="color:var(--magenta);margin-bottom:1rem;">★ 里程碑时间轴</h2>
-            <div class="timeline">
-                ${mLogs.map(l => `<div class="timeline-item">
-                    <strong>${formatTimestamp(l.timestamp)}</strong> - ${l.description}
-                    ${l.milestone_days ? '<span style="color:var(--gray);"> (连续' + l.milestone_days + '天)</span>' : ''}
-                </div>`).join('')}
-            </div>` : '<p style="color:var(--gray);">暂无里程碑。</p>';
+        // 改为显示全部文章
+        container.innerHTML = `
+            <h2 style="color:var(--magenta);margin-bottom:1rem;">📚 全部文章</h2>
+            <ul style="list-style:none;padding:0;">${feed.map(l => {
+                const catLabel = { tech: '技术', reading: '读书', essays: '随笔', projects: '项目' }[l.typeLabel] || l.typeLabel;
+                return `<li style="margin:0.4rem 0;display:flex;gap:0.5rem;">
+                    <span style="color:var(--gray);font-size:0.75rem;min-width:80px;">${l.timestamp}</span>
+                    <span style="color:var(--${l.typeLabel === 'tech' ? 'green' : l.typeLabel === 'reading' || l.typeLabel === 'essays' ? 'blue' : 'amber'});font-size:0.7rem;">[${catLabel}]</span>
+                    <a href="${l.href}" style="color:var(--text);">${l.description}</a>
+                </li>`;
+            }).join('')}</ul>`;
         showView('milestones');
     }
 
     function renderProjects() {
         const container = viewContainers['projects'];
-        container.innerHTML = projects.length ? `
+        const projArticles = feed.filter(a => a.typeLabel === 'projects');
+        container.innerHTML = projArticles.length ? `
             <h2 style="color:var(--amber);margin-bottom:1rem;">🛠️ 项目展板</h2>
-            <table>
-                <tr><th>项目</th><th>进度</th><th>技术栈</th><th>状态</th></tr>
-                ${projects.map(p => `<tr>
-                    <td>${p.name}</td>
-                    <td>${p.progress !== undefined ? '<span class="progress-bar-ascii">[' + '#'.repeat(Math.floor(p.progress / 10)) + '.'.repeat(10 - Math.floor(p.progress / 10)) + '] ' + p.progress + '%</span>' : 'N/A'}</td>
-                    <td style="font-size:0.75rem;">${p.tech.join(', ')}</td>
-                    <td>${p.status === 'done' ? '<span style="color:var(--green);">✓ 完成</span>' : '<span style="color:var(--amber);">⚠ 进行中</span>'}</td>
-                </tr>`).join('')}
-            </table>` : '<p style="color:var(--gray);">暂无项目。</p>';
+            <ul style="list-style:none;padding:0;">${projArticles.map(a => `
+                <li style="margin:0.5rem 0;padding:0.8rem;background:var(--surface);border:1px solid var(--border);border-radius:6px;">
+                    <a href="${a.href}" style="color:var(--text);font-weight:600;">${a.description}</a>
+                    <p style="color:var(--gray);font-size:0.8rem;margin:0.3rem 0 0 0;">${a.detail || ''}</p>
+                    <div style="margin-top:0.4rem;">${a.tags.map(t => `<span style="font-size:0.7rem;color:var(--text-dim);">#${t} </span>`).join('')}</div>
+                </li>`).join('')}</ul>` : '<p style="color:var(--gray);">暂无项目文章。</p>';
         showView('projects');
     }
 
     function renderSkillsView() {
         const container = viewContainers['skills'];
-        const tree = skills.categories.map(cat => {
-            const items = cat.skills.map((s, i) => {
-                const isLast = i === cat.skills.length - 1;
-                const prefix = isLast ? '└── ' : '├── ';
-                return '    ' + prefix + '<span style="color:var(--' + s.color + ')">' + s.name + '</span> (' + s.level + ')';
-            }).join('\n');
-            return '    <span style="color:var(--green);">' + cat.label + '</span>\n' + items;
-        }).join('\n    │\n');
+        const techCount = feed.filter(a => a.typeLabel === 'tech').length;
+        const readingCount = feed.filter(a => a.typeLabel === 'reading' || a.typeLabel === 'essays').length;
+        const projectsCount = feed.filter(a => a.typeLabel === 'projects').length;
+        const total = feed.length;
         container.innerHTML = `
-            <h2 style="color:var(--green);">🌳 技能树 (neofetch 风格)</h2>
-            <pre style="color:var(--green); background:transparent; line-height:1.4; margin:1rem 0;">
-        技术栈
-        ├── ${tree}
+            <h2 style="color:var(--green);">🌳 文章分类统计</h2>
+            <pre style="color:var(--green); background:transparent; line-height:1.6; margin:1rem 0;">
+        student@observatory
+        ───────────────────
+        Articles: ${total}
+        ├── <span style="color:var(--green);">技术</span>: ${techCount} 篇
+        ├── <span style="color:var(--blue);">读书</span>: ${readingCount} 篇
+        └── <span style="color:var(--amber);">项目</span>: ${projectsCount} 篇
             </pre>
-            <p style="color:var(--text-dim); margin-top:1rem;">点击叶子可筛选对应标签</p>`;
+            <p style="color:var(--text-dim);">点击分类标签可筛选文章</p>`;
         showView('skills');
     }
 
     function renderAbout() {
         const container = viewContainers['about'];
+        const total = feed.length;
+        const techCount = feed.filter(a => a.typeLabel === 'tech').length;
+        const readingCount = feed.filter(a => a.typeLabel === 'reading' || a.typeLabel === 'essays').length;
+        const projectsCount = feed.filter(a => a.typeLabel === 'projects').length;
         container.innerHTML = `
             <pre style="color:var(--green); line-height:1.5;">
         ╔══════════════════════════════╗
@@ -721,8 +682,12 @@
         OS: Computer Science 大二
         Shell: zsh + curiosity
         Uptime: ${formatUptime()}
+        Articles: ${total} 篇
+          - 技术: ${techCount}
+          - 读书: ${readingCount}
+          - 项目: ${projectsCount}
         Interests: 系统, AI, Web
-        Blog: 终端日志观测站 v1.2
+        Blog: 终端博客观测站 v1.2
         Motto: "Stay hungry, stay foolish."
             </pre>`;
         showView('about');
@@ -733,20 +698,19 @@
         container.innerHTML = `
             <h2 style="color:var(--green);">📖 可用命令</h2>
             <pre style="color:var(--text); line-height:1.6;">
-filter [INFO|READ|BUILD|ERROR|MILESTONE|THINK]  按类型筛选
+filter [all|tech|reading|essays|projects]       按分类筛选
 grep [关键词]                                    全文搜索
 status / dashboard                               打开仪表盘
-errors                                           错误看板
-milestones                                       里程碑时间轴
-projects                                         项目展板
+errors                                           文章总览
+milestones                                       全部文章
 skills / neofetch                                技能树
 about                                            关于本站
 help                                             显示此帮助
-clear                                            清除筛选/返回日志流
+clear                                            清除筛选/返回文章流
 theme dark|light                                 切换主题
 export txt|json                                  导出当前视图
             </pre>
-            <p style="color:var(--text-dim);">快捷键: j/k 移动 | Enter 展开 | Esc 关闭 | / 聚焦搜索 | Tab 补全 | Shift+J/K 快速滚动</p>`;
+            <p style="color:var(--text-dim);">快捷键: j/k 移动 | Esc 关闭 | / 聚焦搜索 | Tab 补全</p>`;
         showView('help');
     }
 
@@ -757,10 +721,10 @@ export txt|json                                  导出当前视图
         const arg = parts.slice(1).join(' ');
 
         if (cmd === 'filter') {
-            const type = arg.toUpperCase();
-            if (['INFO', 'READ', 'BUILD', 'ERROR', 'MILESTONE', 'THINK'].includes(type)) {
-                activeFilter = type; activeKeyword = null;
-                renderLogStream(type); showView('log');
+            const cat = arg.toLowerCase();
+            if (['all', 'tech', 'reading', 'essays', 'projects'].includes(cat)) {
+                activeFilter = cat === 'all' ? null : cat; activeKeyword = null;
+                renderLogStream(activeFilter); showView('log');
             }
         } else if (cmd === 'grep') {
             if (arg) { activeKeyword = arg; activeFilter = null; renderLogStream(null, arg); showView('log'); }
@@ -776,13 +740,13 @@ export txt|json                                  导出当前视图
             if (arg === 'dark') { document.body.classList.remove('light'); localStorage.setItem('terminal-theme', 'dark'); }
             else if (arg === 'light') { document.body.classList.add('light'); localStorage.setItem('terminal-theme', 'light'); }
         } else if (cmd === 'export') {
-            const data = activeFilter ? logs.filter(l => l.type === activeFilter) : logs;
+            const data = activeFilter ? feed.filter(l => l.typeLabel === activeFilter) : feed;
             if (arg === 'json') {
                 const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-                const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'logs-export.json'; a.click();
+                const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'articles-export.json'; a.click();
             } else {
-                const text = data.map(l => '[' + l.type + '] ' + l.timestamp + ' ' + l.description).join('\n');
-                const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([text], { type: 'text/plain' })); a.download = 'logs-export.txt'; a.click();
+                const text = data.map(l => '[' + l.typeLabel + '] ' + l.timestamp + ' ' + l.description).join('\n');
+                const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([text], { type: 'text/plain' })); a.download = 'articles-export.txt'; a.click();
             }
         }
     }
@@ -811,15 +775,15 @@ export txt|json                                  导出当前视图
             } else if (e.key === 'Tab') {
                 e.preventDefault();
                 const val = this.value.toLowerCase();
-                const commands = ['filter', 'grep', 'status', 'dashboard', 'errors', 'milestones', 'projects', 'skills', 'neofetch', 'about', 'help', 'clear', 'theme', 'export'];
+                const commands = ['filter', 'grep', 'status', 'dashboard', 'errors', 'milestones', 'skills', 'neofetch', 'about', 'help', 'clear', 'theme', 'export'];
                 const allTags = Object.keys(tagCounts);
                 const parts = this.value.split(/\s+/);
                 if (parts.length === 1) {
                     const match = commands.find(c => c.startsWith(val));
                     if (match) this.value = match + ' ';
                 } else if (parts[0] === 'filter') {
-                    const types = ['INFO', 'READ', 'BUILD', 'ERROR', 'MILESTONE', 'THINK'];
-                    const match = types.find(t => t.startsWith(parts[1]?.toUpperCase()));
+                    const cats = ['all', 'tech', 'reading', 'essays', 'projects'];
+                    const match = cats.find(c => c.startsWith(parts[1]?.toLowerCase()));
                     if (match) this.value = 'filter ' + match + ' ';
                 } else if (parts[0] === 'theme') {
                     const themes = ['dark', 'light'];
