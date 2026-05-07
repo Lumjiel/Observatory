@@ -272,6 +272,7 @@
         }
         currentPage = page;
         const container = viewContainers['log'];
+        if (!container) return;
         container.innerHTML = '';
         if (filteredLogs.length === 0) {
             container.innerHTML = '<p style="color:var(--gray)">没有匹配的文章。</p>';
@@ -565,6 +566,7 @@
 
     function renderDashboard() {
         const container = viewContainers['dashboard'];
+        if (!container) return;
         const total = feed.length;
         const techCount = feed.filter(a => a.typeLabel === 'tech').length;
         const readingCount = feed.filter(a => a.typeLabel === 'reading' || a.typeLabel === 'essays').length;
@@ -603,6 +605,7 @@
 
     function renderErrors() {
         const container = viewContainers['errors'];
+        if (!container) return;
         // errors 视图改为显示全部文章（按分类）
         const tech = feed.filter(a => a.typeLabel === 'tech');
         const reading = feed.filter(a => a.typeLabel === 'reading' || a.typeLabel === 'essays');
@@ -620,6 +623,7 @@
 
     function renderMilestones() {
         const container = viewContainers['milestones'];
+        if (!container) return;
         // 改为显示全部文章
         container.innerHTML = `
             <h2 style="color:var(--magenta);margin-bottom:1rem;">📚 全部文章</h2>
@@ -636,6 +640,7 @@
 
     function renderProjects() {
         const container = viewContainers['projects'];
+        if (!container) return;
         const projArticles = feed.filter(a => a.typeLabel === 'projects');
         container.innerHTML = projArticles.length ? `
             <h2 style="color:var(--amber);margin-bottom:1rem;">🛠️ 项目展板</h2>
@@ -650,6 +655,7 @@
 
     function renderSkillsView() {
         const container = viewContainers['skills'];
+        if (!container) return;
         const techCount = feed.filter(a => a.typeLabel === 'tech').length;
         const readingCount = feed.filter(a => a.typeLabel === 'reading' || a.typeLabel === 'essays').length;
         const projectsCount = feed.filter(a => a.typeLabel === 'projects').length;
@@ -670,6 +676,7 @@
 
     function renderAbout() {
         const container = viewContainers['about'];
+        if (!container) return;
         const total = feed.length;
         const techCount = feed.filter(a => a.typeLabel === 'tech').length;
         const readingCount = feed.filter(a => a.typeLabel === 'reading' || a.typeLabel === 'essays').length;
@@ -695,6 +702,7 @@
 
     function renderHelp() {
         const container = viewContainers['help'];
+        if (!container) return;
         container.innerHTML = `
             <h2 style="color:var(--green);">📖 可用命令</h2>
             <pre style="color:var(--text); line-height:1.6;">
