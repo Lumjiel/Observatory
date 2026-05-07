@@ -205,12 +205,11 @@
     const tagCounts = getTagCounts();
 
     function formatUptime() {
-        const start = new Date('2026-02-14');
+        const start = new Date('2026-05-07');
         const now = new Date();
         const diff = now - start;
         const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        return `${days}天 ${hours}小时`;
+        return `已运行 ${days} 天`;
     }
 
     function updateStatusBar() {
