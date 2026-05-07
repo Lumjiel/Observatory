@@ -10,11 +10,19 @@ function generateWeeklySummary() {
 
     let allLogs = [];
     if (fs.existsSync(LOGS_FILE)) {
-        allLogs = JSON.parse(fs.readFileSync(LOGS_FILE, 'utf-8'));
+        try {
+            allLogs = JSON.parse(fs.readFileSync(LOGS_FILE, 'utf-8'));
+        } catch (err) {
+            console.error(`logs.json 解析失败: ${err.message}`);
+        }
     }
     if (fs.existsSync(AUTO_FILE)) {
-        const autoLogs = JSON.parse(fs.readFileSync(AUTO_FILE, 'utf-8'));
-        allLogs = allLogs.concat(autoLogs);
+        try {
+            const autoLogs = JSON.parse(fs.readFileSync(AUTO_FILE, 'utf-8'));
+            allLogs = allLogs.concat(autoLogs);
+        } catch (err) {
+            console.error(`auto-generated.json 解析失败: ${err.message}`);
+        }
     }
 
     const weekLogs = allLogs.filter(l => new Date(l.timestamp) >= weekAgo);
@@ -59,7 +67,12 @@ function generateWeeklySummary() {
 
     let autoLogs = [];
     if (fs.existsSync(AUTO_FILE)) {
-        autoLogs = JSON.parse(fs.readFileSync(AUTO_FILE, 'utf-8'));
+        try {
+            autoLogs = JSON.parse(fs.readFileSync(AUTO_FILE, 'utf-8'));
+        } catch (err) {
+            console.error(`auto-generated.json 解析失败: ${err.message}`);
+            autoLogs = [];
+        }
     }
 
     const existingSummary = autoLogs.find(l => l.id === summaryId);

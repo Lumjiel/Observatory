@@ -1,0 +1,323 @@
+---
+layout: base.njk
+title: "随笔 - 文章列表"
+permalink: /articles/essays/
+---
+{% set essaysArticles = [] %}
+{% for article in collections.articles %}
+    {% if article.category == 'essays' %}
+        {% set essaysArticles = essaysArticles.concat([article]) %}
+    {% endif %}
+{% endfor %}
+
+<div class="category-page">
+    <div class="terminal-header">
+        <span class="terminal-dots">
+            <span class="dot red"></span>
+            <span class="dot yellow"></span>
+            <span class="dot green"></span>
+        </span>
+        <span class="terminal-title">essays/</span>
+    </div>
+
+    <nav class="path-bar">
+        <span class="prompt">$</span>
+        <span class="path">cd articles/essays/</span>
+    </nav>
+
+    <header class="page-header">
+        <div class="header-title">
+            <span class="category-icon">✍️</span>
+            <h1 class="page-title">随笔</h1>
+        </div>
+        <p class="page-subtitle">
+            <span class="count">{{ essaysArticles.length }}</span> 篇文章
+        </p>
+    </header>
+
+    <div class="articles-list">
+        {% for article in essaysArticles %}
+        <article class="article-card">
+            <div class="card-line">
+                <span class="file-icon">📄</span>
+                <a href="/articles/{{ article.category }}/{{ article.slug }}/" class="article-link">
+                    <span class="article-title">{{ article.title }}</span>
+                </a>
+            </div>
+            <div class="card-meta">
+                <span class="meta-date">{{ article.date }}</span>
+                <span class="meta-time">⏱ {{ article.readingTime }}</span>
+                <div class="card-tags">
+                    {% for tag in article.tags %}
+                    <span class="tag">#{{ tag }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+            <p class="card-excerpt">{{ article.excerpt }}</p>
+        </article>
+        {% endfor %}
+
+        {% if essaysArticles.length === 0 %}
+        <div class="empty-state">
+            <div class="empty-icon">📭</div>
+            <p class="empty-message">暂无随笔</p>
+            <p class="empty-hint">
+                <span class="prompt">$</span> touch essays/thought.md
+            </p>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="page-footer">
+        <span class="end-line">───</span>
+        <span class="end-text">essays/</span>
+        <span class="end-line">───</span>
+    </div>
+</div>
+
+<style>
+.category-page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 1.5rem 1rem;
+}
+
+.terminal-header {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px 8px 0 0;
+    padding: 0.6rem 1rem;
+    margin-bottom: 0;
+    border-bottom: none;
+}
+
+.terminal-dots {
+    display: flex;
+    gap: 0.4rem;
+}
+
+.terminal-dots .dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+.terminal-dots .dot.red { background: #FF5F56; }
+.terminal-dots .dot.yellow { background: #FFBD2E; }
+.terminal-dots .dot.green { background: #27CA40; }
+
+.terminal-title {
+    font-size: 0.8rem;
+    color: var(--magenta);
+    font-family: var(--font-mono);
+}
+
+.path-bar {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-top: none;
+    padding: 0.5rem 1rem;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+}
+
+.path-bar .prompt {
+    color: var(--green);
+    font-weight: bold;
+}
+
+.path-bar .path {
+    color: var(--text-dim);
+}
+
+.page-header {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-top: none;
+    padding: 1.2rem 1.5rem;
+}
+
+.header-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.3rem;
+}
+
+.category-icon {
+    font-size: 1.4rem;
+}
+
+.page-title {
+    font-size: 1.3rem;
+    color: var(--magenta);
+    margin: 0;
+    font-family: var(--font-mono);
+}
+
+.page-subtitle {
+    font-size: 0.8rem;
+    color: var(--gray);
+    font-family: var(--font-mono);
+}
+
+.page-subtitle .count {
+    color: var(--magenta);
+    font-weight: 600;
+}
+
+.articles-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.article-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem 1.2rem;
+    transition: all var(--transition);
+    position: relative;
+}
+
+.article-card::before {
+    content: '│';
+    position: absolute;
+    left: -1px;
+    top: -1px;
+    bottom: -1px;
+    color: var(--magenta-dim);
+    font-size: 1rem;
+    opacity: 0.3;
+}
+
+.article-card:hover {
+    border-color: var(--magenta);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+.article-card:hover::before {
+    opacity: 1;
+}
+
+.card-line {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.4rem;
+}
+
+.file-icon {
+    font-size: 0.9rem;
+    opacity: 0.6;
+}
+
+.article-link {
+    text-decoration: none;
+}
+
+.article-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text);
+    font-family: var(--font-mono);
+}
+
+.article-card:hover .article-title {
+    color: var(--magenta);
+}
+
+.card-meta {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    font-size: 0.75rem;
+    color: var(--gray-dim);
+    font-family: var(--font-mono);
+}
+
+.meta-time {
+    color: var(--amber);
+}
+
+.card-tags {
+    display: flex;
+    gap: 0.3rem;
+}
+
+.tag {
+    color: var(--text-dim);
+}
+
+.card-excerpt {
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    margin: 0;
+    line-height: 1.5;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    background: var(--surface);
+    border: 1px dashed var(--border);
+    border-radius: 8px;
+}
+
+.empty-icon {
+    font-size: 2.5rem;
+    margin-bottom: 0.8rem;
+    opacity: 0.5;
+}
+
+.empty-message {
+    color: var(--gray);
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+}
+
+.empty-hint {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--text-dim);
+}
+
+.empty-hint .prompt {
+    color: var(--green);
+}
+
+.page-footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.8rem;
+    color: var(--gray-dim);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    margin-top: 2rem;
+}
+
+.end-line {
+    letter-spacing: -0.2em;
+}
+
+.end-text {
+    color: var(--magenta-dim);
+}
+
+@media (max-width: 768px) {
+    .category-page {
+        padding: 0.8rem;
+    }
+}
+</style>

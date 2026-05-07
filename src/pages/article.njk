@@ -1,0 +1,10 @@
+---
+pagination:
+    data: collections.articles
+    size: 1
+    alias: article
+permalink: /articles/{{ article.category }}/{{ article.slug }}/
+eleventyComputed:
+    layout: article.njk
+---
+{% articleContent article.filename, article.category %}

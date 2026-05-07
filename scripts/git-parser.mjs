@@ -59,12 +59,20 @@ function parseGitLogs() {
 
         let existingLogs = [];
         if (fs.existsSync(LOGS_FILE)) {
-            existingLogs = JSON.parse(fs.readFileSync(LOGS_FILE, 'utf-8'));
+            try {
+                existingLogs = JSON.parse(fs.readFileSync(LOGS_FILE, 'utf-8'));
+            } catch (err) {
+                console.error(`logs.json 解析失败: ${err.message}`);
+            }
         }
 
         let autoLogs = [];
         if (fs.existsSync(AUTO_FILE)) {
-            autoLogs = JSON.parse(fs.readFileSync(AUTO_FILE, 'utf-8'));
+            try {
+                autoLogs = JSON.parse(fs.readFileSync(AUTO_FILE, 'utf-8'));
+            } catch (err) {
+                console.error(`auto-generated.json 解析失败: ${err.message}`);
+            }
         }
 
         const existingIds = new Set([...existingLogs, ...autoLogs].map(l => l.id));

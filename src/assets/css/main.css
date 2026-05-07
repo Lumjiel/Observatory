@@ -513,6 +513,14 @@ body.light .status-bar {
     flex: 1;
     min-width: 180px;
 }
+.log-link {
+    color: var(--text);
+    text-decoration: none;
+    transition: color var(--transition);
+}
+.log-link:hover {
+    color: var(--green);
+}
 .log-meta {
     font-size: 0.7rem;
     color: var(--gray-dim);
@@ -703,6 +711,9 @@ body.light .mobile-nav {
     .command-area {
         display: none;
     }
+    .signal-overview {
+        display: none;
+    }
     .mobile-nav {
         display: flex;
     }
@@ -742,7 +753,18 @@ body.light .mobile-nav {
         grid-template-columns: 1fr;
     }
     .signal-overview {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+    }
+    .signal-card {
+        padding: 0.6rem 0.8rem;
+        min-height: 60px;
+    }
+    .signal-card .sig-value {
+        font-size: 1.5rem;
+    }
+    .signal-card .sig-label {
+        font-size: 0.65rem;
     }
 }
 
@@ -840,79 +862,3 @@ body.light .mobile-nav {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
-.dashboard-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.2rem;
-}
-.dash-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 1rem;
-}
-.dash-card h3 {
-    color: var(--green);
-    margin-bottom: 0.6rem;
-    border-bottom: 1px solid var(--border);
-    padding-bottom: 0.3rem;
-}
-.heatmap {
-    display: flex;
-    gap: 4px;
-    align-items: flex-end;
-    height: 100px;
-}
-.heat-bar {
-    width: 12px;
-    background: var(--green);
-    position: relative;
-    transition: height 0.3s;
-}
-.heat-label {
-    font-size: 0.65rem;
-    color: var(--text-dim);
-    text-align: center;
-}
-.tag-cloud span {
-    display: inline-block;
-    margin: 0.2rem 0.4rem;
-    cursor: pointer;
-    color: var(--green);
-    transition: color 0.2s;
-}
-.tag-cloud span:hover {
-    color: var(--amber);
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    color: var(--text);
-}
-th, td {
-    border: 1px solid var(--border);
-    padding: 0.4rem 0.6rem;
-    text-align: left;
-    font-size: 0.8rem;
-}
-th {
-    background: var(--surface);
-    color: var(--green);
-}
-.progress-bar-ascii { color: var(--green); }
-
-.timeline {
-    border-left: 2px solid var(--magenta);
-    padding-left: 1.5rem;
-}
-.timeline-item {
-    margin-bottom: 1.5rem;
-    position: relative;
-}
-.timeline-item::before {
-    content: '★';
-    color: var(--magenta);
-    position: absolute;
-    left: -1.85rem;
-}

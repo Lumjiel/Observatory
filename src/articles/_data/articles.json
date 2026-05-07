@@ -1,0 +1,409 @@
+[
+  {
+    "id": "article_1778137237986_8jcdu",
+    "slug": "terminal-blog-observatory",
+    "title": "终端博客系统搭建记录",
+    "category": "projects",
+    "tags": [
+      "项目",
+      "Eleventy",
+      "Web"
+    ],
+    "excerpt": "基于 Eleventy 的静态博客，终端风格界面。",
+    "readingTime": "30 min",
+    "date": "2026-05-12",
+    "filename": "terminal-blog-observatory.md",
+    "source": "manual",
+    "sourceLogId": null,
+    "status": "published"
+  },
+  {
+    "id": "article_1778137237986_p0egc",
+    "slug": "code-book-notes",
+    "title": "《编码》全书笔记",
+    "category": "reading",
+    "tags": [
+      "阅读",
+      "计算机组成",
+      "笔记"
+    ],
+    "excerpt": "从继电器到操作系统，理解了计算机的构建过程。",
+    "readingTime": "120 min",
+    "date": "2026-04-25",
+    "filename": "code-book-notes.md",
+    "source": "manual",
+    "sourceLogId": null,
+    "status": "published"
+  },
+  {
+    "id": "article_1778137237987_2lqtk",
+    "slug": "概率预测如何涌现智能-语言的边界与高维向量的革命",
+    "title": "概率预测如何涌现智能？语言的边界与高维向量的革命",
+    "category": "essays",
+    "tags": [
+      "随笔"
+    ],
+    "excerpt": "大模型已经深度嵌入我们的生活，但两个根本性的追问始终悬而未决：**一个只会预测下一个字的概率模型，凭什么被称为“智能”？语言的边界是否就是世界的边界？**",
+    "readingTime": "6 min",
+    "date": "2026-04-24",
+    "filename": "概率预测如何涌现智能？语言的边界与高维向量的革命.md",
+    "source": "manual",
+    "sourceLogId": null,
+    "status": "published"
+  },
+  {
+    "id": "article_1778137237985_5zk2c",
+    "slug": "12-项目实践-mcp协议详解-让ai模型优雅调用外部工具的标准化方案",
+    "title": "项目实践｜MCP协议详解:让AI模型优雅调用外部工具的标准化方案",
+    "category": "reading",
+    "tags": [
+      "阅读"
+    ],
+    "excerpt": "在AI大模型应用日益深入的今天，单纯的模型对话已无法满足复杂业务需求——我们需要让AI能够联动外部工具，获取实时数据（如天气）、操作业务系统（如工单查询）、执行具体指令（如销售数据统计）。在我们的RA...",
+    "readingTime": "37 min",
+    "date": "2026-03-31",
+    "filename": "12  项目实践｜MCP协议详解：让AI模型优雅调用外部工具的标准化方案.md",
+    "source": "manual",
+    "sourceLogId": null,
+    "status": "published"
+  },
+  {
+    "id": "article_1778137237985_6plt1",
+    "slug": "13-mcp-工具实现详解",
+    "title": "MCP 工具实现详解",
+    "category": "reading",
+    "tags": [
+      "阅读"
+    ],
+    "excerpt": "每个 MCP 工具都需要实现 `MCPToolExecutor` 接口，核心就两个方法：",
+    "readingTime": "49 min",
+    "date": "2026-03-31",
+    "filename": "13  MCP 工具实现详解.md",
+    "source": "manual",
+    "sourceLogId": null,
+    "status": "published"
+  },
+  {
+    "id": "article_1778137237986_k8s1s",
+    "slug": "14-项目实践-etl-pipeline-完整解析-从多源文档到向量库的全链路实现",
+    "title": "项目实践｜ETL Pipeline 完整解析:从多源文档到向量库的全链路实现",
+    "category": "reading",
+    "tags": [
+      "阅读"
+    ],
+    "excerpt": "在RAG（检索增强生成）项目中，“数据”是核心基石——无论是PDF、Word等本地文档，还是URL网页、飞书文档、S3云存储文件，都需要经过一套标准化流程处理，才能转化为可被检索的向量数据，存入向量数...",
+    "readingTime": "46 min",
+    "date": "2026-03-31",
+    "filename": "14  项目实践｜ETL Pipeline 完整解析：从多源文档到向量库的全链路实现.md",
+    "source": "manual",
+    "sourceLogId": null,
+    "status": "published"
+  },
+  {
+    "id": "article_1778137237984_4997q",
+    "slug": "10-前端目录结构与职责划分详解",
+    "title": "前端目录结构与职责划分详解",
+    "category": "reading",
+    "tags": [
+      "阅读"
+    ],
+    "excerpt": "---",
+    "readingTime": "37 min",
+    "date": "2026-03-26",
+    "filename": "10  前端目录结构与职责划分详解.md",
+    "source": "manual",
+    "sourceLogId": null,
+    "status": "published"
+  },
+  {
+    "id": "article_1778137237985_eo1kk",
+    "slug": "11-zustand-状态管理实战详解-轻量高效的react状态方案",
+    "title": "Zustand 状态管理实战详解:轻量高效的React状态方案",
+    "category": "reading",
+    "tags": [
+      "阅读"
+    ],
+    "excerpt": "在React项目开发中，状态管理是贯穿始终的核心需求——从简单的组件内状态，到复杂的跨组件、跨页面全局状态，选择一款合适的状态管理工具，能极大提升开发效率、降低维护成本。Redux作为经典方案，功能强...",
+    "readingTime": "48 min",
+    "date": "2026-03-26",
+    "filename": "11  Zustand 状态管理实战详解：轻量高效的React状态方案.md",
+    "source": "manual",
+    "sourceLogId": null,
+    "status": "published"
+  },
+  {
+    "id": "article_1778137237983_0tnix",
+    "slug": "07-会话记忆压缩策略揭秘-轻松解决token爆炸难题",
+    "title": "会话记忆压缩策略揭秘，轻松解决Token爆炸难题",
+    "category": "reading",
+    "tags": [
+      "阅读"
+    ],
+    "excerpt": "在AI对话系统开发中，相信很多开发者都遇到过这样的困境：随着用户与助手的对话不断深入，历史消息越积越多，Token消耗呈线性暴涨，最终导致模型无法处理请求，甚至出现服务卡顿、响应超时的问题。这不仅影响...",
+    "readingTime": "31 min",
+    "date": "2026-03-25",
+    "filename": "07  会话记忆压缩策略揭秘，轻松解决Token爆炸难题.md",
+    "source": "manual",
+    "sourceLogId": null,
+    "status": "published"
+  },
+  {
+    "id": "article_1778137237984_f93z0",
+    "slug": "08-模型路由降级机制详解-基于断路器模式-实现高可用ai服务",
+    "title": "模型路由降级机制详解:基于断路器模式，实现高可用AI服务",
+    "category": "reading",
+    "tags": [
+      "阅读"
+    ],
+    "excerpt": "在AI服务开发中，模型调用的稳定性是核心痛点之一——无论是第三方模型接口超时、限流，还是自建模型服务故障，只要单个模型异常，就可能导致整个AI服务中断，直接影响用户体验和业务连续性。为解决这一问题，我...",
+    "readingTime": "62 min",
+    "date": "2026-03-25",
+    "filename": "08  模型路由降级机制详解：基于断路器模式，实现高可用AI服务.md",
+    "source": "manual",
+    "sourceLogId": null,
+    "status": "published"
+  },
+  {
+    "id": "article_1778137237984_x1dg8",
+    "slug": "09-ragent项目7种设计模式深度解析-从源码看设计模式落地实践",
+    "title": "Ragent项目7种设计模式深度解析:从源码看设计模式落地实践",
+    "category": "reading",
+    "tags": [
+      "阅读"
+    ],
+    "excerpt": "在复杂项目开发中，设计模式是解决共性问题、提升代码可维护性、可扩展性的核心工具。脱离业务场景的设计模式只是“纸上谈兵”，而Ragent项目中，7种设计模式的应用的则完美诠释了“模式服务于业务”的核心思...",
+    "readingTime": "48 min",
+    "date": "2026-03-25",
+    "filename": "09  Ragent项目7种设计模式深度解析：从源码看设计模式落地实践.md",
+    "source": "manual",
+    "sourceLogId": null,
+    "status": "published"
+  },
+  {
+    "id": "article_1778137237982_kuz3b",
+    "slug": "04-从零到一理解rag完整链路-代码逐行拆解-实战解析",
+    "title": "从零到一理解RAG完整链路:代码逐行拆解+实战解析",
+    "category": "reading",
+    "tags": [
+      "阅读"
+    ],
+    "excerpt": "在大模型应用爆发的当下，RAG（Retrieval-Augmented Generation，检索增强生成）早已不是陌生概念——它解决了大模型“知识过期”“幻觉生成”的核心痛点，让AI能基于实时、精准...",
+    "readingTime": "34 min",
+    "date": "2026-03-24",
+    "filename": "04  从零到一理解RAG完整链路：代码逐行拆解+实战解析.md",
+    "source": "manual",
+    "sourceLogId": null,
+    "status": "published"
+  },
+  {
+    "id": "article_1778137237983_963fl",
+    "slug": "05-rag系统核心之意图识别与意图树实现全解析",
+    "title": "RAG系统核心之意图识别与意图树实现全解析",
+    "category": "reading",
+    "tags": [
+      "阅读"
+    ],
+    "excerpt": "在大模型时代，RAG（检索增强生成）系统已成为企业级问答、智能客服等场景的核心架构。而支撑RAG系统“精准检索、高效响应”的关键一步，就是**意图识别**——它相当于RAG系统的“导航仪”，能快速判断...",
+    "readingTime": "22 min",
+    "date": "2026-03-24",
+    "filename": "05  RAG系统核心之意图识别与意图树实现全解析.md",
+    "source": "manual",
+    "sourceLogId": null,
+    "status": "published"
+  },
+  {
+    "id": "article_1778137237983_oz6sg",
+    "slug": "06-rag系统性能天花板-多通道检索架构全解析-附代码与实践",
+    "title": "RAG系统性能天花板:多通道检索架构全解析（附代码与实践）",
+    "category": "reading",
+    "tags": [
+      "阅读"
+    ],
+    "excerpt": "在RAG（检索增强生成）系统中，“检索”是连接用户问题与知识库的核心桥梁——检索的精准度、召回率和速度，直接决定了最终回答的质量。单一检索方式（如仅用向量检索或仅用关键词检索）始终存在短板：要么精准度...",
+    "readingTime": "34 min",
+    "date": "2026-03-24",
+    "filename": "06  RAG系统性能天花板：多通道检索架构全解析（附代码与实践）.md",
+    "source": "manual",
+    "sourceLogId": null,
+    "status": "published"
+  },
+  {
+    "id": "article_1778137237981_m3nuo",
+    "slug": "01-自研rag项目framework分层解析-从配置到链路追踪的全链路设计",
+    "title": "自研RAG项目Framework分层解析:从配置到链路追踪的全链路设计",
+    "category": "reading",
+    "tags": [
+      "阅读"
+    ],
+    "excerpt": "在后端开发中，一个可复用、低耦合、易维护的Framework是项目高效迭代的基石。尤其在RAG（检索增强生成）这类涉及多组件、多流程的项目中，清晰的分层设计能让开发者聚焦业务逻辑，无需重复开发基础能力...",
+    "readingTime": "17 min",
+    "date": "2026-03-23",
+    "filename": "01  自研RAG项目Framework分层解析：从配置到链路追踪的全链路设计.md",
+    "source": "manual",
+    "sourceLogId": null,
+    "status": "published"
+  },
+  {
+    "id": "article_1778137237982_twsad",
+    "slug": "02-sse推送原理与落地实现",
+    "title": "SSE推送原理与落地实现",
+    "category": "reading",
+    "tags": [
+      "阅读"
+    ],
+    "excerpt": "在现代Web开发中，实时交互已成为提升用户体验的核心需求之一——从AI流式回答的“打字机效果”，到系统实时通知、股票行情更新，都需要服务端向客户端高效、稳定地推送数据。而SSE（Server-Sent...",
+    "readingTime": "24 min",
+    "date": "2026-03-23",
+    "filename": "02  SSE推送原理与落地实现.md",
+    "source": "manual",
+    "sourceLogId": null,
+    "status": "published"
+  },
+  {
+    "id": "article_1778137237982_ohu4s",
+    "slug": "03-详解rag项目链路追踪实现-注解-aop优雅搞定全流程监控",
+    "title": "详解RAG项目链路追踪实现:注解+AOP优雅搞定全流程监控",
+    "category": "reading",
+    "tags": [
+      "阅读"
+    ],
+    "excerpt": "在RAG（检索增强生成）项目中，一次完整的对话请求往往涉及意图识别、查询改写、向量检索、重排序、LLM生成等多个环节。当系统出现响应缓慢、结果异常等问题时，如何快速定位问题环节、排查性能瓶颈？链路追踪...",
+    "readingTime": "24 min",
+    "date": "2026-03-23",
+    "filename": "03  详解RAG项目链路追踪实现：注解+AOP优雅搞定全流程监控.md",
+    "source": "manual",
+    "sourceLogId": null,
+    "status": "published"
+  },
+  {
+    "id": "article_1778137237987_433lx",
+    "slug": "recursion-vs-iteration",
+    "title": "递归与迭代的思考",
+    "category": "essays",
+    "tags": [
+      "思考",
+      "算法"
+    ],
+    "excerpt": "递归是用栈来保存状态，迭代是显式控制流程。",
+    "readingTime": "5 min",
+    "date": "2026-03-20",
+    "filename": "recursion-vs-iteration.md",
+    "source": "manual",
+    "sourceLogId": null,
+    "status": "published"
+  },
+  {
+    "id": "article_1778137237987_qxyol",
+    "slug": "彻底搞懂token-大模型的-翻译官-是如何炼成的",
+    "title": "彻底搞懂Token:大模型的“翻译官”是如何炼成的？",
+    "category": "essays",
+    "tags": [
+      "随笔"
+    ],
+    "excerpt": "相信大家在了解大模型时，总会听到一个高频词——「Context Window」（上下文窗口），比如常说的GPT 5.2上下文窗口为40万，很多人会下意识以为这是“40万个字”“40万个词”，但其实都不...",
+    "readingTime": "11 min",
+    "date": "2026-03-12",
+    "filename": "彻底搞懂Token：大模型的“翻译官”是如何炼成的？.md",
+    "source": "manual",
+    "sourceLogId": null,
+    "status": "published"
+  },
+  {
+    "id": "article_1778137237981_d01dj",
+    "slug": "一文读懂rag-从原理到落地-搭建智能知识库原来这么简单",
+    "title": "一文读懂RAG:从原理到落地，搭建智能知识库原来这么简单",
+    "category": "tech",
+    "tags": [
+      "技术"
+    ],
+    "excerpt": "你是否想搭建一个能精准回答问题的智能知识库？是否想做一个靠谱的AI知识客服，无需人工干预就能响应各类咨询？如果你的答案是肯定的，那有一项技术你一定绕不开——RAG。",
+    "readingTime": "12 min",
+    "date": "2026-03-11",
+    "filename": "一文读懂RAG：从原理到落地，搭建智能知识库原来这么简单.md",
+    "source": "manual",
+    "sourceLogId": null,
+    "status": "published"
+  },
+  {
+    "id": "article_1778137237979_bv7o4",
+    "slug": "cloud-code-从入门到实战-一篇读懂编程-agent-的完全指南",
+    "title": "Cloud Code 从入门到实战:一篇读懂编程 Agent 的完全指南",
+    "category": "tech",
+    "tags": [
+      "技术"
+    ],
+    "excerpt": "最近，Cloud Code 在开发者圈子里热度持续攀升。作为一款强大的编程 Agent，它不仅能帮你写代码、改代码，还能通过多模态、MCP、插件等机制，成为你手中的“超级开发助手”。但很多同学只是简单...",
+    "readingTime": "6 min",
+    "date": "2026-03-09",
+    "filename": "Cloud Code 从入门到实战：一篇读懂编程 Agent 的完全指南.md",
+    "source": "manual",
+    "sourceLogId": null,
+    "status": "published"
+  },
+  {
+    "id": "article_1778137237987_79t8p",
+    "slug": "别再用旧地图探索新大陆-一个正在被重构的商业模式",
+    "title": "别再用旧地图探索新大陆:一个正在被重构的商业模式",
+    "category": "essays",
+    "tags": [
+      "随笔"
+    ],
+    "excerpt": "最近脑子里一直盘旋着一个词：**“失效感”**。",
+    "readingTime": "6 min",
+    "date": "2026-03-05",
+    "filename": "别再用旧地图探索新大陆：一个正在被重构的商业模式.md",
+    "source": "manual",
+    "sourceLogId": null,
+    "status": "published"
+  },
+  {
+    "id": "article_1778137237987_fow96",
+    "slug": "当ai夺走工作-它还能夺走什么-一份写给自己的未来生存指南",
+    "title": "当AI夺走工作，它还能夺走什么？——一份写给自己的未来生存指南",
+    "category": "essays",
+    "tags": [
+      "随笔"
+    ],
+    "excerpt": "最近我陷入一种奇怪的循环：一边刷着各种“AI取代人类”的短视频，一边焦虑地刷LeetCode准备后端面试。刷到一个视频，标题大概意思是“别再学编程了，AI都能写了”，下一条又是“2026年最火的几个高...",
+    "readingTime": "7 min",
+    "date": "2026-03-05",
+    "filename": "当AI夺走工作，它还能夺走什么？——一份写给自己的未来生存指南.md",
+    "source": "manual",
+    "sourceLogId": null,
+    "status": "published"
+  },
+  {
+    "id": "article_1778137237988_uny5y",
+    "slug": "渐进式披露-cloud-code团队踩坑无数后悟出的ai-agent设计真谛",
+    "title": "渐进式披露:Cloud Code团队踩坑无数后悟出的AI Agent设计真谛",
+    "category": "essays",
+    "tags": [
+      "随笔"
+    ],
+    "excerpt": "如果你用过Cloud Code（或者Cline、Cursor等AI编程助手），你一定好奇过：这些工具背后的团队是怎么设计它们的？为什么它们有时候聪明得惊人，有时候又笨得让人着急？最近，Cloud Co...",
+    "readingTime": "6 min",
+    "date": "2026-03-04",
+    "filename": "渐进式披露：Cloud Code团队踩坑无数后悟出的AI Agent设计真谛.md",
+    "source": "manual",
+    "sourceLogId": null,
+    "status": "published"
+  },
+  {
+    "id": "article_1778137237980_wm4ah",
+    "slug": "understanding-c-pointers",
+    "title": "理解 C 语言指针",
+    "category": "tech",
+    "tags": [
+      "C",
+      "指针",
+      "内存管理"
+    ],
+    "excerpt": "数组名是常量指针，sizeof 行为不同。画了内存图后豁然开朗。",
+    "readingTime": "8 min",
+    "date": "2026-03-03",
+    "filename": "understanding-c-pointers.md",
+    "source": "manual",
+    "sourceLogId": null,
+    "status": "published"
+  }
+]

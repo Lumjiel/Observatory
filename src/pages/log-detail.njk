@@ -1,0 +1,394 @@
+---
+pagination:
+    data: collections.logs
+    size: 1
+    alias: log
+permalink: /logs/{{ log.slug }}/
+eleventyComputed:
+    layout: base.njk
+    title: "{{ log.description }}"
+---
+<div class="log-page">
+    <div class="terminal-header">
+        <span class="terminal-dots">
+            <span class="dot red"></span>
+            <span class="dot yellow"></span>
+            <span class="dot green"></span>
+        </span>
+        <span class="terminal-title">{{ log.slug }}.log</span>
+    </div>
+
+    <nav class="path-bar">
+        <span class="prompt">$</span>
+        <span class="path">cd logs/</span>
+    </nav>
+
+    <article class="log-container">
+        <header class="log-header">
+            <div class="log-type-line">
+                <span class="type-badge {{ log.type }}">[{{ log.type }}]</span>
+                <span class="log-id"># {{ log.id }}</span>
+            </div>
+            <h1 class="log-title">{{ log.description }}</h1>
+            <div class="log-meta">
+                <span class="meta-item">
+                    <span class="meta-icon">📅</span>
+                    <span class="meta-value">{{ log.timestamp }}</span>
+                </span>
+                {% if log.duration %}
+                <span class="meta-item">
+                    <span class="meta-icon">⏱</span>
+                    <span class="meta-value">{{ log.duration }}</span>
+                </span>
+                {% endif %}
+                {% if log.status %}
+                <span class="meta-item status-{{ log.status }}">
+                    <span class="meta-value">{{ log.status }}</span>
+                </span>
+                {% endif %}
+            </div>
+            <div class="log-tags">
+                {% for tag in log.tags %}
+                <span class="tag">#{{ tag }}</span>
+                {% endfor %}
+            </div>
+        </header>
+
+        <div class="log-content">
+            {{ log.detail | renderMarkdown | safe }}
+        </div>
+
+        {% if log.related and log.related.length > 0 %}
+        <section class="related-section">
+            <h3>📎 关联日志</h3>
+            <ul class="related-list">
+                {% for rel in log.related %}
+                <li><code>{{ rel }}</code></li>
+                {% endfor %}
+            </ul>
+        </section>
+        {% endif %}
+
+        <div class="log-end-marker">
+            <span class="end-line">───</span>
+            <span class="end-text">END OF LOG</span>
+            <span class="end-line">───</span>
+        </div>
+    </article>
+
+    <div class="log-footer-nav">
+        <a href="/" class="back-link">← 返回日志流</a>
+    </div>
+</div>
+
+<style>
+.log-page {
+    max-width: 850px;
+    margin: 0 auto;
+    padding: 1.5rem 1rem;
+}
+
+.terminal-header {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px 8px 0 0;
+    padding: 0.6rem 1rem;
+}
+
+.terminal-dots {
+    display: flex;
+    gap: 0.4rem;
+}
+
+.terminal-dots .dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+.terminal-dots .dot.red { background: #FF5F56; }
+.terminal-dots .dot.yellow { background: #FFBD2E; }
+.terminal-dots .dot.green { background: #27CA40; }
+
+.terminal-title {
+    font-size: 0.8rem;
+    color: var(--gray);
+    font-family: var(--font-mono);
+}
+
+.path-bar {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-top: none;
+    padding: 0.5rem 1rem;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+}
+
+.path-bar .prompt {
+    color: var(--green);
+    font-weight: bold;
+}
+
+.path-bar .path {
+    color: var(--text-dim);
+}
+
+.log-container {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-top: none;
+    border-radius: 0 0 12px 12px;
+    padding: 1.5rem 2rem;
+}
+
+.log-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px dashed var(--border);
+}
+
+.log-type-line {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.8rem;
+}
+
+.type-badge {
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    font-family: var(--font-mono);
+}
+
+.type-badge.INFO { color: var(--green); background: rgba(0, 229, 160, 0.1); }
+.type-badge.READ { color: var(--blue); background: rgba(77, 184, 255, 0.1); }
+.type-badge.BUILD { color: var(--amber); background: rgba(255, 179, 0, 0.1); }
+.type-badge.ERROR { color: var(--amber); background: rgba(255, 179, 0, 0.15); }
+.type-badge.MILESTONE { color: var(--magenta); background: rgba(255, 107, 157, 0.1); }
+.type-badge.THINK { color: var(--gray); background: rgba(107, 127, 143, 0.1); }
+
+.log-id {
+    font-size: 0.75rem;
+    color: var(--gray-dim);
+    font-family: var(--font-mono);
+}
+
+.log-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--text);
+    margin: 0 0 1rem 0;
+    font-family: var(--font-mono);
+    line-height: 1.3;
+}
+
+.log-meta {
+    display: flex;
+    gap: 1.5rem;
+    font-size: 0.8rem;
+    color: var(--gray);
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+}
+
+.meta-item {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.meta-icon {
+    opacity: 0.7;
+}
+
+.meta-value {
+    font-family: var(--font-mono);
+}
+
+.status-done { color: var(--green); }
+.status-wip { color: var(--amber); }
+.status-error { color: var(--magenta); }
+
+.log-tags {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.tag {
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    font-family: var(--font-mono);
+}
+
+.log-content {
+    font-size: 0.95rem;
+    line-height: 1.8;
+    color: var(--text);
+}
+
+.log-content h1,
+.log-content h2,
+.log-content h3 {
+    color: var(--green);
+    margin: 1.5em 0 0.8em 0;
+    line-height: 1.4;
+}
+
+.log-content h2 { font-size: 1.2rem; }
+.log-content h3 { font-size: 1rem; }
+
+.log-content p {
+    margin: 1em 0;
+    font-family: var(--font-mono);
+}
+
+.log-content code {
+    background: rgba(0, 0, 0, 0.4);
+    padding: 0.15em 0.5em;
+    border-radius: 4px;
+    color: var(--amber);
+    font-size: 0.9em;
+}
+
+.log-content pre {
+    background: rgba(0, 0, 0, 0.5);
+    padding: 1rem 1.2rem;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 1.2em 0;
+    border: 1px solid var(--border);
+}
+
+.log-content pre code {
+    background: none;
+    padding: 0;
+    border: none;
+}
+
+.log-content ul,
+.log-content ol {
+    margin: 1em 0;
+    padding-left: 1.5rem;
+}
+
+.log-content li {
+    margin: 0.4em 0;
+}
+
+.log-content blockquote {
+    border-left: 3px solid var(--green);
+    background: var(--bg);
+    padding: 0.8rem 1.2rem;
+    margin: 1.2em 0;
+    border-radius: 0 8px 8px 0;
+}
+
+.log-content strong {
+    color: var(--amber);
+}
+
+.log-content a {
+    color: var(--green);
+}
+
+.related-section {
+    margin-top: 2rem;
+    padding: 1rem;
+    background: var(--bg);
+    border: 1px dashed var(--border);
+    border-radius: 8px;
+}
+
+.related-section h3 {
+    font-size: 0.9rem;
+    color: var(--green);
+    margin: 0 0 0.5rem 0;
+}
+
+.related-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.related-list li {
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    margin: 0.3rem 0;
+}
+
+.related-list code {
+    color: var(--amber);
+    background: var(--surface);
+    padding: 0.1em 0.4em;
+    border-radius: 3px;
+}
+
+.log-end-marker {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.8rem;
+    color: var(--gray-dim);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    margin-top: 2rem;
+}
+
+.end-line {
+    letter-spacing: -0.2em;
+}
+
+.end-text {
+    color: var(--green-dim);
+}
+
+.log-footer-nav {
+    text-align: center;
+    margin-top: 1.5rem;
+}
+
+.back-link {
+    color: var(--green);
+    text-decoration: none;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--green);
+    border-radius: 6px;
+    transition: all var(--transition);
+}
+
+.back-link:hover {
+    background: rgba(0, 229, 160, 0.1);
+}
+
+@media (max-width: 768px) {
+    .log-page {
+        padding: 0.8rem;
+    }
+
+    .log-container {
+        padding: 1.2rem 1rem;
+    }
+
+    .log-title {
+        font-size: 1.2rem;
+    }
+
+    .log-meta {
+        gap: 1rem;
+    }
+}
+</style>

@@ -1,7 +1,21 @@
 (function() {
-    const logs = window.LOGS_DATA || [];
-    const projects = window.PROJECTS_DATA || [];
-    const skills = window.SKILLS_DATA || { categories: [] };
+    const rawLogs = window.LOGS_DATA;
+    const rawProjects = window.PROJECTS_DATA;
+    const rawSkills = window.SKILLS_DATA;
+
+    if (!rawLogs || !Array.isArray(rawLogs)) {
+        console.error('[Observatory] logs.json 数据格式错误或为空，请检查 src/_data/logs.json');
+    }
+    if (!rawProjects || !Array.isArray(rawProjects)) {
+        console.warn('[Observatory] projects.json 数据格式错误或为空');
+    }
+    if (!rawSkills || !rawSkills.categories) {
+        console.warn('[Observatory] skills.json 数据格式错误');
+    }
+
+    const logs = Array.isArray(rawLogs) ? rawLogs : [];
+    const projects = Array.isArray(rawProjects) ? rawProjects : [];
+    const skills = rawSkills && rawSkills.categories ? rawSkills : { categories: [] };
 
     let currentView = 'log';
     let openLogId = null;
@@ -282,7 +296,7 @@
                   <span class="event-type-dot ${typeClass}"></span>
                   <span class="log-time" data-timestamp="${log.id}">[${formatTimestamp(log.timestamp)}]</span>
                   <span class="log-tag ${log.type}" data-tag="${log.type}">[${log.type}]</span>
-                  <span class="log-desc">${descHtml}</span>
+                  <span class="log-desc"><a href="/logs/${log.slug}/" class="log-link">${descHtml}</a></span>
                   <span class="log-meta">${log.tags.map(t => `<span class="tag-hover" data-tag="${t}" title="${tagCounts[t] || 0} 条日志">#${t}</span>`).join(' ')}</span>
                   <span class="log-status ${log.status === 'error' ? 'error-status' : log.status}" data-status="${log.status}" title="${getStatusHint(log.status)}">${statusSymbol}</span>
                 </div>
@@ -399,7 +413,7 @@
     function attachLogEvents() {
         document.querySelectorAll('.log-entry').forEach(entry => {
             entry.addEventListener('click', function(e) {
-                if (e.target.closest('.tag-hover') || e.target.closest('.log-time') || e.target.closest('.log-status')) return;
+                if (e.target.closest('.tag-hover') || e.target.closest('.log-time') || e.target.closest('.log-status') || e.target.closest('.log-link')) return;
                 const logId = this.dataset.logId;
                 toggleDetail(logId, this);
             });
@@ -857,8 +871,9 @@ export txt|json                                  导出当前视图
 
     if (mobileNav) {
         mobileNav.addEventListener('click', function(e) {
-            if (e.target.tagName === 'BUTTON') {
-                const view = e.target.dataset.view;
+            const btn = e.target.closest('button');
+            if (btn) {
+                const view = btn.dataset.view;
                 if (view === 'log') renderLogStream();
                 else if (view === 'dashboard') renderDashboard();
                 else if (view === 'skills') renderSkillsView();
