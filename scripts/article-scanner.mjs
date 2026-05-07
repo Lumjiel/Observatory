@@ -16,7 +16,7 @@ function extractTags(frontmatter, content, title) {
         return frontmatter.tags.map(t => String(t));
     }
 
-    const hashtagRegex = /#([^\s#]+)/gu;
+    const hashtagRegex = /#([a-zA-Z][a-zA-Z0-9]*[a-zA-Z0-9一-龥]?)/gu;
     const hashtags = [...content.matchAll(hashtagRegex)].map(m => m[1]);
     if (hashtags.length > 0) {
         return [...new Set(hashtags)].slice(0, 10);
