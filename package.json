@@ -8,6 +8,7 @@
     "build": "node scripts/article-scanner.mjs && eleventy",
     "scan:articles": "node scripts/article-scanner.mjs",
     "import:article": "node scripts/article-importer.mjs",
+    "new-article": "node scripts/new-article.mjs",
     "auto-update": "npm run scan:articles"
   },
   "dependencies": {

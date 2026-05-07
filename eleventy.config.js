@@ -14,6 +14,7 @@ const CATEGORY_LABELS = {
 
 export default function(eleventyConfig) {
   eleventyConfig.addPassthroughCopy("src/assets");
+  eleventyConfig.addPassthroughCopy("src/img");
 
   eleventyConfig.addFilter("jsonify", (data) => JSON.stringify(data));
 
@@ -41,7 +42,14 @@ export default function(eleventyConfig) {
     if (fs.existsSync(filePath)) {
       const raw = fs.readFileSync(filePath, 'utf-8');
       const { content } = matter(raw);
-      return md.render(content);
+      // 转换图片路径：相对路径 -> 绝对路径
+      // 1. ![[Pasted_image_xxx.png]] -> ![Pasted_image_xxx.png](/img/Pasted_image_xxx.png)
+      // 2. ](img/xxx.png) -> ](/img/xxx.png) (相对路径转绝对)
+      const processed = content.replace(
+        /!\[\[(Pasted_image_.+?\.png)\]\]/g,
+        (match, filename) => `![${filename}](/img/${filename})`
+      ).replace(/\]\(img\//g, '](/img/');
+      return md.render(processed);
     }
     return '<p>文章内容加载失败</p>';
   });

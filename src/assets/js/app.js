@@ -209,13 +209,14 @@
         const now = new Date();
         const diff = now - start;
         const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-        return `已运行 ${days} 天`;
+        if (days < 1) return '🚀 今天上线';
+        return `📈 已运行 ${days} 天`;
     }
 
     function updateStatusBar() {
         const uptime = document.getElementById('uptime');
         const activeCount = document.getElementById('activeCount');
-        if (uptime) uptime.textContent = '🕒 ' + formatUptime();
+        if (uptime) uptime.textContent = formatUptime();
         if (activeCount) activeCount.textContent = '📋 ' + feed.length + '篇文章';
     }
     updateStatusBar();

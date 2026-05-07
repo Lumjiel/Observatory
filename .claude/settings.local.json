@@ -1,0 +1,40 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node scripts/article-scanner.mjs)",
+      "Bash(npm run *)",
+      "Bash(curl -s http://localhost:8080)",
+      "Bash(curl -s http://localhost:8080/articles/)",
+      "Bash(curl -s http://localhost:8080/articles/tech/understanding-c-pointers/)",
+      "Bash(sed -n '583,596p' /e/project/terminal-observatory/src/assets/css/main.css)",
+      "Bash(sed -n '860,872p' /e/project/terminal-observatory/src/assets/css/main.css)",
+      "Bash(node *)",
+      "Bash(timeout 5)",
+      "Bash(taskkill //F //IM node.exe)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(curl -s http://localhost:8081/)",
+      "Bash(curl -s http://localhost:8081/assets/js/app.js)",
+      "Bash(curl -s \"http://localhost:8081/.11ty/reload-client.js\")",
+      "Bash(curl -s http://localhost:8081/articles/projects/terminal-blog-observatory/)",
+      "Bash(TaskStop bmswovdde *)",
+      "Bash(curl -s http://localhost:8082/)",
+      "Bash(curl -s http://localhost:8082/assets/js/app.js)",
+      "Bash(python3 -c ' *)",
+      "Bash(fuser -k 8080/tcp)",
+      "Bash(curl -s http://localhost:8080/)",
+      "Bash(xxd \"_site/articles/tech/设计模式/index.html\")",
+      "Bash(xxd)",
+      "Bash(curl *)",
+      "Bash(pkill -f \"eleventy --serve\")",
+      "Bash(npx eleventy *)",
+      "Bash(pkill -f \"eleventy\")",
+      "Bash(npx @11ty/eleventy)",
+      "Bash(netstat -ano)",
+      "Bash(taskkill /F /PID 7604 28784 35768 27352 30680 2524 34288 33420 25112 35108)",
+      "Bash(mkdir -p tech reading projects essays)",
+      "Bash(mv Pasted_image_20260304182035.png essays/)",
+      "Bash(mv Pasted_image_20260311174006.png Pasted_image_20260311173249.png Pasted_image_20260311173432.png Pasted_image_20260311173216.png tech/)"
+    ]
+  }
+}
