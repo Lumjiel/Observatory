@@ -214,6 +214,9 @@ body.light .status-bar {
     .content-layout {
         grid-template-columns: 1fr 320px;
     }
+    .main-content {
+        grid-column: 1;
+    }
 }
 
 .universe-sidebar {

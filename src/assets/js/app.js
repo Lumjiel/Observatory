@@ -888,18 +888,25 @@ export txt|json                                  导出当前视图
     // 移动端底部导航：滚动时隐藏，停止时显示
     let lastScrollY = 0;
     let hideTimer;
-    if (mobileNav && window.innerWidth <= 899) {
-        window.addEventListener('scroll', function() {
-            const currentY = window.scrollY;
-            if (Math.abs(currentY - lastScrollY) > 10) {
-                mobileNav.classList.add('hidden');
-                clearTimeout(hideTimer);
-                hideTimer = setTimeout(function() {
-                    mobileNav.classList.remove('hidden');
-                }, 1500);
-            }
-            lastScrollY = currentY;
-        }, { passive: true });
+    function onMobileScroll() {
+        const currentY = window.scrollY;
+        if (Math.abs(currentY - lastScrollY) > 10) {
+            mobileNav.classList.add('hidden');
+            clearTimeout(hideTimer);
+            hideTimer = setTimeout(function() {
+                mobileNav.classList.remove('hidden');
+            }, 1500);
+        }
+        lastScrollY = currentY;
+    }
+    if (mobileNav) {
+        if (window.innerWidth <= 899) {
+            window.addEventListener('scroll', onMobileScroll, { passive: true });
+        }
+        window.addEventListener('beforeunload', () => {
+            window.removeEventListener('scroll', onMobileScroll);
+            clearTimeout(hideTimer);
+        });
     }
 
     // 面包屑 category 点击：SPA 跳转，不白屏
