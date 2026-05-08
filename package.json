@@ -14,10 +14,15 @@
   "dependencies": {
     "@11ty/eleventy": "^3.0.0",
     "gray-matter": "^4.0.3",
-    "markdown-it": "^14.1.0"
+    "markdown-it": "^14.1.0",
+    "sanitize-html": "^2.17.3"
   },
-  "devDependencies": {},
-  "keywords": ["blog", "terminal", "learning", "eleventy"],
+  "keywords": [
+    "blog",
+    "terminal",
+    "learning",
+    "eleventy"
+  ],
   "author": "student",
   "license": "MIT"
 }

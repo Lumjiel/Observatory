@@ -45,20 +45,20 @@ permalink: /articles/
         </a>
         {% set techCount = 0 %}
         {% for a in collections.articles %}
-            {% if a.category == 'tech' %}{% set techCount = techCount + 1 %}{% endif %}
+            {% if a.category == 'tutorials' %}{% set techCount = techCount + 1 %}{% endif %}
         {% endfor %}
-        <a href="/articles/?category=tech" class="tab {% if currentCategory == 'tech' %}active{% endif %}">
+        <a href="/articles/?category=tutorials" class="tab {% if currentCategory == 'tutorials' %}active{% endif %}">
             <span class="tab-icon">🛠️</span>
-            <span class="tab-label">技术</span>
+            <span class="tab-label">教程</span>
             <span class="tab-count">{{ techCount }}</span>
         </a>
         {% set readingCount = 0 %}
         {% for a in collections.articles %}
-            {% if a.category == 'reading' %}{% set readingCount = readingCount + 1 %}{% endif %}
+            {% if a.category == 'blog' %}{% set readingCount = readingCount + 1 %}{% endif %}
         {% endfor %}
-        <a href="/articles/?category=reading" class="tab {% if currentCategory == 'reading' %}active{% endif %}">
+        <a href="/articles/?category=blog" class="tab {% if currentCategory == 'blog' %}active{% endif %}">
             <span class="tab-icon">📖</span>
-            <span class="tab-label">读书</span>
+            <span class="tab-label">博客</span>
             <span class="tab-count">{{ readingCount }}</span>
         </a>
         {% set projectsCount = 0 %}
@@ -318,8 +318,8 @@ permalink: /articles/
     font-weight: 600;
 }
 
-.article-category.tech { color: var(--green); background: rgba(0, 229, 160, 0.1); }
-.article-category.reading { color: var(--blue); background: rgba(77, 184, 255, 0.1); }
+.article-category.tutorials { color: var(--green); background: rgba(0, 229, 160, 0.1); }
+.article-category.blog { color: var(--blue); background: rgba(77, 184, 255, 0.1); }
 .article-category.projects { color: var(--amber); background: rgba(255, 179, 0, 0.1); }
 .article-category.essays { color: var(--magenta); background: rgba(255, 107, 157, 0.1); }
 

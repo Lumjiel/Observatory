@@ -1,4 +1,5 @@
 import markdownIt from 'markdown-it';
+import sanitizeHtml from 'sanitize-html';
 import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
@@ -49,7 +50,17 @@ export default function(eleventyConfig) {
         /!\[\[(Pasted_image_.+?\.png)\]\]/g,
         (match, filename) => `![${filename}](/img/${filename})`
       ).replace(/\]\(img\//g, '](/img/');
-      return md.render(processed);
+      const html = md.render(processed);
+      // 净化 HTML，移除危险标签和属性
+      return sanitizeHtml(html, {
+        allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']),
+        allowedAttributes: {
+          ...sanitizeHtml.defaults.allowedAttributes,
+          img: ['src', 'alt', 'title'],
+          a: ['href', 'title', 'target', 'rel']
+        },
+        allowedSchemes: ['http', 'https', 'mailto']
+      });
     }
     return '<p>文章内容加载失败</p>';
   });

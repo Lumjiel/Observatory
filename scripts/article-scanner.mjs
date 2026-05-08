@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
 import { fileURLToPath } from 'url';
+import { randomUUID } from 'crypto';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -96,7 +97,7 @@ function scanCategory(category) {
         const tags = extractTags(frontmatter, content, title);
 
         articles.push({
-            id: `article_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
+            id: `article_${randomUUID()}`,
             slug,
             title,
             category,
