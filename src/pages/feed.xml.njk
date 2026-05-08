@@ -1,0 +1,29 @@
+---
+permalink: /feed.xml
+eleventyExcludeFromCollections: true
+---
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <title>{{ site.title or "观测站" }}</title>
+    <subtitle>{{ site.description or "终端博客·观测站" }}</subtitle>
+    <link href="{{ page.url }}" rel="self"/>
+    <link href="{{ site.url or "/" }}"/>
+    <updated>{{ collections.articles[0].date }}</updated>
+    <id>{{ site.url or "/" }}</id>
+    <author>
+        <name>{{ site.author or "student" }}</name>
+    </author>
+    {% for article in collections.articles %}
+    <entry>
+        <title>{{ article.title }}</title>
+        <link href="{{ site.url }}/articles/{{ article.category }}/{{ article.slug }}/"/>
+        <id>{{ site.url }}/articles/{{ article.category }}/{{ article.slug }}/</id>
+        <updated>{{ article.date }}</updated>
+        <author>
+            <name>{{ site.author or "student" }}</name>
+        </author>
+        <summary>{{ article.excerpt }}</summary>
+        <category term="{{ article.category }}"/>
+    </entry>
+    {% endfor %}
+</feed>
