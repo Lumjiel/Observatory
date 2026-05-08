@@ -30,8 +30,8 @@
 
     let currentView = 'log';
     let openLogId = null;
-    let commandHistory = [];
-    let historyIndex = -1;
+    let commandHistory = JSON.parse(localStorage.getItem('cmdHistory') || '[]');
+    let historyIndex = commandHistory.length;
     let activeFilter = null;
     let activeKeyword = null;
     let focusedEntryIndex = -1;
@@ -205,7 +205,8 @@
     const tagCounts = getTagCounts();
 
     function formatUptime() {
-        const start = new Date('2026-05-07');
+        const startDate = (window.SITE_DATA && window.SITE_DATA.startDate) ? window.SITE_DATA.startDate : '2026-05-07';
+        const start = new Date(startDate);
         const now = new Date();
         const diff = now - start;
         const days = Math.floor(diff / (1000 * 60 * 60 * 24));
@@ -231,6 +232,7 @@
         Object.keys(viewContainers).forEach(v => viewContainers[v].classList.remove('active'));
         if (viewContainers[viewName]) viewContainers[viewName].classList.add('active');
         currentView = viewName;
+        document.body.classList.toggle('view-log-active', viewName === 'log');
         document.querySelectorAll('#mobileNav button').forEach(btn => {
             btn.classList.toggle('active', btn.dataset.view === viewName);
         });
@@ -256,11 +258,7 @@
         filteredLogs = [...feed].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
         // filterType 是 category: tech/reading/essays/projects
         if (filterType && filterType !== 'all') {
-            if (filterType === 'reading') {
-                filteredLogs = filteredLogs.filter(l => l.typeLabel === 'reading' || l.typeLabel === 'essays');
-            } else {
-                filteredLogs = filteredLogs.filter(l => l.typeLabel === filterType);
-            }
+            filteredLogs = filteredLogs.filter(l => l.typeLabel === filterType);
         }
         if (keyword) {
             const kw = keyword.toLowerCase();
@@ -479,7 +477,7 @@
             tag.addEventListener('click', function(e) {
                 e.stopPropagation();
                 const t = this.dataset.tag;
-                executeCommand('grep ' + t);
+                window.location.href = '/tags/?tag=' + encodeURIComponent(t);
             });
         });
     }
@@ -606,17 +604,19 @@
     function renderErrors() {
         const container = viewContainers['errors'];
         if (!container) return;
-        // errors 视图改为显示全部文章（按分类）
         const tech = feed.filter(a => a.typeLabel === 'tech');
-        const reading = feed.filter(a => a.typeLabel === 'reading' || a.typeLabel === 'essays');
+        const reading = feed.filter(a => a.typeLabel === 'reading');
+        const essays = feed.filter(a => a.typeLabel === 'essays');
         const projects = feed.filter(a => a.typeLabel === 'projects');
         container.innerHTML = `
-            <h2 style="color:var(--green);margin-bottom:1rem;">📚 文章总览</h2>
+            <h2 style="color:var(--green);margin-bottom:1rem;">📚 文章分类</h2>
             <h3 style="color:var(--green);margin-top:1rem;">🛠️ 技术 (${tech.length})</h3>
             <ul style="list-style:none;padding:0;">${tech.map(l => `<li style="margin:0.3rem 0;"><a href="${l.href}" style="color:var(--text);">${l.description}</a></li>`).join('')}</ul>
             <h3 style="color:var(--blue);margin-top:1rem;">📖 读书 (${reading.length})</h3>
             <ul style="list-style:none;padding:0;">${reading.map(l => `<li style="margin:0.3rem 0;"><a href="${l.href}" style="color:var(--text);">${l.description}</a></li>`).join('')}</ul>
-            <h3 style="color:var(--amber);margin-top:1rem;">🛠️ 项目 (${projects.length})</h3>
+            <h3 style="color:var(--magenta);margin-top:1rem;">✍️ 随笔 (${essays.length})</h3>
+            <ul style="list-style:none;padding:0;">${essays.map(l => `<li style="margin:0.3rem 0;"><a href="${l.href}" style="color:var(--text);">${l.description}</a></li>`).join('')}</ul>
+            <h3 style="color:var(--amber);margin-top:1rem;">🚀 项目 (${projects.length})</h3>
             <ul style="list-style:none;padding:0;">${projects.map(l => `<li style="margin:0.3rem 0;"><a href="${l.href}" style="color:var(--text);">${l.description}</a></li>`).join('')}</ul>`;
         showView('errors');
     }
@@ -677,26 +677,42 @@
     function renderAbout() {
         const container = viewContainers['about'];
         if (!container) return;
-        const total = feed.length;
-        const techCount = feed.filter(a => a.typeLabel === 'tech').length;
-        const readingCount = feed.filter(a => a.typeLabel === 'reading' || a.typeLabel === 'essays').length;
-        const projectsCount = feed.filter(a => a.typeLabel === 'projects').length;
+        const uptime = formatUptime();
         container.innerHTML = `
-            <pre style="color:var(--green); line-height:1.5;">
-        ╔══════════════════════════════╗
-        ║   student@observatory      ║
-        ╚══════════════════════════════╝
-        OS: Computer Science 大二
-        Shell: zsh + curiosity
-        Uptime: ${formatUptime()}
-        Articles: ${total} 篇
-          - 技术: ${techCount}
-          - 读书: ${readingCount}
-          - 项目: ${projectsCount}
-        Interests: 系统, AI, Web
-        Blog: 终端博客观测站 v1.2
-        Motto: "Stay hungry, stay foolish."
-            </pre>`;
+            <h2 style="color:var(--green);margin-bottom:1.5rem;">👤 关于观测站</h2>
+            <div class="about-section">
+                <pre style="color:var(--green);line-height:1.6;">
+观测站 · Terminal Observatory
+──────────────────────
+一个以终端风格呈现的个人博客系统。
+把每天的编码、阅读、调试和思考都当作信号记录下来。
+这里是公开的日志，也是一场持续的自我实验。
+
+$ cat README.md
+站点: 终端博客·观测站
+框架: Eleventy (11ty)
+前端: 原生 JavaScript SPA
+主题: 终端风格 / 暗色亮色双主题
+运行: ${uptime}
+                </pre>
+            </div>
+            <div class="about-commands">
+                <h3 style="color:var(--amber);margin:1.5rem 0 0.8rem;">📖 可用命令</h3>
+                <pre style="color:var(--text);line-height:1.6;">
+filter [all|tech|reading|essays|projects]       按分类筛选
+grep [关键词]                                    全文搜索
+dashboard / status                               仪表盘
+errors                                           分类总览
+milestones                                       时间线
+skills / neofetch                                技能统计
+about                                            关于本站
+help                                             查看帮助
+clear                                            清除筛选
+theme dark|light                                 切换主题
+export txt|json                                  导出数据
+                </pre>
+                <p style="color:var(--text-dim);margin-top:0.8rem;">💡 快捷键: j/k 上下移动 | / 聚焦搜索 | Esc 关闭</p>
+            </div>`;
         showView('about');
     }
 
@@ -770,6 +786,7 @@ export txt|json                                  导出当前视图
                     commandHistory.push(cmd);
                     if (commandHistory.length > 20) commandHistory.shift();
                     historyIndex = commandHistory.length;
+                    localStorage.setItem('cmdHistory', JSON.stringify(commandHistory));
                     executeCommand(cmd);
                 }
                 this.value = '';
@@ -848,12 +865,44 @@ export txt|json                                  导出当前视图
                 const view = btn.dataset.view;
                 if (view === 'log') renderLogStream();
                 else if (view === 'dashboard') renderDashboard();
-                else if (view === 'skills') renderSkillsView();
+                else if (view === 'errors') renderErrors();
                 else if (view === 'about') renderAbout();
                 showView(view);
             }
         });
     }
+
+    // 移动端底部导航：滚动时隐藏，停止时显示
+    let lastScrollY = 0;
+    let hideTimer;
+    if (mobileNav && window.innerWidth <= 899) {
+        window.addEventListener('scroll', function() {
+            const currentY = window.scrollY;
+            if (Math.abs(currentY - lastScrollY) > 10) {
+                mobileNav.classList.add('hidden');
+                clearTimeout(hideTimer);
+                hideTimer = setTimeout(function() {
+                    mobileNav.classList.remove('hidden');
+                }, 1500);
+            }
+            lastScrollY = currentY;
+        }, { passive: true });
+    }
+
+    // 面包屑 category 点击：SPA 跳转，不白屏
+    document.querySelectorAll('.breadcrumb-category').forEach(function(link) {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const cat = this.dataset.category;
+            if (cat) {
+                activeFilter = cat;
+                activeKeyword = null;
+                renderLogStream(cat);
+                showView('log');
+                window.scrollTo(0, 0);
+            }
+        });
+    });
 
     if (themeToggle) {
         themeToggle.addEventListener('click', function() {
@@ -864,6 +913,7 @@ export txt|json                                  导出当前视图
         });
     }
 
+    try {
     generateParticles();
     renderSignalOverview();
     renderFilterChips();
@@ -873,9 +923,13 @@ export txt|json                                  导出当前视图
     renderLogStream();
     showView('log');
     handleHashRoute();
-
+    } catch(e) { console.error(e); }
+    finally {
     const loading = document.getElementById('loadingOverlay');
-    if (loading) { loading.classList.add('hidden'); setTimeout(() => loading.remove(), 500); }
+    console.log('loadingOverlay found:', loading);
+    if (loading) { loading.style.display = 'none'; loading.remove(); }
+    console.log('Init complete');
+    }
 
     console.log('🌌 观测站已启动。');
     console.log('📡 正在监听学习宇宙的信号...');

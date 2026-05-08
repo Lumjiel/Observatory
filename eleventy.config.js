@@ -69,6 +69,12 @@ export default function(eleventyConfig) {
     return str.slice(0, len);
   });
 
+  eleventyConfig.addFilter('getQueryParam', (url, param) => {
+    if (!url) return '';
+    const match = url.match(/category=([^&]+)/);
+    return match ? match[1] : '';
+  });
+
   return {
     dir: {
       input: "src",

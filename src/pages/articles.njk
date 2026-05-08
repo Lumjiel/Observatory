@@ -4,6 +4,20 @@ title: "文章列表"
 permalink: /articles/
 ---
 
+{% set currentCategory = page.url | getQueryParam("category") %}
+
+{% if currentCategory %}
+  {% set filteredArticles = [] %}
+  {% for article in collections.articles %}
+    {% if article.category == currentCategory %}
+      {% set filteredArticles = filteredArticles.concat([article]) %}
+    {% endif %}
+  {% endfor %}
+  {% set displayArticles = filteredArticles %}
+{% else %}
+  {% set displayArticles = collections.articles %}
+{% endif %}
+
 <div class="articles-page">
     <div class="terminal-header">
         <span class="terminal-dots">
@@ -20,11 +34,11 @@ permalink: /articles/
             <span class="command">ls -la ./articles/</span>
         </div>
         <h1 class="page-title">📚 文章列表</h1>
-        <p class="page-subtitle">共找到 {{ collections.articles.length }} 篇文章</p>
+        <p class="page-subtitle">共找到 {{ displayArticles.length }} 篇文章</p>
     </header>
 
     <div class="category-tabs">
-        <a href="/articles/" class="tab active">
+        <a href="/articles/" class="tab {% if not currentCategory %}active{% endif %}">
             <span class="tab-icon">📂</span>
             <span class="tab-label">全部</span>
             <span class="tab-count">{{ collections.articles.length }}</span>
@@ -33,7 +47,7 @@ permalink: /articles/
         {% for a in collections.articles %}
             {% if a.category == 'tech' %}{% set techCount = techCount + 1 %}{% endif %}
         {% endfor %}
-        <a href="/articles/tech/" class="tab">
+        <a href="/articles/?category=tech" class="tab {% if currentCategory == 'tech' %}active{% endif %}">
             <span class="tab-icon">🛠️</span>
             <span class="tab-label">技术</span>
             <span class="tab-count">{{ techCount }}</span>
@@ -42,7 +56,7 @@ permalink: /articles/
         {% for a in collections.articles %}
             {% if a.category == 'reading' %}{% set readingCount = readingCount + 1 %}{% endif %}
         {% endfor %}
-        <a href="/articles/reading/" class="tab">
+        <a href="/articles/?category=reading" class="tab {% if currentCategory == 'reading' %}active{% endif %}">
             <span class="tab-icon">📖</span>
             <span class="tab-label">读书</span>
             <span class="tab-count">{{ readingCount }}</span>
@@ -51,8 +65,8 @@ permalink: /articles/
         {% for a in collections.articles %}
             {% if a.category == 'projects' %}{% set projectsCount = projectsCount + 1 %}{% endif %}
         {% endfor %}
-        <a href="/articles/projects/" class="tab">
-            <span class="tab-icon">🛠️</span>
+        <a href="/articles/?category=projects" class="tab {% if currentCategory == 'projects' %}active{% endif %}">
+            <span class="tab-icon">🚀</span>
             <span class="tab-label">项目</span>
             <span class="tab-count">{{ projectsCount }}</span>
         </a>
@@ -60,7 +74,7 @@ permalink: /articles/
         {% for a in collections.articles %}
             {% if a.category == 'essays' %}{% set essaysCount = essaysCount + 1 %}{% endif %}
         {% endfor %}
-        <a href="/articles/essays/" class="tab">
+        <a href="/articles/?category=essays" class="tab {% if currentCategory == 'essays' %}active{% endif %}">
             <span class="tab-icon">✍️</span>
             <span class="tab-label">随笔</span>
             <span class="tab-count">{{ essaysCount }}</span>
@@ -68,7 +82,7 @@ permalink: /articles/
     </div>
 
     <div class="articles-list">
-        {% for article in collections.articles %}
+        {% for article in displayArticles %}
         <article class="article-card">
             <a href="/articles/{{ article.category }}/{{ article.slug }}/" class="article-link">
                 <div class="article-meta-row">

@@ -5,9 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
     <title>{{ title or "观测站 · 一个CS学生的实时学习宇宙" }}</title>
     <link rel="stylesheet" href="/assets/css/main.css">
+    <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml">
 </head>
 <body>
     <div class="particle-layer" id="particleLayer"></div>
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+        <span>📡 观测站加载中...</span>
+    </div>
 
     <header class="status-bar">
         <div class="status-bar-left">
@@ -41,7 +46,7 @@
                     <div id="skillList"></div>
                 </div>
                 <div class="sidebar-card">
-                    <h4>⚠️ 最近异常</h4>
+                    <h4>📝 最近更新</h4>
                     <ul class="mini-log-list" id="recentErrors"></ul>
                 </div>
                 <div class="sidebar-card">
@@ -53,14 +58,15 @@
     </div>
 
     <nav class="mobile-nav" id="mobileNav">
-        <button class="active" data-view="log"><span class="nav-icon">📋</span>日志</button>
+        <button data-view="log"><span class="nav-icon">📋</span>日志</button>
         <button data-view="dashboard"><span class="nav-icon">📊</span>仪表盘</button>
-        <button data-view="skills"><span class="nav-icon">🌳</span>技能</button>
+        <button data-view="errors"><span class="nav-icon">📌</span>分类</button>
         <button data-view="about"><span class="nav-icon">👤</span>关于</button>
     </nav>
 
     <script>
         window.ARTICLES_DATA = {{ collections.articles | jsonify | safe }};
+        window.SITE_DATA = {{ site | jsonify | safe }};
     </script>
     <script src="/assets/js/app.js"></script>
 </body>
