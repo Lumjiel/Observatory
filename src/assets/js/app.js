@@ -28,6 +28,15 @@
     const projects = [];
     const skills = { categories: [] };
 
+    // 一次性计算分类统计，所有渲染函数复用
+    const categoryStats = {
+        tutorials: feed.filter(a => a.typeLabel === 'tutorials').length,
+        blog: feed.filter(a => a.typeLabel === 'blog').length,
+        essays: feed.filter(a => a.typeLabel === 'essays').length,
+        projects: feed.filter(a => a.typeLabel === 'projects').length,
+        total: feed.length
+    };
+
     let currentView = 'log';
     let openLogId = null;
     let commandHistory = JSON.parse(localStorage.getItem('cmdHistory') || '[]');
@@ -91,10 +100,10 @@
     function renderSignalOverview() {
         const container = document.getElementById('signalOverview');
         if (!container) return;
-        const total = feed.length;
-        const techCount = feed.filter(a => a.typeLabel === 'tutorials').length;
-        const readingCount = feed.filter(a => a.typeLabel === 'blog' || a.typeLabel === 'essays').length;
-        const projectsCount = feed.filter(a => a.typeLabel === 'projects').length;
+        const total = categoryStats.total;
+        const techCount = categoryStats.tutorials;
+        const readingCount = categoryStats.blog + categoryStats.essays;
+        const projectsCount = categoryStats.projects;
 
         container.innerHTML = `
             <div class="signal-card green ${!activeFilter ? 'active' : ''}" onclick="executeCommand('filter all')">
@@ -149,11 +158,11 @@
         const container = document.getElementById('skillList');
         if (!container) return;
         const cats = [
-            { name: '教程', count: feed.filter(a => a.typeLabel === 'tutorials').length, color: 'green' },
-            { name: '博客', count: feed.filter(a => a.typeLabel === 'blog').length, color: 'blue' },
-            { name: '项目', count: feed.filter(a => a.typeLabel === 'projects').length, color: 'amber' },
+            { name: '教程', count: categoryStats.tutorials, color: 'green' },
+            { name: '博客', count: categoryStats.blog, color: 'blue' },
+            { name: '项目', count: categoryStats.projects, color: 'amber' },
         ];
-        const total = feed.length;
+        const total = categoryStats.total;
         container.innerHTML = cats.map(c => `
             <div class="skill-row"><span>${c.name}</span><span>${c.count}篇</span></div>
             <div class="skill-bar-wrap"><div class="skill-bar-fill ${c.color}" style="width:${total > 0 ? (c.count / total * 100) : 0}%"></div></div>
@@ -567,10 +576,10 @@
     function renderDashboard() {
         const container = viewContainers['dashboard'];
         if (!container) return;
-        const total = feed.length;
-        const techCount = feed.filter(a => a.typeLabel === 'tutorials').length;
-        const readingCount = feed.filter(a => a.typeLabel === 'blog' || a.typeLabel === 'essays').length;
-        const projectsCount = feed.filter(a => a.typeLabel === 'projects').length;
+        const total = categoryStats.total;
+        const techCount = categoryStats.tutorials;
+        const readingCount = categoryStats.blog + categoryStats.essays;
+        const projectsCount = categoryStats.projects;
 
         const allTags = {};
         feed.forEach(l => l.tags.forEach(t => { allTags[t] = (allTags[t] || 0) + 1; }));
@@ -658,10 +667,10 @@
     function renderSkillsView() {
         const container = viewContainers['skills'];
         if (!container) return;
-        const techCount = feed.filter(a => a.typeLabel === 'tutorials').length;
-        const readingCount = feed.filter(a => a.typeLabel === 'blog' || a.typeLabel === 'essays').length;
-        const projectsCount = feed.filter(a => a.typeLabel === 'projects').length;
-        const total = feed.length;
+        const techCount = categoryStats.tutorials;
+        const readingCount = categoryStats.blog + categoryStats.essays;
+        const projectsCount = categoryStats.projects;
+        const total = categoryStats.total;
         container.innerHTML = `
             <h2 style="color:var(--green);">🌳 文章分类统计</h2>
             <pre style="color:var(--green); background:transparent; line-height:1.6; margin:1rem 0;">
@@ -837,6 +846,7 @@ export txt|json                                  导出当前视图
         } else if (e.key === 'j' || e.key === 'ArrowDown') {
             e.preventDefault();
             const entries = document.querySelectorAll('.log-entry');
+            if (!entries.length) return;
             if (focusedEntryIndex < entries.length - 1) {
                 focusedEntryIndex++;
                 entries[focusedEntryIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -846,6 +856,7 @@ export txt|json                                  导出当前视图
         } else if (e.key === 'k' || e.key === 'ArrowUp') {
             e.preventDefault();
             const entries = document.querySelectorAll('.log-entry');
+            if (!entries.length) return;
             if (focusedEntryIndex > 0) {
                 focusedEntryIndex--;
                 entries[focusedEntryIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });

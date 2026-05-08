@@ -615,23 +615,6 @@ body.light .status-bar {
     border-bottom: 1px solid var(--border);
     padding-bottom: 0.3rem;
 }
-.heatmap {
-    display: flex;
-    gap: 4px;
-    align-items: flex-end;
-    height: 100px;
-}
-.heat-bar {
-    width: 12px;
-    background: var(--green);
-    position: relative;
-    transition: height 0.3s;
-}
-.heat-label {
-    font-size: 0.65rem;
-    color: var(--text-dim);
-    text-align: center;
-}
 .tag-cloud span {
     display: inline-block;
     margin: 0.2rem 0.4rem;
@@ -659,21 +642,6 @@ th {
     color: var(--green);
 }
 .progress-bar-ascii { color: var(--green); }
-
-.timeline {
-    border-left: 2px solid var(--magenta);
-    padding-left: 1.5rem;
-}
-.timeline-item {
-    margin-bottom: 1.5rem;
-    position: relative;
-}
-.timeline-item::before {
-    content: '★';
-    color: var(--magenta);
-    position: absolute;
-    left: -1.85rem;
-}
 
 .mobile-nav {
     display: none;
@@ -876,17 +844,6 @@ body.light .mobile-nav {
 .pagination .page-info {
     color: var(--gray);
     font-size: 0.7rem;
-}
-
-.stale-badge {
-    position: absolute;
-    top: 0.3rem;
-    right: 0.5rem;
-    font-size: 0.65rem;
-    color: var(--amber);
-    background: rgba(255, 179, 0, 0.1);
-    padding: 0.1rem 0.4rem;
-    border-radius: 3px;
 }
 
 .tag-hover {
