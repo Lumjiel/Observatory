@@ -8,7 +8,7 @@
     const articles = Array.isArray(rawArticles) ? rawArticles : [];
 
     // 将 articles 映射为统一 feed 条目
-    const CATEGORY_TYPE_MAP = { tech: 'INFO', reading: 'READ', essays: 'READ', projects: 'BUILD' };
+    const CATEGORY_TYPE_MAP = { tutorials: 'INFO', blog: 'READ', essays: 'READ', projects: 'BUILD' };
     const feed = articles.map(a => ({
         id: a.id,
         slug: a.slug,
@@ -92,24 +92,24 @@
         const container = document.getElementById('signalOverview');
         if (!container) return;
         const total = feed.length;
-        const techCount = feed.filter(a => a.typeLabel === 'tech').length;
-        const readingCount = feed.filter(a => a.typeLabel === 'reading' || a.typeLabel === 'essays').length;
+        const techCount = feed.filter(a => a.typeLabel === 'tutorials').length;
+        const readingCount = feed.filter(a => a.typeLabel === 'blog' || a.typeLabel === 'essays').length;
         const projectsCount = feed.filter(a => a.typeLabel === 'projects').length;
 
         container.innerHTML = `
-            <div class="signal-card green" onclick="executeCommand('filter all')">
+            <div class="signal-card green ${!activeFilter ? 'active' : ''}" onclick="executeCommand('filter all')">
                 <span class="sig-value">${total}</span>
                 <span class="sig-label">全部文章</span>
             </div>
-            <div class="signal-card blue" onclick="executeCommand('filter tech')">
+            <div class="signal-card blue ${activeFilter === 'tutorials' ? 'active' : ''}" onclick="executeCommand('filter tutorials')">
                 <span class="sig-value">${techCount}</span>
-                <span class="sig-label">技术</span>
+                <span class="sig-label">教程</span>
             </div>
-            <div class="signal-card amber" onclick="executeCommand('filter reading')">
+            <div class="signal-card amber ${activeFilter === 'blog' ? 'active' : ''}" onclick="executeCommand('filter blog')">
                 <span class="sig-value">${readingCount}</span>
-                <span class="sig-label">读书</span>
+                <span class="sig-label">博客</span>
             </div>
-            <div class="signal-card magenta" onclick="executeCommand('filter projects')">
+            <div class="signal-card magenta ${activeFilter === 'projects' ? 'active' : ''}" onclick="executeCommand('filter projects')">
                 <span class="sig-value">${projectsCount}</span>
                 <span class="sig-label">项目</span>
             </div>`;
@@ -120,8 +120,8 @@
         if (!container) return;
         const categories = [
             { key: 'all', label: '全部' },
-            { key: 'tech', label: '技术' },
-            { key: 'reading', label: '读书' },
+            { key: 'tutorials', label: '教程' },
+            { key: 'blog', label: '博客' },
             { key: 'essays', label: '随笔' },
             { key: 'projects', label: '项目' },
         ];
@@ -138,6 +138,8 @@
                     activeFilter = filter;
                     renderLogStream(filter);
                 }
+                renderFilterChips();
+                renderSignalOverview();
                 showView('log');
             });
         });
@@ -147,8 +149,8 @@
         const container = document.getElementById('skillList');
         if (!container) return;
         const cats = [
-            { name: '技术', count: feed.filter(a => a.typeLabel === 'tech').length, color: 'green' },
-            { name: '读书', count: feed.filter(a => a.typeLabel === 'reading' || a.typeLabel === 'essays').length, color: 'blue' },
+            { name: '教程', count: feed.filter(a => a.typeLabel === 'tutorials').length, color: 'green' },
+            { name: '博客', count: feed.filter(a => a.typeLabel === 'blog').length, color: 'blue' },
             { name: '项目', count: feed.filter(a => a.typeLabel === 'projects').length, color: 'amber' },
         ];
         const total = feed.length;
@@ -290,8 +292,8 @@
             entry.dataset.href = log.href;
             const statusSymbol = log.status === 'done' ? '✓' : log.status === 'wip' ? '⚠' : log.stale ? '⏳' : '★';
             const descHtml = keyword ? highlightText(log.description, keyword) : log.description;
-            const typeClass = log.typeLabel === 'tech' ? 'green' : log.typeLabel === 'reading' || log.typeLabel === 'essays' ? 'blue' : log.typeLabel === 'projects' ? 'amber' : 'gray';
-            const catLabel = { tech: '技术', reading: '读书', essays: '随笔', projects: '项目' }[log.typeLabel] || log.typeLabel;
+            const typeClass = log.typeLabel === 'tutorials' ? 'green' : log.typeLabel === 'blog' || log.typeLabel === 'essays' ? 'blue' : log.typeLabel === 'projects' ? 'amber' : 'gray';
+            const catLabel = { tutorials: '教程', blog: '博客', essays: '随笔', projects: '项目' }[log.typeLabel] || log.typeLabel;
             entry.innerHTML = `
                 <div class="log-line">
                   <span class="event-type-dot ${typeClass}"></span>
@@ -566,8 +568,8 @@
         const container = viewContainers['dashboard'];
         if (!container) return;
         const total = feed.length;
-        const techCount = feed.filter(a => a.typeLabel === 'tech').length;
-        const readingCount = feed.filter(a => a.typeLabel === 'reading' || a.typeLabel === 'essays').length;
+        const techCount = feed.filter(a => a.typeLabel === 'tutorials').length;
+        const readingCount = feed.filter(a => a.typeLabel === 'blog' || a.typeLabel === 'essays').length;
         const projectsCount = feed.filter(a => a.typeLabel === 'projects').length;
 
         const allTags = {};
@@ -579,7 +581,7 @@
             <div class="dashboard-grid">
                 <div class="dash-card">
                     <h3>📊 文章统计</h3>
-                    <p>总文章: ${total} | 技术: ${techCount} | 读书: ${readingCount} | 项目: ${projectsCount}</p>
+                    <p>总文章: ${total} | 教程: ${techCount} | 博客: ${readingCount} | 项目: ${projectsCount}</p>
                 </div>
                 <div class="dash-card">
                     <h3>🏷️ 标签分布</h3>
@@ -589,7 +591,7 @@
                     <h3>📝 最近文章</h3>
                     <ul style="list-style:none;padding:0;">
                         ${feed.slice(0, 5).map(l => {
-                            const catLabel = { tech: '技术', reading: '读书', essays: '随笔', projects: '项目' }[l.typeLabel] || l.typeLabel;
+                            const catLabel = { tutorials: '教程', blog: '博客', essays: '随笔', projects: '项目' }[l.typeLabel] || l.typeLabel;
                             return `<li style="margin:0.4rem 0;display:flex;gap:0.5rem;align-items:center;">
                                 <span style="color:var(--gray);font-size:0.75rem;">[${catLabel}]</span>
                                 <a href="${l.href}" style="color:var(--text);">${l.description}</a>
@@ -604,15 +606,15 @@
     function renderErrors() {
         const container = viewContainers['errors'];
         if (!container) return;
-        const tech = feed.filter(a => a.typeLabel === 'tech');
-        const reading = feed.filter(a => a.typeLabel === 'reading');
+        const tech = feed.filter(a => a.typeLabel === 'tutorials');
+        const reading = feed.filter(a => a.typeLabel === 'blog');
         const essays = feed.filter(a => a.typeLabel === 'essays');
         const projects = feed.filter(a => a.typeLabel === 'projects');
         container.innerHTML = `
             <h2 style="color:var(--green);margin-bottom:1rem;">📚 文章分类</h2>
-            <h3 style="color:var(--green);margin-top:1rem;">🛠️ 技术 (${tech.length})</h3>
+            <h3 style="color:var(--green);margin-top:1rem;">🛠️ 教程 (${tech.length})</h3>
             <ul style="list-style:none;padding:0;">${tech.map(l => `<li style="margin:0.3rem 0;"><a href="${l.href}" style="color:var(--text);">${l.description}</a></li>`).join('')}</ul>
-            <h3 style="color:var(--blue);margin-top:1rem;">📖 读书 (${reading.length})</h3>
+            <h3 style="color:var(--blue);margin-top:1rem;">📖 博客 (${reading.length})</h3>
             <ul style="list-style:none;padding:0;">${reading.map(l => `<li style="margin:0.3rem 0;"><a href="${l.href}" style="color:var(--text);">${l.description}</a></li>`).join('')}</ul>
             <h3 style="color:var(--magenta);margin-top:1rem;">✍️ 随笔 (${essays.length})</h3>
             <ul style="list-style:none;padding:0;">${essays.map(l => `<li style="margin:0.3rem 0;"><a href="${l.href}" style="color:var(--text);">${l.description}</a></li>`).join('')}</ul>
@@ -628,10 +630,10 @@
         container.innerHTML = `
             <h2 style="color:var(--magenta);margin-bottom:1rem;">📚 全部文章</h2>
             <ul style="list-style:none;padding:0;">${feed.map(l => {
-                const catLabel = { tech: '技术', reading: '读书', essays: '随笔', projects: '项目' }[l.typeLabel] || l.typeLabel;
+                const catLabel = { tutorials: '教程', blog: '博客', essays: '随笔', projects: '项目' }[l.typeLabel] || l.typeLabel;
                 return `<li style="margin:0.4rem 0;display:flex;gap:0.5rem;">
                     <span style="color:var(--gray);font-size:0.75rem;min-width:80px;">${l.timestamp}</span>
-                    <span style="color:var(--${l.typeLabel === 'tech' ? 'green' : l.typeLabel === 'reading' || l.typeLabel === 'essays' ? 'blue' : 'amber'});font-size:0.7rem;">[${catLabel}]</span>
+                    <span style="color:var(--${l.typeLabel === 'tutorials' ? 'green' : l.typeLabel === 'blog' || l.typeLabel === 'essays' ? 'blue' : 'amber'});font-size:0.7rem;">[${catLabel}]</span>
                     <a href="${l.href}" style="color:var(--text);">${l.description}</a>
                 </li>`;
             }).join('')}</ul>`;
@@ -656,8 +658,8 @@
     function renderSkillsView() {
         const container = viewContainers['skills'];
         if (!container) return;
-        const techCount = feed.filter(a => a.typeLabel === 'tech').length;
-        const readingCount = feed.filter(a => a.typeLabel === 'reading' || a.typeLabel === 'essays').length;
+        const techCount = feed.filter(a => a.typeLabel === 'tutorials').length;
+        const readingCount = feed.filter(a => a.typeLabel === 'blog' || a.typeLabel === 'essays').length;
         const projectsCount = feed.filter(a => a.typeLabel === 'projects').length;
         const total = feed.length;
         container.innerHTML = `
@@ -746,12 +748,12 @@ export txt|json                                  导出当前视图
 
         if (cmd === 'filter') {
             const cat = arg.toLowerCase();
-            if (['all', 'tech', 'reading', 'essays', 'projects'].includes(cat)) {
+            if (['all', 'tutorials', 'blog', 'essays', 'projects'].includes(cat)) {
                 activeFilter = cat === 'all' ? null : cat; activeKeyword = null;
-                renderLogStream(activeFilter); showView('log');
+                renderLogStream(activeFilter); renderFilterChips(); renderSignalOverview(); showView('log');
             }
         } else if (cmd === 'grep') {
-            if (arg) { activeKeyword = arg; activeFilter = null; renderLogStream(null, arg); showView('log'); }
+            if (arg) { activeKeyword = arg; activeFilter = null; renderLogStream(null, arg); renderFilterChips(); showView('log'); }
         } else if (cmd === 'status' || cmd === 'dashboard') { renderDashboard(); }
         else if (cmd === 'errors') { renderErrors(); }
         else if (cmd === 'milestones') { renderMilestones(); }
@@ -759,7 +761,7 @@ export txt|json                                  导出当前视图
         else if (cmd === 'skills' || cmd === 'neofetch') { renderSkillsView(); }
         else if (cmd === 'about') { renderAbout(); }
         else if (cmd === 'help') { renderHelp(); }
-        else if (cmd === 'clear') { activeFilter = null; activeKeyword = null; renderLogStream(); showView('log'); }
+        else if (cmd === 'clear') { activeFilter = null; activeKeyword = null; renderLogStream(); renderFilterChips(); renderSignalOverview(); showView('log'); }
         else if (cmd === 'theme') {
             if (arg === 'dark') { document.body.classList.remove('light'); localStorage.setItem('terminal-theme', 'dark'); }
             else if (arg === 'light') { document.body.classList.add('light'); localStorage.setItem('terminal-theme', 'light'); }
@@ -807,7 +809,7 @@ export txt|json                                  导出当前视图
                     const match = commands.find(c => c.startsWith(val));
                     if (match) this.value = match + ' ';
                 } else if (parts[0] === 'filter') {
-                    const cats = ['all', 'tech', 'reading', 'essays', 'projects'];
+                    const cats = ['all', 'tutorials', 'blog', 'essays', 'projects'];
                     const match = cats.find(c => c.startsWith(parts[1]?.toLowerCase()));
                     if (match) this.value = 'filter ' + match + ' ';
                 } else if (parts[0] === 'theme') {

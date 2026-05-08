@@ -6,8 +6,8 @@ import matter from 'gray-matter';
 const md = markdownIt();
 
 const CATEGORY_LABELS = {
-    'tech': '技术',
-    'reading': '读书',
+    'tutorials': '教程',
+    'blog': '博客',
     'projects': '项目',
     'essays': '随笔'
 };

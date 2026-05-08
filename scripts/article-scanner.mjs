@@ -7,7 +7,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const ROOT = path.resolve(__dirname, '..');
 
-const CATEGORIES = ['tech', 'reading', 'projects', 'essays'];
+const CATEGORIES = ['tutorials', 'blog', 'projects', 'essays'];
 const ARTICLES_DIR = path.join(ROOT, 'src', 'articles');
 const OUTPUT_FILE = path.join(ARTICLES_DIR, '_data', 'articles.json');
 
