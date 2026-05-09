@@ -714,46 +714,8 @@
         showView('skills');
     }
 
-    function renderAbout() {
-        const container = viewContainers['about'];
-        if (!container) return;
-        const uptime = formatUptime();
-        container.innerHTML = `
-            <h2 style="color:var(--green);margin-bottom:1.5rem;">👤 关于观测站</h2>
-            <div class="about-section">
-                <pre style="color:var(--green);line-height:1.6;">
-观测站 · Terminal Observatory
-──────────────────────
-一个以终端风格呈现的个人博客系统。
-把每天的编码、阅读、调试和思考都当作信号记录下来。
-这里是公开的日志，也是一场持续的自我实验。
-
-$ cat README.md
-站点: 终端博客·观测站
-框架: Eleventy (11ty)
-前端: 原生 JavaScript SPA
-主题: 终端风格 / 暗色亮色双主题
-运行: ${uptime}
-                </pre>
-            </div>
-            <div class="about-commands">
-                <h3 style="color:var(--amber);margin:1.5rem 0 0.8rem;">📖 可用命令</h3>
-                <pre style="color:var(--text);line-height:1.6;">
-filter [all|tech|reading|essays|projects]       按分类筛选
-grep [关键词]                                    全文搜索
-dashboard / status                               仪表盘
-errors                                           分类总览
-milestones                                       时间线
-skills / neofetch                                技能统计
-about                                            关于本站
-help                                             查看帮助
-clear                                            清除筛选
-theme dark|light                                 切换主题
-export txt|json                                  导出数据
-                </pre>
-                <p style="color:var(--text-dim);margin-top:0.8rem;">💡 快捷键: j/k 上下移动 | / 聚焦搜索 | Esc 关闭</p>
-            </div>`;
-        showView('about');
+    function padRight(str, len) {
+        return String(str).padEnd(len, ' ');
     }
 
     function renderHelp() {
@@ -776,6 +738,129 @@ export txt|json                                  导出当前视图
             </pre>
             <p style="color:var(--text-dim);">快捷键: j/k 移动 | Esc 关闭 | / 聚焦搜索 | Tab 补全</p>`;
         showView('help');
+    }
+
+    function renderAbout() {
+        const container = viewContainers['about'];
+        if (!container) return;
+
+        const siteData = window.SITE_DATA || {};
+        const author = siteData.author || '[操作员代号]';
+        const location = siteData.location || '未知地点';
+        const hostname = window.location.hostname || 'observatory.local';
+        const uptime = formatUptime();
+        const total = feed.length;
+        const published = feed.filter(a => a.status === 'done').length;
+        const unpublished = feed.filter(a => a.status !== 'done').length;
+        const wipProjects = 0;
+        const healthPercent = total > 0 ? Math.round((published / total) * 100) : 100;
+        const barLen = 10;
+        const filled = Math.round((healthPercent / 100) * barLen);
+        const healthBar = '█'.repeat(filled) + '░'.repeat(barLen - filled);
+
+        const TYPE_MAP = { tutorials: 'INFO', blog: 'READ', essays: 'READ', projects: 'BUILD' };
+        const recentSignals = [...feed]
+            .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+            .slice(0, 5)
+            .map(a => ({
+                date: a.timestamp.slice(0, 10),
+                type: TYPE_MAP[a.typeLabel] || 'READ',
+                msg: a.description
+            }));
+
+        const currentTargets = [...feed]
+            .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+            .slice(0, 5)
+            .map(a => a.description);
+
+        const asciiLines = [
+            '│                    _\\  \\_                             │',
+            '│                     /__|         "Bug? That\'s not a    │',
+            '│                 ___//_           bug, that\'s a          │',
+            '│                /      \\              FEATURE."        │',
+            '│               /        /\\                              │',
+            '│              / /\\     \\/  )                           │',
+            '│              \\_\\|     |  /                            │',
+            '│               (_      |\\/                              │',
+            '│                 |     |                                 │',
+            '│                 |_    |                                 │',
+            '│                  /   |                                  │',
+            '│                 / /| |                                  │',
+            '│                /_/ |_|                                  │',
+            '│               /|    /\\                                 │',
+            '│      _______/_/____\\_\\_______________________________ │'
+        ].join('\n');
+
+        const mkSection = (title, icon, color, items) => `
+            <div class="about-section">
+                <div class="about-section-title" style="color:var(--${color});">
+                    ${icon} ${title}
+                </div>
+                ${items.map(t => `
+                    <div class="about-row">
+                        <span class="about-label">${t.label}</span>
+                        <span class="about-value">${t.value}</span>
+                    </div>
+                `).join('')}
+            </div>`;
+
+        const mkListSection = (title, icon, color, items) => `
+            <div class="about-section">
+                <div class="about-section-title" style="color:var(--${color});">
+                    ${icon} ${title}
+                </div>
+                ${items.map(t => `
+                    <div class="about-list-item">${t}</div>
+                `).join('')}
+            </div>`;
+
+        const sysSection = mkSection('系统信息', '🖥️', 'green', [
+            { label: '主机名', value: hostname },
+            { label: '操作员', value: author },
+            { label: '观测位置', value: location }
+        ]);
+
+        const runSection = mkSection('实时运行数据', '📊', 'amber', [
+            { label: '运行时间', value: uptime },
+            { label: '接收信号', value: total + '条' },
+            { label: '已解码', value: published + '条' },
+            { label: '未解决', value: unpublished + '条' },
+            { label: '系统健康度', value: healthBar + ' ' + healthPercent + '%' }
+        ]);
+
+        const moduleSection = mkSection('活跃模块状态', '⚙️', 'blue', [
+            { label: '日志接收器', value: '🟢 正常' },
+            { label: '信号分析仪', value: '🟢 正常' },
+            { label: '项目追踪器', value: wipProjects > 0 ? '🟡 ' + wipProjects + '项进行中' : '🟢 正常' },
+            { label: '错误复盘器', value: unpublished > 0 ? '🟡 ' + unpublished + '条未解决' : '🟢 正常' }
+        ]);
+
+        const signalSection = mkListSection('近期信号事件', '📡', 'green',
+            recentSignals.map(s => `[${s.date}] ${s.type} ${s.msg}`)
+        );
+
+        const targetSection = mkListSection('当前观测目标', '🎯', 'magenta',
+            currentTargets.map(t => '▸ ' + t)
+        );
+
+        container.innerHTML = `
+            <div class="about-layout">
+                <div class="about-ascii">
+                    <pre style="color:var(--green);line-height:1.4;font-size:0.7rem;">${asciiLines}</pre>
+                </div>
+                <div class="about-info">
+                    ${sysSection}
+                    ${runSection}
+                    ${moduleSection}
+                    ${signalSection}
+                    ${targetSection}
+                    <div class="about-footer">
+                        <span>观测仍在继续。下个信号随时出现。</span>
+                        <span style="color:var(--text-dim);">$ _</span>
+                    </div>
+                </div>
+            </div>`;
+        showView('about');
     }
 
     function executeCommand(cmdStr) {
