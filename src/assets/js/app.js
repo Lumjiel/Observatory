@@ -578,10 +578,11 @@
         if (!container) return;
 
         const total = categoryStats.total;
-        const blogCount = categoryStats.blog + categoryStats.essays;
+        const blogCount = categoryStats.blog;
+        const essaysCount = categoryStats.essays;
         const tutorialsCount = categoryStats.tutorials;
         const projectsCount = categoryStats.projects;
-        const maxCount = Math.max(blogCount, tutorialsCount, projectsCount, 1);
+        const maxCount = Math.max(blogCount, essaysCount, tutorialsCount, projectsCount, 1);
 
         // 活跃标签 Top 8
         const allTags = {};
@@ -589,74 +590,122 @@
         const topTags = Object.entries(allTags).sort((a, b) => b[1] - a[1]).slice(0, 8);
         const maxTag = topTags.length > 0 ? topTags[0][1] : 1;
 
-        // 本周学习负载
-        const weekDays = ['一', '二', '三', '四', '五', '六', '日'];
-        const mockHours = { '一': 2.5, '二': 1.5, '三': 3.5, '四': 2.0, '五': 0.5, '六': 0, '日': 2.0 };
-        const maxHour = Math.max(...Object.values(mockHours), 1);
+        // GitHub 热力图
+        const githubData = window.GITHUB_DATA || {};
+        const contributions = githubData.contributions || {};
+        const today = new Date();
+        const heatmapDays = [];
+        for (let i = 89; i >= 0; i--) {
+            const d = new Date(today);
+            d.setDate(d.getDate() - i);
+            const dateStr = d.toISOString().slice(0, 10);
+            const dayNames = ['日', '一', '二', '三', '四', '五', '六'];
+            const dayName = dayNames[d.getDay()];
+            const count = contributions[dateStr] || 0;
+            heatmapDays.push({ date: dateStr, day: dayName, count });
+        }
+        // 按周分组
+        const weeks = [];
+        let currentWeek = [];
+        heatmapDays.forEach((day, idx) => {
+            if (idx > 0 && day.day === '一' && currentWeek.length > 0) {
+                weeks.push(currentWeek);
+                currentWeek = [];
+            }
+            currentWeek.push(day);
+        });
+        if (currentWeek.length > 0) weeks.push(currentWeek);
 
         // 最近信号
         const recentLogs = [...feed].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)).slice(0, 5);
         const catLabelMap = { tutorials: '教程', blog: '博客', essays: '随笔', projects: '项目' };
         const catColorMap = { tutorials: 'var(--blue)', blog: 'var(--green)', essays: 'var(--magenta)', projects: 'var(--amber)' };
 
-        // 信号源状态进度条
-        const barLen = 16;
-        const makeBar = (val) => {
-            const filled = Math.round((val / maxCount) * barLen);
-            return '█'.repeat(filled) + '░'.repeat(barLen - filled);
-        };
-
+        // 信号源状态
         const signalSection = `
             <div class="dash-section">
-                <div class="dash-section-title">📊 信号源状态</div>
-                <div class="dash-row">
-                    <span class="dash-dot" style="color:var(--green)">🟢</span>
-                    <span class="dash-label">博客信号</span>
-                    <span class="dash-count">${blogCount}</span>
-                    <div class="dash-bar"><div class="dash-bar-fill green" style="width:${(blogCount/maxCount)*100}%"></div></div>
+                <div class="dash-section-title">📡 信号源状态</div>
+                <div class="source-grid">
+                    <div class="source-item">
+                        <div class="source-dot" style="background:var(--green)"></div>
+                        <div class="source-info">
+                            <span class="source-name">博客</span>
+                            <span class="source-count">${blogCount}</span>
+                        </div>
+                    </div>
+                    <div class="source-item">
+                        <div class="source-dot" style="background:var(--magenta)"></div>
+                        <div class="source-info">
+                            <span class="source-name">随笔</span>
+                            <span class="source-count">${essaysCount}</span>
+                        </div>
+                    </div>
+                    <div class="source-item">
+                        <div class="source-dot" style="background:var(--blue)"></div>
+                        <div class="source-info">
+                            <span class="source-name">教程</span>
+                            <span class="source-count">${tutorialsCount}</span>
+                        </div>
+                    </div>
+                    <div class="source-item">
+                        <div class="source-dot" style="background:var(--amber)"></div>
+                        <div class="source-info">
+                            <span class="source-name">项目</span>
+                            <span class="source-count">${projectsCount}</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="dash-row">
-                    <span class="dash-dot" style="color:var(--blue)">🔵</span>
-                    <span class="dash-label">教程信号</span>
-                    <span class="dash-count">${tutorialsCount}</span>
-                    <div class="dash-bar"><div class="dash-bar-fill blue" style="width:${(tutorialsCount/maxCount)*100}%"></div></div>
-                </div>
-                <div class="dash-row">
-                    <span class="dash-dot" style="color:var(--amber)">🟠</span>
-                    <span class="dash-label">项目信号</span>
-                    <span class="dash-count">${projectsCount}</span>
-                    <div class="dash-bar"><div class="dash-bar-fill amber" style="width:${(projectsCount/maxCount)*100}%"></div></div>
-                </div>
-                <div class="dash-summary">📋 总计 ${total} 条信号 | 信号强度: 稳定</div>
+                <div class="dash-summary">📋 总计 ${total} 条信号</div>
             </div>`;
 
+        // 标签 - 类似用户给的样式，横向排列进度条
         const tagSection = `
             <div class="dash-section">
                 <div class="dash-section-title">🏷️ 活跃标签 Top ${topTags.length}</div>
-                <div class="tag-list">
-                    ${topTags.map(([tag, count]) => `
-                        <div class="tag-item">
+                <div class="tag-list-horizontal">
+                    ${topTags.map(([tag, count]) => {
+                        const pct = Math.round((count / maxTag) * 100);
+                        const barWidth = Math.round((count / maxTag) * 20);
+                        const bar = '█'.repeat(barWidth) + '░'.repeat(20 - barWidth);
+                        return `<div class="tag-row">
                             <span class="tag-name">#${tag}</span>
-                            <div class="tag-bar"><div class="tag-bar-fill" style="width:${(count/maxTag)*100}%"></div></div>
-                            <span class="tag-count">${count}</span>
-                        </div>
-                    `).join('')}
+                            <span class="tag-bar-text">${bar} ${String(count).padStart(2)}</span>
+                        </div>`;
+                    }).join('')}
                 </div>
             </div>`;
 
-        const weekSection = `
+        // GitHub 热力图
+        const heatmapSection = `
             <div class="dash-section">
-                <div class="dash-section-title">📅 本周学习负载</div>
-                <div class="week-grid">
-                    ${weekDays.map(d => {
-                        const h = mockHours[d];
-                        const pct = (h / maxHour) * 100;
-                        return `<div class="week-day">
-                            <div class="week-bar-wrap"><div class="week-bar-fill" style="height:${pct}%"></div></div>
-                            <div class="week-label">${d}</div>
-                            <div class="week-hour">${h}h</div>
-                        </div>`;
-                    }).join('')}
+                <div class="dash-section-title">🔥 GitHub 贡献热力图 (近90天)</div>
+                <div class="heatmap-container">
+                    <div class="heatmap-label-row">
+                        ${weeks.map((week, wi) => {
+                            const firstDay = week[0];
+                            return `<div class="heatmap-week" style="grid-column:${wi + 1}">
+                                <span class="week-mon-label">${firstDay.day === '一' ? '一' : ''}</span>
+                            </div>`;
+                        }).join('')}
+                    </div>
+                    <div class="heatmap-grid">
+                        ${weeks.map((week, wi) => `
+                            <div class="heatmap-col" style="grid-column:${wi + 1}">
+                                ${week.map(day => {
+                                    const level = day.count === 0 ? 0 : day.count <= 2 ? 1 : day.count <= 5 ? 2 : 3;
+                                    return `<div class="heatmap-cell" data-level="${level}" data-date="${day.date}" data-count="${day.count}" title="${day.date}: ${day.count}次"></div>`;
+                                }).join('')}
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+                <div class="heatmap-legend">
+                    <span class="legend-label">少</span>
+                    <div class="heatmap-cell" data-level="0"></div>
+                    <div class="heatmap-cell" data-level="1"></div>
+                    <div class="heatmap-cell" data-level="2"></div>
+                    <div class="heatmap-cell" data-level="3"></div>
+                    <span class="legend-label">多</span>
                 </div>
             </div>`;
 
@@ -689,10 +738,12 @@
                 <div class="dash-header">📊 观测站仪表盘</div>
                 ${signalSection}
                 ${tagSection}
-                ${weekSection}
+                ${heatmapSection}
                 ${recentSection}
                 <div class="dash-footer">> 系统运行正常。输入 status 回到顶层。 $ _</div>
             </div>`;
+        showView('dashboard');
+    }
         showView('dashboard');
     }
 

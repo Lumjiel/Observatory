@@ -14,27 +14,53 @@ if (!username) {
     process.exit(1);
 }
 
-const url = `https://api.github.com/users/${username}/repos?sort=updated&per_page=10&type=public`;
-console.log(`[github-scraper] 正在获取 ${username} 的仓库...`);
-
-try {
-    const res = await fetch(url, {
-        headers: {
-            'Accept': 'application/vnd.github.v3+json',
-            'User-Agent': 'terminal-observatory/1.0'
+async function fetchWithRetry(url, retries = 3) {
+    for (let i = 0; i < retries; i++) {
+        const res = await fetch(url, {
+            headers: {
+                'Accept': 'application/vnd.github.v3+json',
+                'User-Agent': 'terminal-observatory/1.0'
+            }
+        });
+        if (res.status === 403 && i < retries - 1) {
+            const reset = res.headers.get('X-RateLimit-Reset');
+            const wait = reset ? Math.ceil((parseInt(reset) * 1000 - Date.now()) / 1000) : 60;
+            console.log(`[github-scraper] API 限流，等待 ${wait}s...`);
+            await new Promise(r => setTimeout(r, wait * 1000));
+            continue;
         }
-    });
+        return res;
+    }
+}
 
-    if (!res.ok) {
-        if (res.status === 404) {
-            console.error(`[github-scraper] 用户 ${username} 不存在`);
-        } else {
-            console.error(`[github-scraper] API 请求失败: ${res.status}`);
-        }
+async function main() {
+    // 获取仓库列表
+    const reposUrl = `https://api.github.com/users/${username}/repos?sort=updated&per_page=10&type=public`;
+    console.log(`[github-scraper] 正在获取 ${username} 的仓库...`);
+    const reposRes = await fetchWithRetry(reposUrl);
+    if (!reposRes.ok) {
+        console.error(`[github-scraper] 仓库获取失败: ${reposRes.status}`);
         process.exit(1);
     }
+    const repos = await reposRes.json();
 
-    const repos = await res.json();
+    // 获取近90天贡献事件
+    const eventsUrl = `https://api.github.com/users/${username}/events?per_page=100`;
+    console.log(`[github-scraper] 正在获取贡献热力图...`);
+    const eventsRes = await fetchWithRetry(eventsUrl);
+    const contributionData = {};
+    if (eventsRes.ok) {
+        const events = await eventsRes.json();
+        // 聚合90天内每天的贡献次数
+        const now = Date.now();
+        const ninetyDays = 90 * 24 * 60 * 60 * 1000;
+        events.forEach(e => {
+            const day = e.created_at.slice(0, 10);
+            if (now - new Date(e.created_at).getTime() < ninetyDays) {
+                contributionData[day] = (contributionData[day] || 0) + 1;
+            }
+        });
+    }
 
     const data = {
         username,
@@ -49,14 +75,12 @@ try {
             updatedAt: r.updated_at,
             updatedAgo: timeAgo(new Date(r.updated_at))
         })),
+        contributions: contributionData,
         lastFetched: new Date().toISOString()
     };
 
     writeFileSync(outputPath, JSON.stringify(data, null, 2));
-    console.log(`[github-scraper] 已获取 ${data.repos.length} 个仓库，数据写入 ${outputPath}`);
-} catch (err) {
-    console.error('[github-scraper] 获取失败:', err.message);
-    process.exit(1);
+    console.log(`[github-scraper] 已获取 ${data.repos.length} 个仓库，${Object.keys(contributionData).length} 天有贡献记录`);
 }
 
 function timeAgo(date) {
@@ -72,3 +96,5 @@ function timeAgo(date) {
     if (months < 12) return `${months}个月前`;
     return `${Math.floor(months / 12)}年前`;
 }
+
+main().catch(err => { console.error('[github-scraper] 失败:', err.message); process.exit(1); });
