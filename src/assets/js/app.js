@@ -1060,6 +1060,8 @@ export txt|json                                  导出当前视图
                 const text = data.map(l => '[' + l.typeLabel + '] ' + l.timestamp + ' ' + l.description).join('\n');
                 const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([text], { type: 'text/plain' })); a.download = 'articles-export.txt'; a.click();
             }
+        } else if (cmd === '/admin') {
+            window.location.href = '/admin';
         }
     }
 

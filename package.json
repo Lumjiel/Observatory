@@ -10,10 +10,12 @@
     "scan:articles": "node scripts/article-scanner.mjs",
     "import:article": "node scripts/article-importer.mjs",
     "new-article": "node scripts/new-article.mjs",
-    "auto-update": "npm run scan:articles"
+    "auto-update": "npm run scan:articles",
+    "server": "node scripts/article-api.mjs"
   },
   "dependencies": {
     "@11ty/eleventy": "^3.0.0",
+    "express": "^5.2.1",
     "gray-matter": "^4.0.3",
     "markdown-it": "^14.1.0",
     "sanitize-html": "^2.17.3"
@@ -25,5 +27,9 @@
     "eleventy"
   ],
   "author": "student",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "chokidar": "^5.0.0",
+    "livereload": "^0.10.3"
+  }
 }
