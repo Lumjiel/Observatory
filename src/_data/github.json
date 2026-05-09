@@ -1,0 +1,132 @@
+{
+  "username": "Lumjiel",
+  "repos": [
+    {
+      "name": "Observatory",
+      "fullName": "Lumjiel/Observatory",
+      "description": "我把每天的编码、阅读、调试和思考都当作信号记录下来。这里是公开的日志，也是一场持续的自我实验。",
+      "language": "JavaScript",
+      "stars": 0,
+      "forks": 0,
+      "url": "https://github.com/Lumjiel/Observatory",
+      "updatedAt": "2026-05-08T08:57:22Z",
+      "updatedAgo": "1天前"
+    },
+    {
+      "name": "Horizon",
+      "fullName": "Lumjiel/Horizon",
+      "description": "📡 Your own AI-powered news radar. Generates daily briefings in English & Chinese. | 用 AI 构建你专属的新闻雷达",
+      "language": "Python",
+      "stars": 0,
+      "forks": 0,
+      "url": "https://github.com/Lumjiel/Horizon",
+      "updatedAt": "2026-05-07T09:59:59Z",
+      "updatedAgo": "2天前"
+    },
+    {
+      "name": "nanobot",
+      "fullName": "Lumjiel/nanobot",
+      "description": "\"🐈 nanobot: The Ultra-Lightweight OpenClaw\"",
+      "language": "Python",
+      "stars": 0,
+      "forks": 0,
+      "url": "https://github.com/Lumjiel/nanobot",
+      "updatedAt": "2026-05-07T05:04:13Z",
+      "updatedAgo": "2天前"
+    },
+    {
+      "name": "BugPet",
+      "fullName": "Lumjiel/BugPet",
+      "description": "暂无描述",
+      "language": "Vue",
+      "stars": 1,
+      "forks": 0,
+      "url": "https://github.com/Lumjiel/BugPet",
+      "updatedAt": "2026-05-04T05:13:26Z",
+      "updatedAgo": "5天前"
+    },
+    {
+      "name": "PBTI",
+      "fullName": "Lumjiel/PBTI",
+      "description": "基于乒乒球运动的人格测评",
+      "language": "TypeScript",
+      "stars": 0,
+      "forks": 0,
+      "url": "https://github.com/Lumjiel/PBTI",
+      "updatedAt": "2026-04-29T14:27:39Z",
+      "updatedAgo": "9天前"
+    },
+    {
+      "name": "Genesis-Engine",
+      "fullName": "Lumjiel/Genesis-Engine",
+      "description": "基于多智能体协同的真实感虚构世界构建与推演系统",
+      "language": "Python",
+      "stars": 0,
+      "forks": 0,
+      "url": "https://github.com/Lumjiel/Genesis-Engine",
+      "updatedAt": "2026-04-29T06:03:13Z",
+      "updatedAgo": "10天前"
+    },
+    {
+      "name": "Lumjiel.github.io",
+      "fullName": "Lumjiel/Lumjiel.github.io",
+      "description": "My personal blog",
+      "language": "HTML",
+      "stars": 0,
+      "forks": 0,
+      "url": "https://github.com/Lumjiel/Lumjiel.github.io",
+      "updatedAt": "2026-04-19T07:59:40Z",
+      "updatedAgo": "20天前"
+    },
+    {
+      "name": "langchain4j",
+      "fullName": "Lumjiel/langchain4j",
+      "description": "LangChain4j is an idiomatic, open-source Java library for building LLM-powered applications on the JVM. It offers a unified API over popular LLM providers and vector stores, and makes implementing tool calling (including MCP support), agents and RAG easy. It integrates seamlessly with enterprise Java frameworks like Quarkus and Spring Boot.",
+      "language": null,
+      "stars": 0,
+      "forks": 0,
+      "url": "https://github.com/Lumjiel/langchain4j",
+      "updatedAt": "2026-04-18T14:11:45Z",
+      "updatedAgo": "20天前"
+    },
+    {
+      "name": "openclaw",
+      "fullName": "Lumjiel/openclaw",
+      "description": "Your own personal AI assistant. Any OS. Any Platform. The lobster way. 🦞 ",
+      "language": "TypeScript",
+      "stars": 0,
+      "forks": 0,
+      "url": "https://github.com/Lumjiel/openclaw",
+      "updatedAt": "2026-04-18T02:14:26Z",
+      "updatedAgo": "21天前"
+    },
+    {
+      "name": "spring-ai",
+      "fullName": "Lumjiel/spring-ai",
+      "description": "An Application Framework for AI Engineering",
+      "language": "Java",
+      "stars": 0,
+      "forks": 0,
+      "url": "https://github.com/Lumjiel/spring-ai",
+      "updatedAt": "2026-04-17T13:18:42Z",
+      "updatedAgo": "21天前"
+    }
+  ],
+  "contributions": {
+    "2026-05-09": 10,
+    "2026-05-08": 1,
+    "2026-05-07": 28,
+    "2026-05-06": 3,
+    "2026-05-04": 10,
+    "2026-04-29": 6,
+    "2026-04-18": 10,
+    "2026-04-27": 1,
+    "2026-04-23": 10,
+    "2026-04-22": 4,
+    "2026-04-21": 2,
+    "2026-04-20": 3,
+    "2026-04-19": 4,
+    "2026-04-17": 7
+  },
+  "lastFetched": "2026-05-09T12:20:33.435Z"
+}

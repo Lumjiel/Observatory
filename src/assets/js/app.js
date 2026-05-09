@@ -744,8 +744,6 @@
             </div>`;
         showView('dashboard');
     }
-        showView('dashboard');
-    }
 
     function renderErrors() {
         const container = viewContainers['errors'];
@@ -908,23 +906,23 @@ export txt|json                                  导出当前视图
             .slice(0, 5)
             .map(a => a.description);
 
-        const asciiLines = [
-            '│                    _\\  \\_                             │',
-            '│                     /__|         "Bug? That\'s not a    │',
-            '│                 ___//_           bug, that\'s a          │',
-            '│                /      \\              FEATURE."        │',
-            '│               /        /\\                              │',
-            '│              / /\\     \\/  )                           │',
-            '│              \\_\\|     |  /                            │',
-            '│               (_      |\\/                              │',
-            '│                 |     |                                 │',
-            '│                 |_    |                                 │',
-            '│                  /   |                                  │',
-            '│                 / /| |                                  │',
-            '│                /_/ |_|                                  │',
-            '│               /|    /\\                                 │',
-            '│      _______/_/____\\_\\_______________________________ │'
-        ].join('\n');
+        const currentAsciiLines = [
+            '                    _\\  \\_                             ',
+            '                     /__|         "Bug? That\'s not a    ',
+            '                 ___//_           bug, that\'s a          ',
+            '                /      \\              FEATURE."         ',
+            '               /        /\\                              ',
+            '              / /\\     \\/  )                           ',
+            '              \\_\\|     |  /                            ',
+            '               (_      |\\/                              ',
+            '                 |     |                                 ',
+            '                 |_    |                                 ',
+            '                  /   |                                  ',
+            '                 / /| |                                  ',
+            '                /_/ |_|                                  ',
+            '               /|    /\\                                 ',
+            '      _______/_/____\\_\\______________________________________________________ ',
+        ];
 
         const mkSection = (title, icon, color, items) => `
             <div class="about-section">
@@ -981,7 +979,7 @@ export txt|json                                  导出当前视图
         container.innerHTML = `
             <div class="about-layout">
                 <div class="about-ascii">
-                    <pre style="color:var(--green);line-height:1.4;font-size:0.7rem;">${asciiLines}</pre>
+                    <pre id="aboutAsciiPre" style="color:var(--green);line-height:1.4;font-size:0.7rem;"></pre>
                 </div>
                 <div class="about-info">
                     ${sysSection}
@@ -996,6 +994,21 @@ export txt|json                                  导出当前视图
                 </div>
             </div>`;
         showView('about');
+        // 打字机效果 - 逐字显示
+        const asciiPre = document.getElementById('aboutAsciiPre');
+        if (asciiPre) {
+            const fullText = currentAsciiLines.join('\n') + '\n';
+            let charIdx = 0;
+            asciiPre.textContent = '';
+            const typeChar = () => {
+                if (charIdx < fullText.length) {
+                    asciiPre.textContent += fullText[charIdx];
+                    charIdx++;
+                    setTimeout(typeChar, 8);
+                }
+            };
+            typeChar();
+        }
     }
 
     function executeCommand(cmdStr) {
