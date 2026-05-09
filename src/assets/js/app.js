@@ -573,43 +573,199 @@
         });
     }
 
+    const WEEKDAY_NAMES = ['一', '二', '三', '四', '五', '六', '日'];
+
+    function getWeekdayName(n) {
+        return WEEKDAY_NAMES[n] || n;
+    }
+
+    // 获取 GitHub 贡献数据（调用 gh 命令）
+    function fetchGitHubContributions() {
+        return new Promise((resolve) => {
+            const stored = sessionStorage.getItem('gh-contributions');
+            if (stored) {
+                try { resolve(JSON.parse(stored)); return; } catch(e) {}
+            }
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', 'https://api.github.com/users/Lumjiel/events/public?per_page=300', true);
+            xhr.setRequestHeader('Accept', 'application/vnd.github.v3+json');
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    try {
+                        const events = JSON.parse(xhr.responseText);
+                        const counts = {};
+                        events.forEach(e => {
+                            if (e.type === 'PushEvent' && e.created_at) {
+                                const d = e.created_at.slice(0, 10);
+                                counts[d] = (counts[d] || 0) + 1;
+                            }
+                        });
+                        const data = { counts, total: events.filter(e => e.type === 'PushEvent').length };
+                        sessionStorage.setItem('gh-contributions', JSON.stringify(data));
+                        resolve(data);
+                    } catch(e) { resolve({ counts: {}, total: 0 }); }
+                } else { resolve({ counts: {}, total: 0 }); }
+            };
+            xhr.onerror = function() { resolve({ counts: {}, total: 0 }); };
+            xhr.send();
+        });
+    }
+
+    function renderContributionHeatmap(counts) {
+        // 最近 13 周（约 3 个月），每天都要显示格子
+        const today = new Date();
+        const days = [];
+        for (let i = 90; i >= 0; i--) {
+            const d = new Date(today);
+            d.setDate(today.getDate() - i);
+            days.push(d.toISOString().slice(0, 10));
+        }
+
+        // 按周分组（每 7 天一组）
+        const weeks = [];
+        for (let i = 0; i < days.length; i += 7) {
+            weeks.push(days.slice(i, i + 7));
+        }
+
+        // 颜色等级
+        function level(c) {
+            if (c === 0) return 0;
+            if (c <= 2) return 1;
+            if (c <= 5) return 2;
+            if (c <= 10) return 3;
+            return 4;
+        }
+
+        const weekdayHeaders = ['一', '二', '三', '四', '五', '六', '日']
+            .map(d => `<div class="heatmap-weekday">${d}</div>`).join('');
+
+        // 按列组织（每列 = 一周，纵向排列7个格子）
+        const allCols = weeks.map(week =>
+            `<div class="heatmap-col">${week.map(date => {
+                const c = counts[date] || 0;
+                return `<div class="heatmap-cell" data-level="${level(c)}" title="${date}: ${c}次提交"></div>`;
+            }).join('')}</div>`
+        ).join('');
+
+        return `
+            <div class="heatmap-grid">
+                <div class="heatmap-weekdays">${weekdayHeaders}</div>
+                <div class="heatmap-cols">${allCols}</div>
+            </div>
+            <div class="heatmap-legend">
+                <span>少</span>
+                <div class="heatmap-cell" data-level="0"></div>
+                <div class="heatmap-cell" data-level="1"></div>
+                <div class="heatmap-cell" data-level="2"></div>
+                <div class="heatmap-cell" data-level="3"></div>
+                <div class="heatmap-cell" data-level="4"></div>
+                <span>多</span>
+            </div>`;
+    }
+
     function renderDashboard() {
         const container = viewContainers['dashboard'];
         if (!container) return;
+
         const total = categoryStats.total;
-        const techCount = categoryStats.tutorials;
-        const readingCount = categoryStats.blog + categoryStats.essays;
+        const tutorialsCount = categoryStats.tutorials;
+        const blogCount = categoryStats.blog;
+        const essaysCount = categoryStats.essays;
         const projectsCount = categoryStats.projects;
 
+        // 信号源状态条
+        function statBar(count, max, color) {
+            const barLen = 20;
+            const filled = Math.round((count / max) * barLen);
+            const bar = '█'.repeat(filled) + '░'.repeat(barLen - filled);
+            return `<span style="color:var(--${color})">${bar}</span> ${String(count).padStart(3)}`;
+        }
+        const maxCount = Math.max(total, 1);
+
+        // 活跃标签 Top 8
         const allTags = {};
         feed.forEach(l => l.tags.forEach(t => { allTags[t] = (allTags[t] || 0) + 1; }));
-        const tagHTML = Object.entries(allTags).sort((a, b) => b[1] - a[1]).slice(0, 20)
-            .map(([t]) => `<span class="tag-hover" data-tag="${t}">#${t}</span>`).join(' ');
+        const topTags = Object.entries(allTags).sort((a, b) => b[1] - a[1]).slice(0, 8);
+        const tagMax = topTags.length > 0 ? topTags[0][1] : 1;
 
+        const tagBarsHTML = topTags.map(([t, c]) => {
+            const barLen = Math.round((c / tagMax) * 20);
+            const bar = '█'.repeat(barLen);
+            return `<div class="tag-stat-row">
+                <span class="tag-stat-name">#${t}</span>
+                <span class="tag-stat-bar" style="color:var(--green)">${bar}</span>
+                <span class="tag-stat-count">${c}</span>
+            </div>`;
+        }).join('');
+
+        // 最近 5 篇文章表格
+        const recentArticles = feed.slice(0, 5);
+        const recentTableHTML = recentArticles.map(l => {
+            const catLabel = { tutorials: '教程', blog: '博客', essays: '随笔', projects: '项目' }[l.typeLabel] || l.typeLabel;
+            const catColor = { tutorials: 'green', blog: 'blue', essays: 'magenta', projects: 'amber' }[l.typeLabel] || 'green';
+            const tags = l.tags.slice(0, 3).map(t => `#${t}`).join(' ');
+            return `<tr>
+                <td>${l.timestamp}</td>
+                <td style="color:var(--${catColor})">${catLabel}</td>
+                <td><a href="${l.href}" style="color:var(--text)">${l.description}</a></td>
+                <td style="color:var(--gray);font-size:0.7rem">${tags}</td>
+            </tr>`;
+        }).join('');
+
+        // 组装完整 HTML
         container.innerHTML = `
-            <div class="dashboard-grid">
-                <div class="dash-card">
-                    <h3>📊 文章统计</h3>
-                    <p>总文章: ${total} | 教程: ${techCount} | 博客: ${readingCount} | 项目: ${projectsCount}</p>
+            <div class="dashboard-container">
+                <div class="dash-header">📊 观测站仪表盘 <span style="color:var(--gray);font-size:0.7rem">按 F1 查看命令帮助</span></div>
+                <div class="dash-section">
+                    <div class="dash-section-title">──────────── 信号源状态 ────────────</div>
+                    <div class="signal-row">
+                        <span class="signal-dot" style="color:var(--green)">🟢</span>
+                        <span class="signal-label">博客信号</span>
+                        <span class="signal-bar">${statBar(blogCount, maxCount, 'green')}</span>
+                    </div>
+                    <div class="signal-row">
+                        <span class="signal-dot" style="color:var(--blue)">🔵</span>
+                        <span class="signal-label">教程信号</span>
+                        <span class="signal-bar">${statBar(tutorialsCount, maxCount, 'blue')}</span>
+                    </div>
+                    <div class="signal-row">
+                        <span class="signal-dot" style="color:var(--magenta)">🟣</span>
+                        <span class="signal-label">随笔信号</span>
+                        <span class="signal-bar">${statBar(essaysCount, maxCount, 'magenta')}</span>
+                    </div>
+                    <div class="signal-row">
+                        <span class="signal-dot" style="color:var(--amber)">🟠</span>
+                        <span class="signal-label">项目信号</span>
+                        <span class="signal-bar">${statBar(projectsCount, maxCount, 'amber')}</span>
+                    </div>
+                    <div class="dash-summary">📋 总计 ${total} 条信号 | 信号强度: ${total > 50 ? '活跃' : total > 20 ? '稳定' : '发展中'}</div>
                 </div>
-                <div class="dash-card">
-                    <h3>🏷️ 标签分布</h3>
-                    <div class="tag-cloud">${tagHTML}</div>
+                <div class="dash-divider">────────────────────────────────────────────────────</div>
+                <div class="dash-section">
+                    <div class="dash-section-title">──────────── 活跃标签 Top 8 ────────────</div>
+                    <div class="tag-stats">${tagBarsHTML}</div>
                 </div>
-                <div class="dash-card" style="grid-column: 1 / -1;">
-                    <h3>📝 最近文章</h3>
-                    <ul style="list-style:none;padding:0;">
-                        ${feed.slice(0, 5).map(l => {
-                            const catLabel = { tutorials: '教程', blog: '博客', essays: '随笔', projects: '项目' }[l.typeLabel] || l.typeLabel;
-                            return `<li style="margin:0.4rem 0;display:flex;gap:0.5rem;align-items:center;">
-                                <span style="color:var(--gray);font-size:0.75rem;">[${catLabel}]</span>
-                                <a href="${l.href}" style="color:var(--text);">${l.description}</a>
-                            </li>`;
-                        }).join('')}
-                    </ul>
+                <div class="dash-divider">────────────────────────────────────────────────────</div>
+                <div class="dash-section">
+                    <div class="dash-section-title">──────────── 最近信号接收记录 ────────────</div>
+                    <table class="recent-table">
+                        <thead><tr><th>时间</th><th>类型</th><th>内容</th><th>标签</th></tr></thead>
+                        <tbody>${recentTableHTML}</tbody>
+                    </table>
+                </div>
+                <div class="dash-divider">────────────────────────────────────────────────────</div>
+                <div class="dash-section">
+                    <div class="dash-section-title">──────────── GitHub 贡献热力图 ────────────</div>
+                    <div id="heatmap-container" class="heatmap-wrapper">加载中...</div>
                 </div>
             </div>`;
         showView('dashboard');
+
+        // 异步加载 GitHub 热力图
+        fetchGitHubContributions().then(data => {
+            const hc = document.getElementById('heatmap-container');
+            if (hc) hc.innerHTML = renderContributionHeatmap(data.counts);
+        });
     }
 
     function renderErrors() {
@@ -688,45 +844,111 @@
     function renderAbout() {
         const container = viewContainers['about'];
         if (!container) return;
-        const uptime = formatUptime();
-        container.innerHTML = `
-            <h2 style="color:var(--green);margin-bottom:1.5rem;">👤 关于观测站</h2>
-            <div class="about-section">
-                <pre style="color:var(--green);line-height:1.6;">
-观测站 · Terminal Observatory
-──────────────────────
-一个以终端风格呈现的个人博客系统。
-把每天的编码、阅读、调试和思考都当作信号记录下来。
-这里是公开的日志，也是一场持续的自我实验。
 
-$ cat README.md
-站点: 终端博客·观测站
-框架: Eleventy (11ty)
-前端: 原生 JavaScript SPA
-主题: 终端风格 / 暗色亮色双主题
-运行: ${uptime}
-                </pre>
+    const LANGUAGE_COLORS = {
+        JavaScript: '#F7DF1E', TypeScript: '#3178C6', Python: '#3572A5',
+        Java: '#B07219', Go: '#00ADD8', Rust: '#DEA584',
+        'C++': '#F34B7D', C: '#555555', Ruby: '#701516',
+        PHP: '#4F5D95', Swift: '#F05138', Kotlin: '#A97BFF',
+        Dart: '#00B4AB', Shell: '#89E051', HTML: '#E34C26',
+        CSS: '#563D7C', Vue: '#41B883', Scala: '#DC322F'
+    };
+
+    const siteData = window.SITE_DATA || {};
+    const githubData = window.GITHUB_DATA || {};
+    const author = siteData.author || '[操作员代号]';
+    const location = siteData.location || '未知地点';
+    const repos = githubData.repos || [];
+
+    const asciiArtText = `     _\\  \\_
+      /__|         "Bug? That's not a
+  ___//_           bug, that's a
+ /      \\              FEATURE."
+/        /\\
+/ /\\     \\/  )
+\\_\\|     |  /
+ (_      |\\/
+   |     |
+   |_    |
+    /   |
+   / /| |
+  /_/ |_|
+ /|    /\\
+_______/_/____\\_\\_______________________________`;
+
+    const langColor = (lang) => LANGUAGE_COLORS[lang] || '#888';
+
+    const html = `
+            <div class="about-container">
+                <div class="about-art-wrap">
+                    <pre class="about-art" id="aboutAscii"></pre>
+                </div>
+
+                <p style="color:var(--gray);font-size:0.8rem;margin-bottom:0.5rem;">
+                    操作员: <span style="color:var(--green)">${author}</span> &nbsp;|&nbsp; 位置: ${location}
+                </p>
+
+                <div class="about-card full" style="opacity:0;transform:translateY(10px);transition:opacity 0.4s,transform 0.4s;" data-animate>
+                    <h3>📡 外部信号探测报告</h3>
+                    ${repos.length > 0
+                        ? `<p style="color:var(--text);font-size:0.85rem;margin-bottom:0.8rem;">
+                             探测到 <span style="color:var(--green);font-weight:600">${repos.length}</span> 个活跃代码构造体
+                           </p>
+                           <div class="repo-grid">
+                               ${repos.map(r => `
+                                   <a href="${r.url}" target="_blank" rel="noopener" class="repo-card" style="--lang-color:${langColor(r.language)}">
+                                       <div class="repo-card-name">📦 ${r.name}</div>
+                                       <div class="repo-card-desc">${r.description}</div>
+                                       <div class="repo-card-meta">
+                                           ${r.language ? `<span class="repo-card-lang">${r.language}</span>` : ''}
+                                           <span class="repo-card-stars">⭐ ${r.stars}</span>
+                                           <span class="repo-card-forks">🍴 ${r.forks}</span>
+                                           <span class="repo-card-updated">${r.updatedAgo}</span>
+                                       </div>
+                                   </a>
+                               `).join('')}
+                           </div>`
+                        : `<p style="color:var(--text-dim);font-size:0.85rem;">正在扫描外部信号...</p>`
+                    }
+                    <p class="repo-footer-note">
+                        数据来源: <a href="https://github.com/${githubData.username || ''}" target="_blank" rel="noopener">github.com/${githubData.username || ''}</a>
+                        &nbsp;|&nbsp; 更新于 ${repos.length > 0 ? new Date(githubData.lastFetched).toLocaleString('zh-CN') : '未知'}
+                    </p>
+                </div>
+
+                <div class="about-card full" style="text-align:center;opacity:0;transform:translateY(10px);transition:opacity 0.4s,transform 0.4s;" data-animate>
+                    <p style="color:var(--green);font-size:0.85rem;">观测仍在继续。下个信号随时出现。</p>
+                    <p style="color:var(--text-dim);font-size:0.75rem;margin-top:0.5rem;">$ _</p>
+                </div>
             </div>
-            <div class="about-commands">
-                <h3 style="color:var(--amber);margin:1.5rem 0 0.8rem;">📖 可用命令</h3>
-                <pre style="color:var(--text);line-height:1.6;">
-filter [all|tech|reading|essays|projects]       按分类筛选
-grep [关键词]                                    全文搜索
-dashboard / status                               仪表盘
-errors                                           分类总览
-milestones                                       时间线
-skills / neofetch                                技能统计
-about                                            关于本站
-help                                             查看帮助
-clear                                            清除筛选
-theme dark|light                                 切换主题
-export txt|json                                  导出数据
-                </pre>
-                <p style="color:var(--text-dim);margin-top:0.8rem;">💡 快捷键: j/k 上下移动 | / 聚焦搜索 | Esc 关闭</p>
-            </div>`;
-        showView('about');
-    }
+        `;
 
+        container.innerHTML = html;
+        showView('about');
+
+        // 打字机效果
+        const pre = document.getElementById('aboutAscii');
+        if (pre) {
+            let idx = 0;
+            function typeChar() {
+                if (idx < asciiArtText.length) {
+                    pre.textContent += asciiArtText[idx];
+                    idx++;
+                    setTimeout(typeChar, 8);
+                } else {
+                    // ASCII 完成后，卡片依次淡入
+                    const cards = container.querySelectorAll('[data-animate]');
+                    cards.forEach((card, i) => {
+                        setTimeout(() => {
+                            card.style.opacity = '1';
+                            card.style.transform = 'translateY(0)';
+                        }, i * 80);
+                    });
+                }
+            }
+            typeChar();
+        }
+    }
     function renderHelp() {
         const container = viewContainers['help'];
         if (!container) return;

@@ -4,8 +4,9 @@
   "description": "终端日志 · 实时观测站 - 个人学习数据监控中心",
   "type": "module",
   "scripts": {
-    "dev": "node scripts/article-scanner.mjs && eleventy --serve",
-    "build": "node scripts/article-scanner.mjs && eleventy",
+    "dev": "node scripts/article-scanner.mjs && node scripts/github-scraper.mjs && eleventy --serve",
+    "build": "node scripts/article-scanner.mjs && node scripts/github-scraper.mjs && eleventy",
+    "fetch-github": "node scripts/github-scraper.mjs",
     "scan:articles": "node scripts/article-scanner.mjs",
     "import:article": "node scripts/article-importer.mjs",
     "new-article": "node scripts/new-article.mjs",

@@ -67,6 +67,7 @@
     <script>
         window.ARTICLES_DATA = {{ collections.articles | jsonify | safe }};
         window.SITE_DATA = {{ site | jsonify | safe }};
+        window.GITHUB_DATA = {{ github | jsonify | safe }};
     </script>
     <script src="/assets/js/app.js"></script>
 </body>
