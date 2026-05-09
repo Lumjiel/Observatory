@@ -642,6 +642,22 @@ body.light .status-bar {
 .heatmap-col { display: flex; flex-direction: column; gap: 2px; }
 .heatmap-cell { width: 13px; height: 13px; border-radius: 2px; border: none; cursor: default; }
 .heatmap-cell[data-level="0"] { background: var(--border); opacity: 0.3; }
+
+/* dashboard terminal style */
+.dashboard-pre {
+    color: var(--green);
+    line-height: 1.4;
+    font-size: 0.72rem;
+    overflow-x: auto;
+    padding: 0.5rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+}
+
+@media (max-width: 600px) {
+    .dashboard-pre { font-size: 0.6rem; }
+}
 .heatmap-cell[data-level="1"] { background: #9be9a8; }
 .heatmap-cell[data-level="2"] { background: #40c463; }
 .heatmap-cell[data-level="3"] { background: #30a14e; }

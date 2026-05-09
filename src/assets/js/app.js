@@ -576,39 +576,119 @@
     function renderDashboard() {
         const container = viewContainers['dashboard'];
         if (!container) return;
+
         const total = categoryStats.total;
-        const techCount = categoryStats.tutorials;
-        const readingCount = categoryStats.blog + categoryStats.essays;
+        const blogCount = categoryStats.blog + categoryStats.essays;
+        const tutorialsCount = categoryStats.tutorials;
         const projectsCount = categoryStats.projects;
 
+        // 信号源状态进度条
+        const maxCount = Math.max(blogCount, tutorialsCount, projectsCount, 1);
+        const barLen = 20;
+        const blogBar = '█'.repeat(Math.round((blogCount / maxCount) * barLen)) + '░'.repeat(barLen - Math.round((blogCount / maxCount) * barLen));
+        const tutorialsBar = '█'.repeat(Math.round((tutorialsCount / maxCount) * barLen)) + '░'.repeat(barLen - Math.round((tutorialsCount / maxCount) * barLen));
+        const projectsBar = '█'.repeat(Math.round((projectsCount / maxCount) * barLen)) + '░'.repeat(barLen - Math.round((projectsCount / maxCount) * barLen));
+
+        // 活跃标签 Top 8
         const allTags = {};
         feed.forEach(l => l.tags.forEach(t => { allTags[t] = (allTags[t] || 0) + 1; }));
-        const tagHTML = Object.entries(allTags).sort((a, b) => b[1] - a[1]).slice(0, 20)
-            .map(([t]) => `<span class="tag-hover" data-tag="${t}">#${t}</span>`).join(' ');
+        const topTags = Object.entries(allTags).sort((a, b) => b[1] - a[1]).slice(0, 8);
+        const maxTag = topTags.length > 0 ? topTags[0][1] : 1;
 
-        container.innerHTML = `
-            <div class="dashboard-grid">
-                <div class="dash-card">
-                    <h3>📊 文章统计</h3>
-                    <p>总文章: ${total} | 教程: ${techCount} | 博客: ${readingCount} | 项目: ${projectsCount}</p>
-                </div>
-                <div class="dash-card">
-                    <h3>🏷️ 标签分布</h3>
-                    <div class="tag-cloud">${tagHTML}</div>
-                </div>
-                <div class="dash-card" style="grid-column: 1 / -1;">
-                    <h3>📝 最近文章</h3>
-                    <ul style="list-style:none;padding:0;">
-                        ${feed.slice(0, 5).map(l => {
-                            const catLabel = { tutorials: '教程', blog: '博客', essays: '随笔', projects: '项目' }[l.typeLabel] || l.typeLabel;
-                            return `<li style="margin:0.4rem 0;display:flex;gap:0.5rem;align-items:center;">
-                                <span style="color:var(--gray);font-size:0.75rem;">[${catLabel}]</span>
-                                <a href="${l.href}" style="color:var(--text);">${l.description}</a>
-                            </li>`;
-                        }).join('')}
-                    </ul>
-                </div>
-            </div>`;
+        // 本周学习负载（按文章日期分组到周一～周日）
+        const dayMap = { '2026-05-04': '一', '2026-05-05': '二', '2026-05-06': '三', '2026-05-07': '四', '2026-05-08': '五', '2026-05-09': '六', '2026-05-10': '日' };
+        const weekDays = ['一', '二', '三', '四', '五', '六', '日'];
+        // 演示数据：按日期模拟学习时长（小时）
+        const mockHours = { '一': 2.5, '二': 1.5, '三': 3.5, '四': 2.0, '五': 0.5, '六': 0, '日': 2.0 };
+        const maxHour = Math.max(...Object.values(mockHours), 1);
+        const hourBarLen = 8;
+
+        // 最近信号接收记录
+        const recentLogs = [...feed].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)).slice(0, 5);
+        const catLabelMap = { tutorials: '教程', blog: '博客', essays: '随笔', projects: '项目' };
+
+        const W = 76;
+        const col = (label, value, bar, color = 'var(--green)') => {
+            const labelPad = label.padEnd(10);
+            const valuePad = String(value).padStart(4);
+            return `  ${labelPad}  ${valuePad}   ${bar}`;
+        };
+
+        // 构建每一行
+        const lines = [];
+
+        // 顶部边框
+        lines.push('┌' + '─'.repeat(W) + '┐');
+
+        // 标题行
+        const title = '📊 观测站仪表盘';
+        const hint = '按 F1 查看命令帮助';
+        lines.push('│' + padRight(title, W - hint.length - 1) + hint + ' │');
+        lines.push('├' + '─'.repeat(W) + '┤');
+
+        // ── 信号源状态 ──
+        lines.push('│' + padRight('  ──────────────── 信号源状态 ────────────────', W) + '│');
+        lines.push('│' + padRight(`  🟢 博客信号    ${String(blogCount).padStart(4)}   ${blogBar}`, W) + '│');
+        lines.push('│' + padRight(`  🔵 教程信号     ${String(tutorialsCount).padStart(4)}   ${tutorialsBar}`, W) + '│');
+        lines.push('│' + padRight(`  🟠 项目信号    ${String(projectsCount).padStart(4)}   ${projectsBar}`, W) + '│');
+        lines.push('│' + padRight(`  ─────────────────────────────────────────────`, W) + '│');
+        lines.push('│' + padRight(`  📋 总计 ${total} 条信号    信号强度: 稳定`, W) + '│');
+        lines.push('├' + '─'.repeat(W) + '┤');
+
+        // ── 活跃标签 Top 8 ──
+        lines.push('│' + padRight('  ──────────────── 活跃标签 Top 8 ────────────────', W) + '│');
+        // 横向排列：每行2个标签
+        for (let i = 0; i < topTags.length; i += 2) {
+            const t1 = topTags[i];
+            const t2 = topTags[i + 1];
+            const tag1 = '#' + t1[0];
+            const count1 = t1[1];
+            const bar1 = '█'.repeat(Math.round((count1 / maxTag) * 10)) + '░'.repeat(10 - Math.round((count1 / maxTag) * 10));
+            const line1 = `  ${tag1.padEnd(12)} ${bar1} ${String(count1).padStart(4)}   `;
+            let line = line1;
+            if (t2) {
+                const tag2 = '#' + t2[0];
+                const count2 = t2[1];
+                const bar2 = '█'.repeat(Math.round((count2 / maxTag) * 10)) + '░'.repeat(10 - Math.round((count2 / maxTag) * 10));
+                line += `${tag2.padEnd(12)} ${bar2} ${String(count2).padStart(4)}   `;
+            }
+            lines.push('│' + padRight(line, W) + '│');
+        }
+        lines.push('├' + '─'.repeat(W) + '┤');
+
+        // ── 本周学习负载 ──
+        lines.push('│' + padRight('  ──────────────── 本周学习负载 ────────────────', W) + '│');
+        const hourLine = weekDays.map(d => {
+            const h = mockHours[d];
+            const bar = h > 0 ? '█'.repeat(Math.round((h / maxHour) * hourBarLen)) + '░'.repeat(hourBarLen - Math.round((h / maxHour) * hourBarLen)) : '░'.repeat(hourBarLen);
+            return `${d} ${padRight(bar, hourBarLen)} ${h}h`;
+        }).join('  ');
+        lines.push('│' + padRight('  ' + hourLine, W) + '│');
+        lines.push('├' + '─'.repeat(W) + '┤');
+
+        // ── 最近信号接收记录 ──
+        lines.push('│' + padRight('  ──────────────── 最近信号接收记录 ────────────────', W) + '│');
+        // 表头
+        const headerLine = '  │ 时间         │ 类型 │ 内容                           │ 标签 │';
+        lines.push('│' + padRight(headerLine, W) + '│');
+        lines.push('│' + padRight('  ├──────────────┼──────┼────────────────────────────────┼──────┤', W) + '│');
+        // 数据行
+        recentLogs.forEach(log => {
+            const date = log.timestamp.slice(0, 10);
+            const type = catLabelMap[log.typeLabel] || log.typeLabel;
+            const desc = log.description.slice(0, 28);
+            const tags = log.tags.slice(0, 2).map(t => '#' + t.slice(0, 6)).join(' ');
+            const row = `  │ ${padRight(date, 12)} │ ${padRight(type, 4)} │ ${padRight(desc, 30)} │ ${padRight(tags, 4)} │`;
+            lines.push('│' + padRight(row, W) + '│');
+        });
+        lines.push('├' + '─'.repeat(W) + '┤');
+
+        // 底部
+        lines.push('│' + padRight('  > 系统运行正常。输入 status 回到顶层。', W - 3) + ' │');
+        lines.push('│' + padRight('  $ _', W) + '│');
+        lines.push('└' + '─'.repeat(W) + '┘');
+
+        container.innerHTML = `<pre class="dashboard-pre">${lines.join('\n')}</pre>`;
         showView('dashboard');
     }
 
