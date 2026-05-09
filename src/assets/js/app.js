@@ -628,8 +628,37 @@
             <h3 style="color:var(--magenta);margin-top:1rem;">✍️ 随笔 (${essays.length})</h3>
             <ul style="list-style:none;padding:0;">${essays.map(l => `<li style="margin:0.3rem 0;"><a href="${l.href}" style="color:var(--text);">${l.description}</a></li>`).join('')}</ul>
             <h3 style="color:var(--amber);margin-top:1rem;">🚀 项目 (${projects.length})</h3>
-            <ul style="list-style:none;padding:0;">${projects.map(l => `<li style="margin:0.3rem 0;"><a href="${l.href}" style="color:var(--text);">${l.description}</a></li>`).join('')}</ul>`;
+            <ul style="list-style:none;padding:0;">${projects.map(l => `<li style="margin:0.3rem 0;"><a href="${l.href}" style="color:var(--text);">${l.description}</a></li>`).join('')}</ul>
+
+            <h3 style="color:var(--green);margin-top:1.5rem;">📡 GitHub 活跃仓库</h3>
+            <div id="github-repos" style="color:var(--text-dim);">加载中...</div>`;
         showView('errors');
+
+        // 渲染 GitHub 仓库
+        const reposContainer = document.getElementById('github-repos');
+        const githubData = window.GITHUB_DATA || {};
+        const repos = githubData.repos || [];
+        if (reposContainer) {
+            if (repos.length > 0) {
+                const langColor = (lang) => ({ JavaScript: '#F7DF1E', TypeScript: '#3178C6', Python: '#3572A5', Java: '#B07219', Go: '#00ADD8', Vue: '#41B883', HTML: '#E34C26' }[lang] || '#888');
+                reposContainer.innerHTML = `<div class="repo-grid" style="grid-template-columns:1fr 1fr;gap:0.8rem;">
+                    ${repos.slice(0, 6).map(r => `
+                        <a href="${r.url}" target="_blank" rel="noopener" style="display:block;padding:0.7rem;background:var(--surface);border:1px solid var(--border);border-radius:6px;text-decoration:none;">
+                            <div style="color:var(--green);font-weight:600;font-size:0.85rem;margin-bottom:0.3rem;">📦 ${r.name}</div>
+                            <div style="color:var(--text-dim);font-size:0.75rem;margin-bottom:0.3rem;">${r.description || '暂无描述'}</div>
+                            <div style="color:var(--gray);font-size:0.7rem;">
+                                ${r.language ? `<span style="color:${langColor(r.language)}">●</span> ${r.language} &nbsp;` : ''}
+                                ⭐ ${r.stars} &nbsp; 🍴 ${r.forks} &nbsp;
+                                <span style="float:right;">${r.updatedAgo}</span>
+                            </div>
+                        </a>
+                    `).join('')}
+                </div>
+                <p style="color:var(--gray-dim);font-size:0.7rem;margin-top:0.5rem;">数据来源: <a href="https://github.com/${githubData.username}" target="_blank" rel="noopener" style="color:var(--green);">github.com/${githubData.username}</a> · 更新于 ${repos.length > 0 ? new Date(githubData.lastFetched).toLocaleString('zh-CN') : '未知'}</p>`;
+            } else {
+                reposContainer.innerHTML = '<span style="color:var(--text-dim);">暂无仓库数据</span>';
+            }
+        }
     }
 
     function renderMilestones() {
