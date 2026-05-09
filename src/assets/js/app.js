@@ -744,50 +744,63 @@
     function renderErrors() {
         const container = viewContainers['errors'];
         if (!container) return;
-        const tech = feed.filter(a => a.typeLabel === 'tutorials');
-        const reading = feed.filter(a => a.typeLabel === 'blog');
-        const essays = feed.filter(a => a.typeLabel === 'essays');
-        const projects = feed.filter(a => a.typeLabel === 'projects');
-        container.innerHTML = `
-            <h2 style="color:var(--green);margin-bottom:1rem;">📚 文章分类</h2>
-            <h3 style="color:var(--green);margin-top:1rem;">🛠️ 教程 (${tech.length})</h3>
-            <ul style="list-style:none;padding:0;">${tech.map(l => `<li style="margin:0.3rem 0;"><a href="${l.href}" style="color:var(--text);">${l.description}</a></li>`).join('')}</ul>
-            <h3 style="color:var(--blue);margin-top:1rem;">📖 博客 (${reading.length})</h3>
-            <ul style="list-style:none;padding:0;">${reading.map(l => `<li style="margin:0.3rem 0;"><a href="${l.href}" style="color:var(--text);">${l.description}</a></li>`).join('')}</ul>
-            <h3 style="color:var(--magenta);margin-top:1rem;">✍️ 随笔 (${essays.length})</h3>
-            <ul style="list-style:none;padding:0;">${essays.map(l => `<li style="margin:0.3rem 0;"><a href="${l.href}" style="color:var(--text);">${l.description}</a></li>`).join('')}</ul>
-            <h3 style="color:var(--amber);margin-top:1rem;">🚀 项目 (${projects.length})</h3>
-            <ul style="list-style:none;padding:0;">${projects.map(l => `<li style="margin:0.3rem 0;"><a href="${l.href}" style="color:var(--text);">${l.description}</a></li>`).join('')}</ul>
 
-            <h3 style="color:var(--green);margin-top:1.5rem;">📡 GitHub 活跃仓库</h3>
-            <div id="github-repos" style="color:var(--text-dim);">加载中...</div>`;
-        showView('errors');
-
-        // 渲染 GitHub 仓库
-        const reposContainer = document.getElementById('github-repos');
         const githubData = window.GITHUB_DATA || {};
         const repos = githubData.repos || [];
-        if (reposContainer) {
-            if (repos.length > 0) {
-                const langColor = (lang) => ({ JavaScript: '#F7DF1E', TypeScript: '#3178C6', Python: '#3572A5', Java: '#B07219', Go: '#00ADD8', Vue: '#41B883', HTML: '#E34C26' }[lang] || '#888');
-                reposContainer.innerHTML = `<div class="repo-grid" style="grid-template-columns:1fr 1fr;gap:0.8rem;">
+        const username = githubData.username || 'Lumjiel';
+        const lastFetched = githubData.lastFetched ? new Date(githubData.lastFetched).toLocaleDateString('zh-CN') : '未知';
+        const mostRecent = repos.length > 0 && repos[0].updatedAt ? new Date(repos[0].updatedAt).toLocaleDateString('zh-CN') : '无数据';
+
+        container.innerHTML = `
+            <div class="report-container">
+                <div class="report-header">
+                    <div class="report-title-wrap">
+                        <div class="report-title">外部信号探测报告</div>
+                        <div class="report-version">observatory v1.0</div>
+                    </div>
+                </div>
+                <div class="report-scan">
+                    <div class="scan-title">扫描结果</div>
+                    <div class="scan-stat">
+                        <span class="scan-icon">📡</span>
+                        <span>探测到 <strong>${repos.length}</strong> 个活跃代码构造体</span>
+                    </div>
+                    <div class="scan-stat">
+                        <span class="scan-dot" style="color:var(--green)">🟢</span>
+                        <span>最近活跃: ${mostRecent}</span>
+                    </div>
+                </div>
+                <div class="report-divider"></div>
+                <div class="repo-list">
                     ${repos.slice(0, 6).map(r => `
-                        <a href="${r.url}" target="_blank" rel="noopener" style="display:block;padding:0.7rem;background:var(--surface);border:1px solid var(--border);border-radius:6px;text-decoration:none;">
-                            <div style="color:var(--green);font-weight:600;font-size:0.85rem;margin-bottom:0.3rem;">📦 ${r.name}</div>
-                            <div style="color:var(--text-dim);font-size:0.75rem;margin-bottom:0.3rem;">${r.description || '暂无描述'}</div>
-                            <div style="color:var(--gray);font-size:0.7rem;">
-                                ${r.language ? `<span style="color:${langColor(r.language)}">●</span> ${r.language} &nbsp;` : ''}
-                                ⭐ ${r.stars} &nbsp; 🍴 ${r.forks} &nbsp;
-                                <span style="float:right;">${r.updatedAgo}</span>
+                        <a class="repo-card" href="${r.url}" target="_blank" rel="noopener">
+                            <div class="repo-name">📦 ${r.name}</div>
+                            <div class="repo-desc">${r.description || '暂无描述'}</div>
+                            <div class="repo-meta">
+                                ${r.language ? `<span class="repo-lang"><span class="lang-dot" style="background:${({JavaScript:'#F7DF1E',TypeScript:'#3178C6',Python:'#3572A5',Java:'#B07219',Go:'#00ADD8',Vue:'#41B883',HTML:'#E34C26'}[r.language]||'#888')}"></span>${r.language}</span>` : ''}
+                                <span>⭐ ${r.stars}</span>
+                                <span>🍴 ${r.forks}</span>
+                                <span class="repo-updated">更新: ${r.updatedAgo || '未知'}</span>
                             </div>
                         </a>
                     `).join('')}
                 </div>
-                <p style="color:var(--gray-dim);font-size:0.7rem;margin-top:0.5rem;">数据来源: <a href="https://github.com/${githubData.username}" target="_blank" rel="noopener" style="color:var(--green);">github.com/${githubData.username}</a> · 更新于 ${repos.length > 0 ? new Date(githubData.lastFetched).toLocaleString('zh-CN') : '未知'}</p>`;
-            } else {
-                reposContainer.innerHTML = '<span style="color:var(--text-dim);">暂无仓库数据</span>';
-            }
-        }
+                <div class="report-divider"></div>
+                <div class="report-log">
+                    <div class="log-title">探测日志</div>
+                    <div class="log-entries">
+                        <div class="log-entry">[${repos[0] ? new Date(repos[0].updatedAt).toLocaleDateString('zh-CN').replace(/-/g, '') : '05-08'}] 探测到 ${repos[0]?.name || 'observer'} 有新的提交</div>
+                        <div class="log-entry">[${repos[1] ? new Date(repos[1].updatedAt).toLocaleDateString('zh-CN').replace(/-/g, '') : '05-03'}] 探测到 ${repos[1]?.name || 'project'} 获得 ${repos[1]?.stars || 0} 个新星</div>
+                    </div>
+                </div>
+                <div class="report-divider"></div>
+                <div class="report-footer">
+                    <span>> 数据来源: github.com/${username}</span>
+                    <span>> 更新频率: 每次构建时自动同步</span>
+                </div>
+                <p class="report-updated">数据更新于 ${lastFetched}</p>
+            </div>`;
+        showView('errors');
     }
 
     function renderMilestones() {
@@ -855,11 +868,11 @@
             <pre style="color:var(--text); line-height:1.6;">
 filter [all|tech|reading|essays|projects]       按分类筛选
 grep [关键词]                                    全文搜索
-status / dashboard                               打开仪表盘
-errors                                           文章总览
+status / dashboard                               打开星系（仪表盘）
+errors                                           外部信号（GitHub仓库）
 milestones                                       全部文章
 skills / neofetch                                技能树
-about                                            关于本站
+about                                            系统（关于）
 help                                             显示此帮助
 clear                                            清除筛选/返回文章流
 theme dark|light                                 切换主题
