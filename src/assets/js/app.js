@@ -981,7 +981,7 @@ export txt|json                                  导出当前视图
                 <div class="about-ascii">
                     <pre id="aboutAsciiPre" style="color:var(--green);line-height:1.4;font-size:0.7rem;"></pre>
                 </div>
-                <div class="about-info">
+                <div class="about-info hidden">
                     ${sysSection}
                     ${runSection}
                     ${moduleSection}
@@ -1005,6 +1005,12 @@ export txt|json                                  导出当前视图
                     asciiPre.textContent += fullText[charIdx];
                     charIdx++;
                     setTimeout(typeChar, 8);
+                } else {
+                    // 打字完成，延迟移除hidden
+                    setTimeout(() => {
+                        const info = document.querySelector('.about-info.hidden');
+                        if (info) info.classList.remove('hidden');
+                    }, 300);
                 }
             };
             typeChar();
