@@ -307,7 +307,7 @@
   .form-group textarea:focus { border-color: var(--green); background: var(--surface-raised); }
   .form-group input::placeholder, .form-group textarea::placeholder { color: var(--text-dim); }
   .form-group select { cursor: pointer; }
-  .form-group textarea { resize: none; flex: 1; min-height: 280px; line-height: 1.7; }
+  .form-group textarea { resize: none; flex: 1; min-height: 300px; line-height: 1.7; background: var(--bg); color: var(--text); }
 
   .tag-input-wrapper {
     display: flex;
@@ -571,7 +571,7 @@
 
       <div class="form-section" style="flex:1; display:flex; flex-direction:column;">
         <div class="form-section-title"> 📄 内容 (Markdown)</div>
-        <textarea id="articleContent" placeholder="支持 Markdown 语法..." style="flex:1; min-height:300px;"></textarea>
+        <textarea id="articleContent" placeholder="支持 Markdown 语法..." style="flex:1; min-height:300px; background:var(--bg); color:var(--text);"></textarea>
       </div>
     </div>
   </div>
