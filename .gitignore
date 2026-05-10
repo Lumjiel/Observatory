@@ -10,5 +10,8 @@ _site/
 
 # 临时文件
 *.tmp
-.cache/.trae/
+.cache/
+
+# 本地文件
+.trae/
 设计文档.md
