@@ -2,8 +2,12 @@ node_modules/
 _site/
 .DS_Store
 *.log
-设计文档.md
+*.map
 
-# 构建产物
-src/assets/js/bundle.js
-src/assets/js/bundle.js.map
+# IDE
+.vscode/
+.idea/
+
+# 临时文件
+*.tmp
+.cache/
