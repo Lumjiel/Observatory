@@ -275,6 +275,7 @@
     flex-direction: column;
     gap: 1.5rem;
     overflow: visible;
+    align-items: stretch;
   }
 
   .form-section {
@@ -283,6 +284,7 @@
     border-radius: 12px;
     padding: 1.25rem;
     flex-shrink: 0;
+    overflow: visible;
   }
   .form-section-title {
     font-size: 0.75rem;
@@ -318,7 +320,7 @@
   .form-group textarea:focus { border-color: var(--green); background: var(--surface-raised); }
   .form-group input::placeholder, .form-group textarea::placeholder { color: var(--text-dim); }
   .form-group select { cursor: pointer; }
-  .form-group textarea { resize: vertical; flex: none; width: 100%; min-height: 200px; line-height: 1.7; background: var(--bg); color: var(--text); }
+  .form-group textarea { resize: vertical; flex: none; width: 100%; min-height: 400px; line-height: 1.7; background: var(--bg); color: var(--text); }
 
   .tag-input-wrapper {
     display: flex;
@@ -582,7 +584,7 @@
 
       <div class="form-section" style="display:flex; flex-direction:column;">
         <div class="form-section-title"> 📄 内容 (Markdown)</div>
-        <textarea id="articleContent" placeholder="支持 Markdown 语法..." style="width:100%; min-height:200px; background:var(--bg); color:var(--text); resize:vertical;"></textarea>
+        <textarea id="articleContent" placeholder="支持 Markdown 语法..." style="width:100%; min-height:unset; background:var(--bg); color:var(--text); resize:vertical;"></textarea>
       </div>
     </div>
   </div>
