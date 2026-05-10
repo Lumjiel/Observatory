@@ -58,22 +58,58 @@
     height: calc(100vh - 52px);
   }
   .sidebar {
-    width: 280px;
-    min-width: 280px;
+    width: 300px;
+    min-width: 300px;
     background: var(--surface);
     border-right: 1px solid var(--border);
     display: flex;
     flex-direction: column;
     overflow: hidden;
   }
+  .sidebar-search {
+    padding: 0.8rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .sidebar-search input {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.5rem 0.8rem;
+    color: var(--text);
+    font-family: inherit;
+    font-size: 0.85rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .sidebar-search input:focus { border-color: var(--green); }
+  .sidebar-search input::placeholder { color: var(--text-dim); }
   .sidebar-header {
-    padding: 1rem;
+    padding: 0.8rem 1rem;
     border-bottom: 1px solid var(--border);
     display: flex;
     align-items: center;
     justify-content: space-between;
   }
-  .sidebar-header h2 { font-size: 0.9rem; color: var(--text-dim); }
+  .sidebar-header h2 { font-size: 0.85rem; color: var(--text-dim); }
+  .sidebar-actions {
+    display: flex;
+    gap: 0.4rem;
+  }
+  .btn-sm {
+    padding: 0.25rem 0.6rem;
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 0.75rem;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+  }
+  .btn-sm-danger { background: var(--red); color: #fff; }
+  .btn-sm-danger:hover { opacity: 0.85; }
+  .btn-sm-move { background: var(--blue); color: #000; }
+  .btn-sm-move:hover { opacity: 0.85; }
+  .btn-sm:disabled { opacity: 0.4; cursor: not-allowed; }
   .new-btn {
     background: var(--green);
     color: #000;
@@ -89,17 +125,27 @@
   .new-btn:hover { opacity: 0.85; }
   .article-list { flex: 1; overflow-y: auto; }
   .article-item {
-    padding: 0.8rem 1rem;
+    padding: 0.7rem 1rem;
     border-bottom: 1px solid var(--border);
     cursor: pointer;
     transition: background 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
   }
   .article-item:hover { background: var(--surface-hover); }
   .article-item.active { background: var(--surface-hover); border-left: 3px solid var(--green); }
+  .article-item input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    accent-color: var(--green);
+    flex-shrink: 0;
+  }
   .article-item-title {
     color: var(--text);
-    font-size: 0.9rem;
-    margin-bottom: 0.3rem;
+    font-size: 0.85rem;
+    flex: 1;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -107,19 +153,37 @@
   .article-item-meta {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    font-size: 0.75rem;
+    gap: 0.4rem;
+    font-size: 0.7rem;
     color: var(--text-dim);
+  }
+  .article-item-order {
+    font-size: 0.65rem;
+    color: var(--amber);
+    background: rgba(255,179,0,0.1);
+    padding: 0.1rem 0.3rem;
+    border-radius: 3px;
+    flex-shrink: 0;
   }
   .cat-tag {
     padding: 0.1rem 0.4rem;
     border-radius: 3px;
-    font-size: 0.7rem;
+    font-size: 0.65rem;
   }
   .cat-tutorials { background: rgba(77,184,255,0.15); color: var(--blue); }
   .cat-blog { background: rgba(0,229,160,0.15); color: var(--green); }
   .cat-essays { background: rgba(255,179,0,0.15); color: var(--amber); }
   .cat-projects { background: rgba(255,107,157,0.15); color: var(--magenta); }
+  .move-select {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 0.3rem 0.5rem;
+    color: var(--text);
+    font-family: inherit;
+    font-size: 0.75rem;
+    cursor: pointer;
+  }
   .editor-panel {
     flex: 1;
     display: flex;
@@ -155,21 +219,23 @@
     border: 1px solid var(--border);
   }
   .btn-ghost:hover { border-color: var(--text-dim); color: var(--text); }
-  .editor-form { flex: 1; display: flex; flex-direction: column; gap: 1rem; overflow: hidden; }
-  .form-row { display: flex; gap: 1rem; }
-  .form-row .form-group { flex: 1; }
-  .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
-  .form-group label { font-size: 0.8rem; color: var(--text-dim); }
+  .btn-copy { background: var(--blue); color: #000; }
+  .btn-copy:hover { opacity: 0.85; }
+  .editor-form { flex: 1; display: flex; flex-direction: column; gap: 0.8rem; overflow-y: auto; }
+  .form-row { display: flex; gap: 0.8rem; flex-wrap: wrap; }
+  .form-row .form-group { flex: 1; min-width: 150px; }
+  .form-group { display: flex; flex-direction: column; gap: 0.3rem; }
+  .form-group label { font-size: 0.75rem; color: var(--text-dim); }
   .form-group input,
   .form-group select,
   .form-group textarea {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 6px;
-    padding: 0.7rem 1rem;
+    padding: 0.6rem 0.8rem;
     color: var(--text);
     font-family: inherit;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     outline: none;
     transition: border-color 0.2s;
   }
@@ -177,7 +243,7 @@
   .form-group select:focus,
   .form-group textarea:focus { border-color: var(--green); }
   .form-group select { cursor: pointer; }
-  .form-group textarea { flex: 1; resize: none; min-height: 300px; font-size: 0.85rem; line-height: 1.6; }
+  .form-group textarea { flex: 1; resize: none; min-height: 250px; font-size: 0.8rem; line-height: 1.6; }
   .tag-input-wrapper {
     display: flex;
     flex-wrap: wrap;
@@ -186,7 +252,7 @@
     border: 1px solid var(--border);
     border-radius: 6px;
     padding: 0.5rem;
-    min-height: 42px;
+    min-height: 40px;
     cursor: text;
     transition: border-color 0.2s;
   }
@@ -199,7 +265,7 @@
     color: var(--green);
     padding: 0.2rem 0.5rem;
     border-radius: 4px;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
   }
   .tag-chip .remove-tag {
     cursor: pointer;
@@ -215,7 +281,7 @@
     outline: none;
     color: var(--text);
     font-family: inherit;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     padding: 0.2rem;
   }
   .preview-panel {
@@ -244,7 +310,16 @@
   .preview-content p { margin-bottom: 0.8rem; }
   .preview-content code { background: var(--bg); padding: 0.1rem 0.3rem; border-radius: 3px; }
   .preview-content pre { background: var(--bg); padding: 1rem; border-radius: 6px; overflow-x: auto; margin-bottom: 1rem; }
+  .preview-content pre code { background: none; padding: 0; }
   .preview-content ul, .preview-content ol { margin-left: 1.5rem; margin-bottom: 1rem; }
+  .preview-content blockquote {
+    border-left: 3px solid var(--green);
+    padding-left: 1rem;
+    color: var(--text-dim);
+    margin: 1rem 0;
+  }
+  .preview-content img { max-width: 100%; border-radius: 6px; }
+  .preview-content a { color: var(--blue); }
   .preview-placeholder {
     flex: 1;
     display: flex;
@@ -283,7 +358,7 @@
   .toast.error { border-color: var(--red); }
   @media (max-width: 900px) {
     .preview-panel { display: none; }
-    .sidebar { width: 220px; min-width: 220px; }
+    .sidebar { width: 240px; min-width: 240px; }
   }
   @media (max-width: 600px) {
     .admin-layout { flex-direction: column; }
@@ -305,13 +380,22 @@
 
 <div class="admin-layout">
   <div class="sidebar">
+    <div class="sidebar-search">
+      <input type="text" id="searchInput" placeholder="搜索文章...">
+    </div>
     <div class="sidebar-header">
       <h2>文章列表</h2>
-      <button class="new-btn" onclick="newArticle()">+ 新建</button>
+      <div class="sidebar-actions">
+        <button class="btn-sm btn-sm-move" id="batchMoveBtn" disabled onclick="showMoveDialog()">移动</button>
+        <button class="btn-sm btn-sm-danger" id="batchDeleteBtn" disabled onclick="batchDeleteSelected()">删除</button>
+      </div>
     </div>
     <div class="article-list" id="articleList">
       %%ARTICLE_LIST%%
       %%EMPTY_STATE%%
+    </div>
+    <div style="padding: 0.8rem; border-top: 1px solid var(--border);">
+      <button class="new-btn" onclick="newArticle()" style="width:100%">+ 新建</button>
     </div>
   </div>
 
@@ -321,19 +405,34 @@
         <h2 id="editorTitle">新建文章</h2>
         <div class="editor-actions">
           <button class="btn btn-ghost" onclick="togglePreview()">预览</button>
+          <button class="btn btn-copy" onclick="duplicateArticle()">复制</button>
           <button class="btn btn-primary" onclick="saveArticle()">保存</button>
           <button class="btn btn-danger" onclick="deleteCurrentArticle()" id="deleteBtn" style="display:none;">删除</button>
           <button class="btn btn-ghost" onclick="newArticle()" id="newArticleBtn">新建</button>
         </div>
       </div>
       <div class="form-row">
-        <div class="form-group" style="flex:2">
+        <div class="form-group" style="flex:3">
           <label>标题</label>
           <input type="text" id="articleTitle" placeholder="文章标题">
         </div>
-        <div class="form-group">
+        <div class="form-group" style="flex:1">
           <label>分类</label>
           <select id="articleCategory">%%CATEGORY_OPTIONS%%</select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>摘要</label>
+          <input type="text" id="articleExcerpt" placeholder="文章摘要">
+        </div>
+        <div class="form-group">
+          <label>阅读时间</label>
+          <input type="text" id="articleReadingTime" placeholder="如: 10 min">
+        </div>
+        <div class="form-group">
+          <label>排序值</label>
+          <input type="number" id="articleOrder" placeholder="数值越小越靠前" min="0">
         </div>
       </div>
       <div class="form-group">
@@ -360,11 +459,29 @@
 
 <div class="toast" id="toast"></div>
 
+<div id="moveDialog" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:2000;align-items:center;justify-content:center;">
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.5rem;min-width:300px;">
+    <h3 style="color:var(--green);margin-bottom:1rem;">移动到分类</h3>
+    <select id="moveTargetCategory" class="move-select" style="width:100%;padding:0.5rem;margin-bottom:1rem;">
+      <option value="tutorials">教程</option>
+      <option value="blog">博客</option>
+      <option value="essays">随笔</option>
+      <option value="projects">项目</option>
+    </select>
+    <div style="display:flex;gap:0.5rem;justify-content:flex-end;">
+      <button class="btn btn-ghost" onclick="hideMoveDialog()">取消</button>
+      <button class="btn btn-primary" onclick="doBatchMove()">确认移动</button>
+    </div>
+  </div>
+</div>
+
 <script>
 const API = '/api/articles';
 let currentSlug = null;
 let currentTags = [];
 let showPreview = false;
+let allArticles = [];
+let selectedSlugs = new Set();
 
 function showToast(msg, isError = false) {
   const toast = document.getElementById('toast');
@@ -372,6 +489,139 @@ function showToast(msg, isError = false) {
   toast.className = 'toast' + (isError ? ' error' : '');
   toast.classList.add('show');
   setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
+// 加载文章列表（用于搜索）
+async function loadArticleList() {
+  try {
+    const res = await fetch(API);
+    if (!res.ok) return;
+    allArticles = await res.json();
+    renderArticleList(allArticles);
+  } catch(e) { console.error(e); }
+}
+
+// 渲染文章列表
+function renderArticleList(articles) {
+  const container = document.getElementById('articleList');
+  const categoryLabels = { tutorials: '教程', blog: '博客', essays: '随笔', projects: '项目' };
+
+  if (articles.length === 0) {
+    container.innerHTML = '<div class="empty-state"><p>暂无文章</p></div>';
+    return;
+  }
+
+  // 按 order 升序，date 降序
+  const sorted = [...articles].sort((a, b) => {
+    if (a.order !== b.order) return (a.order || 0) - (b.order || 0);
+    return 0;
+  });
+
+  container.innerHTML = sorted.map(a => `
+    <div class="article-item" data-slug="${a.slug}" onclick="handleItemClick('${a.slug}', event)">
+      <input type="checkbox" ${selectedSlugs.has(a.slug) ? 'checked' : ''} onclick="event.stopPropagation();toggleSelect('${a.slug}')">
+      <div style="flex:1;overflow:hidden;">
+        <div class="article-item-title">${a.title}</div>
+        <div class="article-item-meta">
+          <span class="cat-tag cat-${a.category}">${categoryLabels[a.category] || a.category}</span>
+          <span>${(a.tags || []).slice(0, 2).join(', ')}${(a.tags || []).length > 2 ? '...' : ''}</span>
+        </div>
+      </div>
+      ${(a.order || 0) > 0 ? `<span class="article-item-order">#${a.order}</span>` : ''}
+    </div>
+  `).join('');
+}
+
+// 搜索过滤
+document.getElementById('searchInput').addEventListener('input', function() {
+  const q = this.value.trim().toLowerCase();
+  if (!q) {
+    renderArticleList(allArticles);
+  } else {
+    const filtered = allArticles.filter(a =>
+      a.title.toLowerCase().includes(q) ||
+      (a.tags || []).some(t => t.toLowerCase().includes(q))
+    );
+    renderArticleList(filtered);
+  }
+});
+
+// 选择逻辑
+function handleItemClick(slug, event) {
+  if (event.target.type === 'checkbox') return;
+  loadArticle(slug);
+}
+
+function toggleSelect(slug) {
+  if (selectedSlugs.has(slug)) {
+    selectedSlugs.delete(slug);
+  } else {
+    selectedSlugs.add(slug);
+  }
+  updateBatchButtons();
+}
+
+function updateBatchButtons() {
+  const count = selectedSlugs.size;
+  document.getElementById('batchDeleteBtn').disabled = count === 0;
+  document.getElementById('batchMoveBtn').disabled = count === 0;
+}
+
+async function batchDeleteSelected() {
+  if (selectedSlugs.size === 0) return;
+  if (!confirm(`确定删除选中的 ${selectedSlugs.size} 篇文章？`)) return;
+
+  const slugs = [...selectedSlugs].map(slug => {
+    const a = allArticles.find(x => x.slug === slug);
+    return { slug, category: a.category };
+  });
+
+  const res = await fetch(API + '/batch-delete', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ slugs })
+  });
+
+  if (res.ok) {
+    showToast('已删除');
+    selectedSlugs.clear();
+    setTimeout(() => window.location.reload(), 1000);
+  } else {
+    const data = await res.json();
+    showToast(data.error || '删除失败', true);
+  }
+}
+
+function showMoveDialog() {
+  document.getElementById('moveDialog').style.display = 'flex';
+}
+
+function hideMoveDialog() {
+  document.getElementById('moveDialog').style.display = 'none';
+}
+
+async function doBatchMove() {
+  const target = document.getElementById('moveTargetCategory').value;
+  const slugs = [...selectedSlugs].map(slug => {
+    const a = allArticles.find(x => x.slug === slug);
+    return { slug, category: a.category };
+  });
+
+  const res = await fetch(API + '/batch-move', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ slugs, targetCategory: target })
+  });
+
+  hideMoveDialog();
+  if (res.ok) {
+    showToast('已移动');
+    selectedSlugs.clear();
+    setTimeout(() => window.location.reload(), 1000);
+  } else {
+    const data = await res.json();
+    showToast(data.error || '移动失败', true);
+  }
 }
 
 function loadArticle(slug) {
@@ -387,6 +637,9 @@ function loadArticle(slug) {
       document.getElementById('articleTitle').value = article.title;
       document.getElementById('articleCategory').value = article.category;
       document.getElementById('articleContent').value = article.content;
+      document.getElementById('articleExcerpt').value = article.excerpt || '';
+      document.getElementById('articleReadingTime').value = article.readingTime || '';
+      document.getElementById('articleOrder').value = article.order || 0;
       currentTags = article.tags || [];
       renderTagChips();
       document.getElementById('deleteBtn').style.display = '';
@@ -399,10 +652,15 @@ function newArticle() {
   document.querySelectorAll('.article-item').forEach(el => el.classList.remove('active'));
   currentSlug = null;
   currentTags = [];
+  selectedSlugs.clear();
+  updateBatchButtons();
   document.getElementById('editorTitle').textContent = '新建文章';
   document.getElementById('articleTitle').value = '';
   document.getElementById('articleCategory').value = 'blog';
   document.getElementById('articleContent').value = '';
+  document.getElementById('articleExcerpt').value = '';
+  document.getElementById('articleReadingTime').value = '';
+  document.getElementById('articleOrder').value = 0;
   renderTagChips();
   document.getElementById('deleteBtn').style.display = 'none';
   document.getElementById('newArticleBtn').style.display = '';
@@ -441,11 +699,14 @@ async function saveArticle() {
   const category = document.getElementById('articleCategory').value;
   const content = document.getElementById('articleContent').value;
   const tags = currentTags;
+  const excerpt = document.getElementById('articleExcerpt').value.trim();
+  const readingTime = document.getElementById('articleReadingTime').value.trim();
+  const order = parseInt(document.getElementById('articleOrder').value) || 0;
 
   if (!title) { showToast('请输入标题', true); return; }
   if (!content) { showToast('请输入内容', true); return; }
 
-  const body = { title, category, content, tags };
+  const body = { title, category, content, tags, excerpt, readingTime, order };
 
   let res;
   if (currentSlug) {
@@ -485,27 +746,40 @@ async function deleteCurrentArticle() {
   }
 }
 
-function togglePreview() {
+async function duplicateArticle() {
+  if (!currentSlug) { showToast('请先加载一篇文章', true); return; }
+  const res = await fetch(API + '/' + currentSlug + '/duplicate', { method: 'POST' });
+  const data = await res.json();
+  if (res.ok) {
+    showToast('已复制');
+    setTimeout(() => window.location.reload(), 1000);
+  } else {
+    showToast(data.error || '复制失败', true);
+  }
+}
+
+async function togglePreview() {
   showPreview = !showPreview;
   const panel = document.getElementById('previewPanel');
   panel.style.display = showPreview ? 'flex' : 'none';
   if (showPreview) {
     const content = document.getElementById('articleContent').value;
-    document.getElementById('previewContent').innerHTML = simpleMarkdown(content) || '<div class="preview-placeholder">无内容</div>';
+    if (!content) {
+      document.getElementById('previewContent').innerHTML = '<div class="preview-placeholder">无内容</div>';
+      return;
+    }
+    try {
+      const res = await fetch('/api/preview?content=' + encodeURIComponent(content));
+      const data = await res.json();
+      document.getElementById('previewContent').innerHTML = data.html || '<div class="preview-placeholder">无内容</div>';
+    } catch(e) {
+      document.getElementById('previewContent').innerHTML = '<div class="preview-placeholder">预览加载失败</div>';
+    }
   }
 }
 
-function simpleMarkdown(text) {
-  if (!text) return '';
-  return text
-    .replace(/^### (.+)$/gm, '<h3>$1</h3>')
-    .replace(/^## (.+)$/gm, '<h2>$1</h2>')
-    .replace(/^# (.+)$/gm, '<h1>$1</h1>')
-    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-    .replace(/\*(.+?)\*/g, '<em>$1</em>')
-    .replace(/`(.+?)`/g, '<code>$1</code>')
-    .replace(/\n/g, '<br>');
-}
+// 初始化
+loadArticleList();
 </script>
 </body>
 </html>

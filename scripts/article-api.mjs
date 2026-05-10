@@ -7,6 +7,7 @@ import chokidar from 'chokidar';
 import livereload from 'livereload';
 import matter from 'gray-matter';
 import { randomUUID } from 'crypto';
+import { marked } from 'marked';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, '..');
@@ -74,6 +75,7 @@ function listArticles() {
     category: a.category,
     title: a.title,
     tags: a.tags || [],
+    order: a.order !== undefined ? a.order : 0,
     path: getArticlePath(a),
   }));
 }
@@ -95,6 +97,9 @@ function getArticle(slug) {
     category: entry.category,
     title: entry.title || data.title || entry.slug,
     tags: entry.tags || data.tags || [],
+    excerpt: entry.excerpt || data.excerpt || '',
+    readingTime: entry.readingTime || data.readingTime || '1 min',
+    order: entry.order !== undefined ? entry.order : 0,
     path: filePath,
     content,
   };
@@ -220,7 +225,7 @@ app.get('/api/articles/:slug', (req, res) => {
 
 app.post('/api/articles', (req, res) => {
   if (!checkAuth(req)) return res.status(401).json({ error: 'Unauthorized' });
-  const { title, category, content, tags } = req.body;
+  const { title, category, content, tags, excerpt, readingTime, order } = req.body;
   if (!title || !category || !content) {
     return res.status(400).json({ error: '缺少必填字段' });
   }
@@ -238,10 +243,13 @@ app.post('/api/articles', (req, res) => {
     date: new Date().toISOString(),
     category,
     tags: tags || [],
+    excerpt: excerpt || '',
+    readingTime: readingTime || '1 min',
+    order: order || 0,
   });
 
   fs.writeFileSync(filePath, frontmatter);
-  updateArticleIndex(slug, { title, category, tags });
+  updateArticleIndex(slug, { title, category, tags, excerpt, readingTime, order });
 
   try {
     execSync('npx eleventy', { cwd: ROOT, stdio: 'inherit' });
@@ -257,7 +265,7 @@ app.post('/api/articles', (req, res) => {
 app.put('/api/articles/:slug', (req, res) => {
   if (!checkAuth(req)) return res.status(401).json({ error: 'Unauthorized' });
   const { slug } = req.params;
-  const { title, content, category, tags } = req.body;
+  const { title, content, category, tags, excerpt, readingTime, order } = req.body;
 
   const article = getArticle(slug);
   if (!article) return res.status(404).json({ error: '文章不存在' });
@@ -276,6 +284,9 @@ app.put('/api/articles/:slug', (req, res) => {
     date: new Date().toISOString(),
     category: newCategory,
     tags: tags !== undefined ? tags : article.tags,
+    excerpt: excerpt !== undefined ? excerpt : article.excerpt,
+    readingTime: readingTime !== undefined ? readingTime : article.readingTime,
+    order: order !== undefined ? order : article.order,
   });
 
   try {
@@ -294,6 +305,9 @@ app.put('/api/articles/:slug', (req, res) => {
     title: title || article.title,
     category: newCategory,
     tags: tags !== undefined ? tags : article.tags,
+    excerpt: excerpt !== undefined ? excerpt : article.excerpt,
+    readingTime: readingTime !== undefined ? readingTime : article.readingTime,
+    order: order !== undefined ? order : article.order,
   });
 
   try {
@@ -316,6 +330,137 @@ app.delete('/api/articles/:slug', (req, res) => {
 
   fs.unlinkSync(article.path);
   removeArticleIndex(slug, article.category);
+
+  try {
+    execSync('npx eleventy', { cwd: ROOT, stdio: 'inherit' });
+  } catch (e) {
+    console.error('[观测站] 重建失败:', e.message);
+  }
+
+  if (DEV && lrServer) lrServer.refresh('/');
+
+  res.json({ success: true });
+});
+
+// Markdown 预览
+app.get('/api/preview', (req, res) => {
+  if (!checkAuth(req)) return res.status(401).json({ error: 'Unauthorized' });
+  const { content } = req.query;
+  res.json({ html: content ? marked.parse(content) : '' });
+});
+
+// 文章复制
+app.post('/api/articles/:slug/duplicate', (req, res) => {
+  if (!checkAuth(req)) return res.status(401).json({ error: 'Unauthorized' });
+  const { slug } = req.params;
+  const article = getArticle(slug);
+  if (!article) return res.status(404).json({ error: '文章不存在' });
+
+  const newTitle = '副本-' + article.title;
+  const newSlug = newTitle.toLowerCase().replace(/[^a-z0-9一-龥]+/g, '-').replace(/^-|-$/g, '');
+  const filename = `${newSlug}.md`;
+  const filePath = path.join(ARTICLES_DIR, article.category, filename);
+
+  if (fs.existsSync(filePath)) {
+    return res.status(409).json({ error: '文章已存在' });
+  }
+
+  const frontmatter = matter.stringify(article.content, {
+    title: newTitle,
+    date: new Date().toISOString(),
+    category: article.category,
+    tags: article.tags,
+    excerpt: article.excerpt,
+    readingTime: article.readingTime,
+    order: 0,
+  });
+
+  fs.writeFileSync(filePath, frontmatter);
+  updateArticleIndex(newSlug, {
+    title: newTitle,
+    category: article.category,
+    tags: article.tags,
+    excerpt: article.excerpt,
+    readingTime: article.readingTime,
+    order: 0,
+  });
+
+  try {
+    execSync('npx eleventy', { cwd: ROOT, stdio: 'inherit' });
+  } catch (e) {
+    console.error('[观测站] 重建失败:', e.message);
+  }
+
+  if (DEV && lrServer) lrServer.refresh('/');
+
+  res.json({ success: true, slug: newSlug });
+});
+
+// 批量更新排序
+app.put('/api/articles/order', (req, res) => {
+  if (!checkAuth(req)) return res.status(401).json({ error: 'Unauthorized' });
+  const { orders } = req.body;
+  if (!Array.isArray(orders)) return res.status(400).json({ error: 'orders 必须是数组' });
+
+  const articles = readArticlesIndex();
+  orders.forEach(({ slug, order }) => {
+    const idx = articles.findIndex(a => a.slug === slug);
+    if (idx !== -1) articles[idx].order = order;
+  });
+  saveArticlesIndex(articles);
+  res.json({ success: true });
+});
+
+// 批量删除
+app.post('/api/articles/batch-delete', (req, res) => {
+  if (!checkAuth(req)) return res.status(401).json({ error: 'Unauthorized' });
+  const { slugs } = req.body;
+  if (!Array.isArray(slugs)) return res.status(400).json({ error: 'slugs 必须是数组' });
+
+  slugs.forEach(({ slug, category }) => {
+    const article = getArticle(slug);
+    if (article && fs.existsSync(article.path)) {
+      fs.unlinkSync(article.path);
+    }
+    removeArticleIndex(slug, category);
+  });
+
+  try {
+    execSync('npx eleventy', { cwd: ROOT, stdio: 'inherit' });
+  } catch (e) {
+    console.error('[观测站] 重建失败:', e.message);
+  }
+
+  if (DEV && lrServer) lrServer.refresh('/');
+
+  res.json({ success: true });
+});
+
+// 批量移动
+app.post('/api/articles/batch-move', (req, res) => {
+  if (!checkAuth(req)) return res.status(401).json({ error: 'Unauthorized' });
+  const { slugs, targetCategory } = req.body;
+  if (!Array.isArray(slugs) || !targetCategory) {
+    return res.status(400).json({ error: '需要 slugs 数组和 targetCategory' });
+  }
+
+  slugs.forEach(({ slug }) => {
+    const article = getArticle(slug);
+    if (!article) return;
+    const newPath = path.join(ARTICLES_DIR, targetCategory, `${slug}.md`);
+    const oldPath = article.path;
+    if (targetCategory !== article.category) {
+      fs.mkdirSync(path.join(ARTICLES_DIR, targetCategory), { recursive: true });
+    }
+    if (fs.existsSync(oldPath)) {
+      const raw = fs.readFileSync(oldPath, 'utf-8');
+      const { data, content } = matter(raw);
+      const frontmatter = matter.stringify(content, { ...data, category: targetCategory });
+      fs.writeFileSync(newPath, frontmatter);
+      fs.unlinkSync(oldPath);
+    }
+    updateArticleIndex(slug, { category: targetCategory });
+  });
 
   try {
     execSync('npx eleventy', { cwd: ROOT, stdio: 'inherit' });
