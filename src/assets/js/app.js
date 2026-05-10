@@ -11,7 +11,10 @@ import { formatUptime } from './modules/utils/text.js';
 import { renderLogStream } from './modules/renderers/logStream.js';
 import { renderDashboard } from './modules/renderers/dashboard.js';
 import { renderErrors } from './modules/renderers/errors.js';
-import { renderMilestones, renderProjects, renderSkillsView, renderHelp } from './modules/renderers/views.js';
+import { renderMilestones } from './modules/renderers/milestones.js';
+import { renderProjects } from './modules/renderers/projects.js';
+import { renderSkillsView } from './modules/renderers/skills.js';
+import { renderHelp } from './modules/renderers/help.js';
 import { renderAbout } from './modules/renderers/about.js';
 
 // 组件

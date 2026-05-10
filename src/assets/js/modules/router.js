@@ -1,5 +1,15 @@
-// 路由
+// 路由配置
 import { state, setCurrentView } from './state.js';
+
+const ROUTES = {
+    'dashboard': 'renderDashboard',
+    'errors': 'renderErrors',
+    'milestones': 'renderMilestones',
+    'projects': 'renderProjects',
+    'skills': 'renderSkillsView',
+    'about': 'renderAbout',
+    'help': 'renderHelp',
+};
 
 export function showView(viewName) {
     const { viewContainers, mobileNav } = state.dom;
@@ -20,17 +30,9 @@ export function handleHashRoute(renderers) {
         showView('log');
         return;
     }
-    const routes = {
-        'dashboard': renderers.renderDashboard,
-        'errors': renderers.renderErrors,
-        'milestones': renderers.renderMilestones,
-        'projects': renderers.renderProjects,
-        'skills': renderers.renderSkillsView,
-        'about': renderers.renderAbout,
-        'help': renderers.renderHelp,
-    };
-    if (routes[hash]) {
-        routes[hash]();
+    const renderFn = ROUTES[hash];
+    if (renderFn && renderers[renderFn]) {
+        renderers[renderFn]();
     } else {
         renderers.renderLogStream();
         showView('log');
