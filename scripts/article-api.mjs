@@ -75,6 +75,7 @@ function listArticles() {
     category: a.category,
     title: a.title,
     tags: a.tags || [],
+    excerpt: a.excerpt || '',
     order: a.order !== undefined ? a.order : 0,
     path: getArticlePath(a),
   }));

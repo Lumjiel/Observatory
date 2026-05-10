@@ -153,10 +153,20 @@
     font-size: 0.9rem;
     font-weight: 500;
     color: var(--text);
-    margin-bottom: 0.35rem;
+    margin-bottom: 0.25rem;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+  .article-excerpt {
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    margin-bottom: 0.3rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    line-height: 1.5;
   }
   .article-meta {
     display: flex;
@@ -307,7 +317,7 @@
   .form-group textarea:focus { border-color: var(--green); background: var(--surface-raised); }
   .form-group input::placeholder, .form-group textarea::placeholder { color: var(--text-dim); }
   .form-group select { cursor: pointer; }
-  .form-group textarea { resize: none; flex: 1; min-height: 300px; line-height: 1.7; background: var(--bg); color: var(--text); }
+  .form-group textarea { resize: vertical; flex: none; width: 100%; min-height: 200px; line-height: 1.7; background: var(--bg); color: var(--text); }
 
   .tag-input-wrapper {
     display: flex;
@@ -569,9 +579,9 @@
         </div>
       </div>
 
-      <div class="form-section" style="flex:1; display:flex; flex-direction:column;">
+      <div class="form-section" style="display:flex; flex-direction:column;">
         <div class="form-section-title"> 📄 内容 (Markdown)</div>
-        <textarea id="articleContent" placeholder="支持 Markdown 语法..." style="flex:1; min-height:300px; background:var(--bg); color:var(--text);"></textarea>
+        <textarea id="articleContent" placeholder="支持 Markdown 语法..." style="width:100%; min-height:200px; background:var(--bg); color:var(--text); resize:vertical;"></textarea>
       </div>
     </div>
   </div>
@@ -649,6 +659,7 @@ function renderArticleList(articles) {
       <input type="checkbox" class="article-select" ${selectedSlugs.has(a.slug) ? 'checked' : ''} onclick="event.stopPropagation();toggleSelect('${a.slug}')">
       <div class="article-body">
         <div class="article-title">${a.title}</div>
+        ${a.excerpt ? `<div class="article-excerpt">${a.excerpt}</div>` : ''}
         <div class="article-meta">
           <span class="cat-tag cat-${a.category}">${categoryLabels[a.category] || a.category}</span>
           <span>${(a.tags || []).slice(0, 3).join(' · ')}${(a.tags || []).length > 3 ? ' · ..' : ''}</span>
