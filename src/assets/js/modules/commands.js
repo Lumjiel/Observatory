@@ -1,5 +1,5 @@
 // 命令执行器
-import { state, setActiveFilter, setActiveKeyword } from './state.js';
+import { state, setActiveFilter, setActiveKeyword, clearFilterCache } from './state.js';
 import { playClickSound } from './utils/audio.js';
 
 // 渲染器通过 setRenderers 注入
@@ -18,6 +18,7 @@ export function executeCommand(cmdStr) {
     if (cmd === 'filter') {
         const cat = arg.toLowerCase();
         if (['all', 'tutorials', 'blog', 'essays', 'projects'].includes(cat)) {
+            clearFilterCache();
             setActiveFilter(cat === 'all' ? null : cat);
             setActiveKeyword(null);
             renderers.renderLogStream?.(state.activeFilter);
@@ -27,6 +28,7 @@ export function executeCommand(cmdStr) {
         }
     } else if (cmd === 'grep') {
         if (arg) {
+            clearFilterCache();
             setActiveKeyword(arg);
             setActiveFilter(null);
             renderers.renderLogStream?.(null, arg);
@@ -48,6 +50,7 @@ export function executeCommand(cmdStr) {
     } else if (cmd === 'help') {
         renderers.renderHelp?.();
     } else if (cmd === 'clear') {
+        clearFilterCache();
         setActiveFilter(null);
         setActiveKeyword(null);
         renderers.renderLogStream?.();
