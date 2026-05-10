@@ -24,6 +24,10 @@
       total: 0
     },
     tagCounts: {},
+    // 仪表盘缓存
+    topTags: [],
+    recentLogs: [],
+    heatmapWeeks: [],
     // 过滤缓存: key = "type:keyword", value = 过滤+排序后的数组
     filterCache: /* @__PURE__ */ new Map(),
     // 视图状态
@@ -82,6 +86,32 @@
     }));
     state.tagCounts = counts;
     state.historyIndex = state.commandHistory.length;
+    const sorted = [...state.feed].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+    state.recentLogs = sorted.slice(0, 5);
+    state.topTags = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 40);
+    const githubData = window.GITHUB_DATA || {};
+    const contributions = githubData.contributions || {};
+    const today = /* @__PURE__ */ new Date();
+    const heatmapDays = [];
+    for (let i = 89; i >= 0; i--) {
+      const d = new Date(today);
+      d.setDate(d.getDate() - i);
+      const dateStr = d.toISOString().slice(0, 10);
+      const dayNames = ["\u65E5", "\u4E00", "\u4E8C", "\u4E09", "\u56DB", "\u4E94", "\u516D"];
+      const dayName = dayNames[d.getDay()];
+      heatmapDays.push({ date: dateStr, day: dayName, count: contributions[dateStr] || 0 });
+    }
+    const weeks = [];
+    let currentWeek = [];
+    heatmapDays.forEach((day, idx) => {
+      if (idx > 0 && day.day === "\u4E00" && currentWeek.length > 0) {
+        weeks.push(currentWeek);
+        currentWeek = [];
+      }
+      currentWeek.push(day);
+    });
+    if (currentWeek.length > 0) weeks.push(currentWeek);
+    state.heatmapWeeks = weeks;
   }
   computeStats();
   function getFilterCacheKey(filterType, keyword) {
@@ -382,43 +412,14 @@
   function renderDashboard() {
     const container = state.dom.viewContainers.dashboard;
     if (!container) return;
-    const { categoryStats, feed } = state;
+    const { categoryStats, topTags, recentLogs, heatmapWeeks } = state;
     const total = categoryStats.total;
     const blogCount = categoryStats.blog;
     const essaysCount = categoryStats.essays;
     const tutorialsCount = categoryStats.tutorials;
     const projectsCount = categoryStats.projects;
     const maxSourceCount = Math.max(blogCount, essaysCount, tutorialsCount, projectsCount, 1);
-    const allTags = {};
-    feed.forEach((l) => l.tags.forEach((t) => {
-      allTags[t] = (allTags[t] || 0) + 1;
-    }));
-    const topTags = Object.entries(allTags).sort((a, b) => b[1] - a[1]).slice(0, 40);
     const maxTag = topTags.length > 0 ? topTags[0][1] : 1;
-    const githubData = window.GITHUB_DATA || {};
-    const contributions = githubData.contributions || {};
-    const today = /* @__PURE__ */ new Date();
-    const heatmapDays = [];
-    for (let i = 89; i >= 0; i--) {
-      const d = new Date(today);
-      d.setDate(d.getDate() - i);
-      const dateStr = d.toISOString().slice(0, 10);
-      const dayNames = ["\u65E5", "\u4E00", "\u4E8C", "\u4E09", "\u56DB", "\u4E94", "\u516D"];
-      const dayName = dayNames[d.getDay()];
-      const count = contributions[dateStr] || 0;
-      heatmapDays.push({ date: dateStr, day: dayName, count });
-    }
-    const weeks = [];
-    let currentWeek = [];
-    heatmapDays.forEach((day, idx) => {
-      if (idx > 0 && day.day === "\u4E00" && currentWeek.length > 0) {
-        weeks.push(currentWeek);
-        currentWeek = [];
-      }
-      currentWeek.push(day);
-    });
-    if (currentWeek.length > 0) weeks.push(currentWeek);
-    const recentLogs = [...feed].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)).slice(0, 5);
     const catLabelMap = { tutorials: "\u6559\u7A0B", blog: "\u535A\u5BA2", essays: "\u968F\u7B14", projects: "\u9879\u76EE" };
     const catColorMap = { tutorials: "var(--blue)", blog: "var(--green)", essays: "var(--magenta)", projects: "var(--amber)" };
     const signalSection = `
@@ -480,7 +481,7 @@
                 </div>
                 <div class="heatmap-container">
                     <div class="heatmap-grid">
-                        ${weeks.map((week, wi) => `
+                        ${heatmapWeeks.map((week, wi) => `
                             <div class="heatmap-col" style="grid-column:${wi + 1}">
                                 ${week.map((day) => {
       const level = day.count === 0 ? 0 : day.count <= 2 ? 1 : day.count <= 5 ? 2 : 3;

@@ -6,54 +6,17 @@ export function renderDashboard() {
     const container = state.dom.viewContainers.dashboard;
     if (!container) return;
 
-    const { categoryStats, feed } = state;
+    const { categoryStats, topTags, recentLogs, heatmapWeeks } = state;
     const total = categoryStats.total;
     const blogCount = categoryStats.blog;
     const essaysCount = categoryStats.essays;
     const tutorialsCount = categoryStats.tutorials;
     const projectsCount = categoryStats.projects;
     const maxSourceCount = Math.max(blogCount, essaysCount, tutorialsCount, projectsCount, 1);
-
-    // 标签统计
-    const allTags = {};
-    feed.forEach(l => l.tags.forEach(t => { allTags[t] = (allTags[t] || 0) + 1; }));
-    const topTags = Object.entries(allTags).sort((a, b) => b[1] - a[1]).slice(0, 40);
     const maxTag = topTags.length > 0 ? topTags[0][1] : 1;
-
-    // GitHub 热力图数据
-    const githubData = window.GITHUB_DATA || {};
-    const contributions = githubData.contributions || {};
-    const today = new Date();
-    const heatmapDays = [];
-    for (let i = 89; i >= 0; i--) {
-        const d = new Date(today);
-        d.setDate(d.getDate() - i);
-        const dateStr = d.toISOString().slice(0, 10);
-        const dayNames = ['日', '一', '二', '三', '四', '五', '六'];
-        const dayName = dayNames[d.getDay()];
-        const count = contributions[dateStr] || 0;
-        heatmapDays.push({ date: dateStr, day: dayName, count });
-    }
-
-    // 按周分组
-    const weeks = [];
-    let currentWeek = [];
-    heatmapDays.forEach((day, idx) => {
-        if (idx > 0 && day.day === '一' && currentWeek.length > 0) {
-            weeks.push(currentWeek);
-            currentWeek = [];
-        }
-        currentWeek.push(day);
-    });
-    if (currentWeek.length > 0) weeks.push(currentWeek);
-
-    // 最近信号
-    const recentLogs = [...feed].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)).slice(0, 5);
 
     const catLabelMap = { tutorials: '教程', blog: '博客', essays: '随笔', projects: '项目' };
     const catColorMap = { tutorials: 'var(--blue)', blog: 'var(--green)', essays: 'var(--magenta)', projects: 'var(--amber)' };
-
-    // 信号源状态
     const signalSection = `
         <div class="dash-section">
             <div class="dash-section-title">📡 信号源状态</div>
@@ -117,7 +80,7 @@ export function renderDashboard() {
                 </div>
                 <div class="heatmap-container">
                     <div class="heatmap-grid">
-                        ${weeks.map((week, wi) => `
+                        ${heatmapWeeks.map((week, wi) => `
                             <div class="heatmap-col" style="grid-column:${wi + 1}">
                                 ${week.map(day => {
                                     const level = day.count === 0 ? 0 : day.count <= 2 ? 1 : day.count <= 5 ? 2 : 3;

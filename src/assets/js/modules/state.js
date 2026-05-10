@@ -27,6 +27,11 @@ export const state = {
 
     tagCounts: {},
 
+    // 仪表盘缓存
+    topTags: [],
+    recentLogs: [],
+    heatmapWeeks: [],
+
     // 过滤缓存: key = "type:keyword", value = 过滤+排序后的数组
     filterCache: new Map(),
 
@@ -94,6 +99,36 @@ function computeStats() {
     state.feed.forEach(l => l.tags.forEach(t => { counts[t] = (counts[t] || 0) + 1; }));
     state.tagCounts = counts;
     state.historyIndex = state.commandHistory.length;
+
+    // 预计算仪表盘数据
+    const sorted = [...state.feed].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+    state.recentLogs = sorted.slice(0, 5);
+    state.topTags = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 40);
+
+    // 预计算 GitHub 热力图按周分组
+    const githubData = window.GITHUB_DATA || {};
+    const contributions = githubData.contributions || {};
+    const today = new Date();
+    const heatmapDays = [];
+    for (let i = 89; i >= 0; i--) {
+        const d = new Date(today);
+        d.setDate(d.getDate() - i);
+        const dateStr = d.toISOString().slice(0, 10);
+        const dayNames = ['日', '一', '二', '三', '四', '五', '六'];
+        const dayName = dayNames[d.getDay()];
+        heatmapDays.push({ date: dateStr, day: dayName, count: contributions[dateStr] || 0 });
+    }
+    const weeks = [];
+    let currentWeek = [];
+    heatmapDays.forEach((day, idx) => {
+        if (idx > 0 && day.day === '一' && currentWeek.length > 0) {
+            weeks.push(currentWeek);
+            currentWeek = [];
+        }
+        currentWeek.push(day);
+    });
+    if (currentWeek.length > 0) weeks.push(currentWeek);
+    state.heatmapWeeks = weeks;
 }
 
 computeStats();
