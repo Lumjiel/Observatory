@@ -3,7 +3,8 @@ import { state, saveCommandHistory } from '../state.js';
 import { executeCommand } from '../commands.js';
 
 export function initCommandInput() {
-    const { cmdInput, tagCounts } = state;
+    const { cmdInput } = state.dom;
+    const { tagCounts } = state;
     if (!cmdInput) return;
 
     cmdInput.addEventListener('keydown', function(e) {
@@ -35,7 +36,7 @@ export function initCommandInput() {
         } else if (e.key === 'Tab') {
             e.preventDefault();
             const val = this.value.toLowerCase();
-            const commands = ['filter', 'grep', 'status', 'dashboard', 'errors', 'milestones', 'skills', 'neofetch', 'about', 'help', 'clear', 'theme', 'export'];
+            const commands = ['filter', 'grep', 'status', 'dashboard', 'errors', 'milestones', 'skills', 'neofetch', 'about', 'help', 'clear', 'theme', 'export', '/admin'];
             const allTags = Object.keys(tagCounts);
             const parts = this.value.split(/\s+/);
             if (parts.length === 1) {

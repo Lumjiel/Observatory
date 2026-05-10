@@ -2,7 +2,7 @@
 // 终端观测站 - 主入口
 // ============================================================
 
-import { state } from './modules/state.js';
+import { state, initDOM } from './modules/state.js';
 import { showView, handleHashRoute } from './modules/router.js';
 import { generateParticles } from './modules/utils/particles.js';
 import { formatUptime } from './modules/utils/text.js';
@@ -98,6 +98,7 @@ window.addEventListener('hashchange', () => {
 // ============================================================
 
 try {
+    initDOM();
     setRenderers({
         renderLogStream,
         renderFilterChips,

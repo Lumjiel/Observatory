@@ -66,7 +66,7 @@ export const state = {
 };
 
 // 延迟初始化 DOM 引用
-function initDOM() {
+export function initDOM() {
     state.dom = {
         cmdInput: document.getElementById('cmdInput'),
         viewContainers: {
@@ -83,7 +83,6 @@ function initDOM() {
         themeToggle: document.getElementById('themeToggle'),
     };
 }
-initDOM();
 
 // 计算分类统计
 function computeStats() {
