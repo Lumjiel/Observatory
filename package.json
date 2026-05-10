@@ -17,6 +17,7 @@
   "dependencies": {
     "@11ty/eleventy": "^3.0.0",
     "express": "^5.2.1",
+    "express-rate-limit": "^8.5.1",
     "gray-matter": "^4.0.3",
     "markdown-it": "^14.1.0",
     "marked": "^18.0.3",

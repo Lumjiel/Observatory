@@ -8,6 +8,7 @@ import livereload from 'livereload';
 import matter from 'gray-matter';
 import { randomUUID } from 'crypto';
 import { marked } from 'marked';
+import rateLimit from 'express-rate-limit';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, '..');
@@ -47,6 +48,47 @@ app.use((req, res, next) => {
   req.cookies = cookies;
   next();
 });
+
+// ============================================================
+// 速率限制（防止暴力破解）
+// ============================================================
+
+const loginLimiter = rateLimit({
+  windowMs: 60 * 1000, // 1分钟
+  max: 5, // 最多5次尝试
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: '请求过于频繁，请稍后再试' },
+});
+
+// ============================================================
+// 安全工具函数
+// ============================================================
+
+const VALID_CATEGORIES = ['tutorials', 'blog', 'essays', 'projects'];
+
+function escapeHtml(str) {
+  if (typeof str !== 'string') return str;
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x27;');
+}
+
+function validateCategory(category) {
+  return VALID_CATEGORIES.includes(category);
+}
+
+function safePath(baseDir, userPath) {
+  const normalized = path.normalize(userPath);
+  const resolved = path.resolve(baseDir, normalized);
+  if (!resolved.startsWith(baseDir)) {
+    return null; // 路径穿越尝试
+  }
+  return resolved;
+}
 
 // ============================================================
 // 文章数据读写（基于 articles.json 增量更新）
@@ -161,15 +203,15 @@ function renderLoginPage() {
 function renderAdminPage(articles) {
   const categoryLabels = { tutorials: '教程', blog: '博客', essays: '随笔', projects: '项目' };
   const categoryOptions = Object.entries(categoryLabels)
-    .map(([v, l]) => `<option value="${v}">${l}</option>`)
+    .map(([v, l]) => `<option value="${escapeHtml(v)}">${escapeHtml(l)}</option>`)
     .join('');
 
   const articleList = articles.map(a => `
-    <div class="article-item" data-slug="${a.slug}" onclick="loadArticle('${a.slug}')">
-      <div class="article-item-title">${a.title}</div>
+    <div class="article-item" data-slug="${escapeHtml(a.slug)}" onclick="loadArticle('${escapeHtml(a.slug)}')">
+      <div class="article-item-title">${escapeHtml(a.title || '')}</div>
       <div class="article-item-meta">
-        <span class="cat-tag cat-${a.category}">${categoryLabels[a.category] || a.category}</span>
-        <span>${a.tags.slice(0, 2).join(', ')}${a.tags.length > 2 ? '...' : ''}</span>
+        <span class="cat-tag cat-${escapeHtml(a.category || '')}">${escapeHtml(categoryLabels[a.category] || a.category || '')}</span>
+        <span>${escapeHtml(a.tags.slice(0, 2).join(', '))}${a.tags.length > 2 ? '...' : ''}</span>
       </div>
     </div>
   `).join('');
@@ -189,13 +231,14 @@ function renderAdminPage(articles) {
 // API 路由（认证相关放最前）
 // ============================================================
 
-app.post('/api/login', (req, res) => {
+app.post('/api/login', loginLimiter, (req, res) => {
   const { password } = req.body;
   if (password === PASSWORD) {
     res.cookie(COOKIE_NAME, AUTH_VALUE, {
       httpOnly: true,
       sameSite: 'strict',
       maxAge: 86400000,
+      secure: process.env.NODE_ENV === 'production',
     });
     res.json({ success: true });
   } else {
@@ -230,12 +273,16 @@ app.post('/api/articles', (req, res) => {
   if (!title || !category || !content) {
     return res.status(400).json({ error: '缺少必填字段' });
   }
+  if (!validateCategory(category)) {
+    return res.status(400).json({ error: '无效的分类' });
+  }
 
   const slug = title.toLowerCase().replace(/[^a-z0-9一-龥]+/g, '-').replace(/^-|-$/g, '');
   const filename = `${slug}.md`;
-  const filePath = path.join(ARTICLES_DIR, category, filename);
+  const safePath = safePath(ARTICLES_DIR, path.join(category, filename));
+  if (!safePath) return res.status(400).json({ error: '无效的路径' });
 
-  if (fs.existsSync(filePath)) {
+  if (fs.existsSync(safePath)) {
     return res.status(409).json({ error: '文章已存在' });
   }
 
@@ -249,7 +296,7 @@ app.post('/api/articles', (req, res) => {
     order: order || 0,
   });
 
-  fs.writeFileSync(filePath, frontmatter);
+  fs.writeFileSync(safePath, frontmatter);
   updateArticleIndex(slug, { title, category, tags, excerpt, readingTime, order });
 
   try {
@@ -444,11 +491,15 @@ app.post('/api/articles/batch-move', (req, res) => {
   if (!Array.isArray(slugs) || !targetCategory) {
     return res.status(400).json({ error: '需要 slugs 数组和 targetCategory' });
   }
+  if (!validateCategory(targetCategory)) {
+    return res.status(400).json({ error: '无效的分类' });
+  }
 
   slugs.forEach(({ slug }) => {
     const article = getArticle(slug);
     if (!article) return;
-    const newPath = path.join(ARTICLES_DIR, targetCategory, `${slug}.md`);
+    const safeNewPath = safePath(ARTICLES_DIR, path.join(targetCategory, `${slug}.md`));
+    if (!safeNewPath) return; // 路径穿越被阻止
     const oldPath = article.path;
     if (targetCategory !== article.category) {
       fs.mkdirSync(path.join(ARTICLES_DIR, targetCategory), { recursive: true });
@@ -457,7 +508,7 @@ app.post('/api/articles/batch-move', (req, res) => {
       const raw = fs.readFileSync(oldPath, 'utf-8');
       const { data, content } = matter(raw);
       const frontmatter = matter.stringify(content, { ...data, category: targetCategory });
-      fs.writeFileSync(newPath, frontmatter);
+      fs.writeFileSync(safeNewPath, frontmatter);
       fs.unlinkSync(oldPath);
     }
     updateArticleIndex(slug, { category: targetCategory });
