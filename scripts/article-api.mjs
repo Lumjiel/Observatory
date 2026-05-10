@@ -63,8 +63,8 @@ function saveArticlesIndex(articles) {
   fs.writeFileSync(ARTICLES_JSON, JSON.stringify(articles, null, 2));
 }
 
-function getArticlePath(slug, category) {
-  return path.join(ARTICLES_DIR, category, `${slug}.md`);
+function getArticlePath(entry) {
+  return path.join(ARTICLES_DIR, entry.category, entry.filename);
 }
 
 // 从 articles.json 读取列表（不含 content）
@@ -74,7 +74,7 @@ function listArticles() {
     category: a.category,
     title: a.title,
     tags: a.tags || [],
-    path: getArticlePath(a.slug, a.category),
+    path: getArticlePath(a),
   }));
 }
 
@@ -84,7 +84,7 @@ function getArticle(slug) {
   const entry = index.find(a => a.slug === slug);
   if (!entry) return null;
 
-  const filePath = getArticlePath(entry.slug, entry.category);
+  const filePath = getArticlePath(entry);
   if (!fs.existsSync(filePath)) return null;
 
   const raw = fs.readFileSync(filePath, 'utf-8');
@@ -226,7 +226,8 @@ app.post('/api/articles', (req, res) => {
   }
 
   const slug = title.toLowerCase().replace(/[^a-z0-9一-龥]+/g, '-').replace(/^-|-$/g, '');
-  const filePath = getArticlePath(slug, category);
+  const filename = `${slug}.md`;
+  const filePath = path.join(ARTICLES_DIR, category, filename);
 
   if (fs.existsSync(filePath)) {
     return res.status(409).json({ error: '文章已存在' });
@@ -242,6 +243,12 @@ app.post('/api/articles', (req, res) => {
   fs.writeFileSync(filePath, frontmatter);
   updateArticleIndex(slug, { title, category, tags });
 
+  try {
+    execSync('npx eleventy', { cwd: ROOT, stdio: 'inherit' });
+  } catch (e) {
+    console.error('[观测站] 重建失败:', e.message);
+  }
+
   if (DEV && lrServer) lrServer.refresh('/');
 
   res.json({ success: true, slug, path: filePath });
@@ -256,12 +263,11 @@ app.put('/api/articles/:slug', (req, res) => {
   if (!article) return res.status(404).json({ error: '文章不存在' });
 
   const newCategory = category || article.category;
-  const newPath = getArticlePath(slug, newCategory);
+  const newPath = path.join(ARTICLES_DIR, newCategory, `${slug}.md`);
+  const oldPath = article.path;
 
   if (category && category !== article.category) {
     fs.mkdirSync(path.join(ARTICLES_DIR, newCategory), { recursive: true });
-    fs.unlinkSync(article.path);
-    removeArticleIndex(slug, article.category);
   }
 
   const newContent = content !== undefined ? content : article.content;
@@ -272,13 +278,29 @@ app.put('/api/articles/:slug', (req, res) => {
     tags: tags !== undefined ? tags : article.tags,
   });
 
-  fs.writeFileSync(newPath, frontmatter);
+  try {
+    fs.writeFileSync(newPath, frontmatter);
+  } catch (e) {
+    return res.status(500).json({ error: '写入文件失败: ' + e.message });
+  }
 
+  // 如果路径变了（旧分类变到新分类，或者同分类但路径不同），删旧文件
+  if (newPath !== oldPath && fs.existsSync(oldPath)) {
+    fs.unlinkSync(oldPath);
+  }
+
+  // 增量更新索引：只更新已有条目，不新建
   updateArticleIndex(slug, {
     title: title || article.title,
     category: newCategory,
     tags: tags !== undefined ? tags : article.tags,
   });
+
+  try {
+    execSync('npx eleventy', { cwd: ROOT, stdio: 'inherit' });
+  } catch (e) {
+    console.error('[观测站] 重建失败:', e.message);
+  }
 
   if (DEV && lrServer) lrServer.refresh('/');
 
@@ -294,6 +316,12 @@ app.delete('/api/articles/:slug', (req, res) => {
 
   fs.unlinkSync(article.path);
   removeArticleIndex(slug, article.category);
+
+  try {
+    execSync('npx eleventy', { cwd: ROOT, stdio: 'inherit' });
+  } catch (e) {
+    console.error('[观测站] 重建失败:', e.message);
+  }
 
   if (DEV && lrServer) lrServer.refresh('/');
 
