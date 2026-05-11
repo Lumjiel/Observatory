@@ -1,4 +1,4 @@
-// 仪表盘渲染器
+// 仪表盘渲染器 - 列表布局
 import { state } from '../state.js';
 import { showView } from '../router.js';
 
@@ -6,130 +6,151 @@ export function renderDashboard() {
     const container = state.dom.viewContainers.dashboard;
     if (!container) return;
 
-    const { categoryStats, topTags, recentLogs, heatmapWeeks } = state;
+    const { categoryStats, feed, topTags } = state;
+    const githubData = window.GITHUB_DATA || {};
+    const contributions = githubData.contributions || {};
     const total = categoryStats.total;
-    const blogCount = categoryStats.blog;
-    const essaysCount = categoryStats.essays;
-    const tutorialsCount = categoryStats.tutorials;
-    const projectsCount = categoryStats.projects;
-    const maxSourceCount = Math.max(blogCount, essaysCount, tutorialsCount, projectsCount, 1);
-    const maxTag = topTags.length > 0 ? topTags[0][1] : 1;
 
-    const catLabelMap = { tutorials: '教程', blog: '博客', essays: '随笔', projects: '项目' };
-    const catColorMap = { tutorials: 'var(--blue)', blog: 'var(--green)', essays: 'var(--magenta)', projects: 'var(--amber)' };
-    const signalSection = `
-        <div class="dash-section">
-            <div class="dash-section-title">📡 信号源状态</div>
-            <div class="source-list">
-                <div class="source-row">
-                    <span class="source-dot" style="color:var(--green)">🟢</span>
-                    <span class="source-label">博客信号</span>
-                    <span class="source-count">${String(blogCount).padStart(2)}</span>
-                    <span class="source-bar">${'█'.repeat(Math.round(blogCount / maxSourceCount * 22))}${'░'.repeat(22 - Math.round(blogCount / maxSourceCount * 22))}</span>
-                </div>
-                <div class="source-row">
-                    <span class="source-dot" style="color:var(--magenta)">🟣</span>
-                    <span class="source-label">随笔信号</span>
-                    <span class="source-count">${String(essaysCount).padStart(2)}</span>
-                    <span class="source-bar">${'█'.repeat(Math.round(essaysCount / maxSourceCount * 22))}${'░'.repeat(22 - Math.round(essaysCount / maxSourceCount * 22))}</span>
-                </div>
-                <div class="source-row">
-                    <span class="source-dot" style="color:var(--blue)">🔵</span>
-                    <span class="source-label">教程信号</span>
-                    <span class="source-count">${String(tutorialsCount).padStart(2)}</span>
-                    <span class="source-bar">${'█'.repeat(Math.round(tutorialsCount / maxSourceCount * 22))}${'░'.repeat(22 - Math.round(tutorialsCount / maxSourceCount * 22))}</span>
-                </div>
-                <div class="source-row">
-                    <span class="source-dot" style="color:var(--amber)">🟠</span>
-                    <span class="source-label">项目信号</span>
-                    <span class="source-count">${String(projectsCount).padStart(2)}</span>
-                    <span class="source-bar">${'█'.repeat(Math.round(projectsCount / maxSourceCount * 22))}${'░'.repeat(22 - Math.round(projectsCount / maxSourceCount * 22))}</span>
-                </div>
+    // 热力图数据 - 全年
+    const today = new Date();
+    const yearStart = new Date(today.getFullYear(), 0, 1);
+    const yearEnd = new Date(today.getFullYear(), 11, 31);
+    const yearDays = [];
+    for (let d = new Date(yearStart); d <= yearEnd; d.setDate(d.getDate() + 1)) {
+        const dateStr = d.toISOString().slice(0, 10);
+        yearDays.push({ date: dateStr, count: contributions[dateStr] || 0, day: d.getDay() });
+    }
+
+    // 按月分组用于显示
+    const months = [];
+    let currentMonth = -1;
+    yearDays.forEach(day => {
+        const month = parseInt(day.date.slice(5, 7));
+        if (month !== currentMonth) {
+            months.push({ label: day.date.slice(0, 7), weeks: [] });
+            currentMonth = month;
+        }
+        if (months.length > 0) {
+            months[months.length - 1].weeks.push(day);
+        }
+    });
+
+    // 计算活跃率
+    const activeDays = yearDays.filter(d => d.count > 0).length;
+    const activityRate = Math.round((activeDays / yearDays.length) * 100);
+
+    const catConfig = [
+        { key: 'tutorials', label: '教程', count: categoryStats.tutorials, color: 'var(--blue)' },
+        { key: 'blog', label: '博客', count: categoryStats.blog, color: 'var(--green)' },
+        { key: 'essays', label: '随笔', count: categoryStats.essays, color: 'var(--magenta)' },
+        { key: 'projects', label: '项目', count: categoryStats.projects, color: 'var(--amber)' },
+    ];
+    const maxCount = Math.max(...Object.values(categoryStats), 1);
+
+    // 列表布局
+    container.innerHTML = `
+        <div class="mobile-dashboard">
+            <div class="mobile-header">
+                <span class="mobile-title">📡 信号遥测</span>
+                <span class="mobile-year">${today.getFullYear()}年</span>
             </div>
-            <div class="source-summary">📋 总计 ${total} 条信号 | 信号强度: 稳定</div>
-        </div>`;
 
-    // 标签星系
-    const tagGalaxySection = `
-        <div class="dash-section">
-            <div class="dash-section-title">🏷️ 标签星系</div>
-            <div class="tag-galaxy" id="tagGalaxy">
-                ${topTags.map(([tag, count], i) => {
-                    const opacity = 0.45 + (count / maxTag) * 0.55;
-                    const colors = ['var(--green)', 'var(--blue)', 'var(--amber)', 'var(--magenta)'];
-                    const color = colors[i % colors.length];
-                    const seed = tag.split('').reduce((a, c) => a + c.charCodeAt(0), 0);
-                    const x = 2 + (seed % 92);
-                    const y = 5 + ((seed * 7) % 85);
-                    const delay = (seed % 30) / 10;
-                    const duration = 3 + (seed % 20) / 10;
-                    const floatClass = count >= 2 ? 'float' : '';
-                    return `<span class="galaxy-tag ${floatClass}" data-tag="${tag}" onclick="filterByTag('${tag}')" style="left:${x}%;top:${y}%;color:${color};opacity:${opacity};--float-delay:${delay}s;--float-dur:${duration}s;">#${tag}</span>`;
-                }).join('')}
-            </div>
-        </div>`;
-
-    // GitHub 热力图
-    const dayLabels = ['Mon', '', 'Wed', '', 'Fri', '', ''];
-    const heatmapSection = `
-        <div class="dash-section">
-            <div class="dash-section-title">🔥 GitHub 贡献热力图 (近90天)</div>
-            <div class="heatmap-wrap">
-                <div class="heatmap-day-labels">
-                    ${dayLabels.map(d => `<div class="day-label">${d}</div>`).join('')}
-                </div>
-                <div class="heatmap-container">
-                    <div class="heatmap-grid">
-                        ${heatmapWeeks.map((week, wi) => `
-                            <div class="heatmap-col" style="grid-column:${wi + 1}">
-                                ${week.map(day => {
-                                    const level = day.count === 0 ? 0 : day.count <= 2 ? 1 : day.count <= 5 ? 2 : 3;
-                                    return `<div class="heatmap-cell" data-level="${level}" data-date="${day.date}" data-count="${day.count}" title="${day.date}: ${day.count}次"></div>`;
+            <div class="mobile-heatmap-compact">
+                <div class="heatmap-months">
+                    ${months.map(m => `
+                        <div class="heatmap-month">
+                            <div class="month-label">${parseInt(m.label.slice(5))}月</div>
+                            <div class="month-weeks">
+                                ${Array.from({length: Math.ceil(m.weeks.length / 7)}, (_, wi) => {
+                                    const weekDays = m.weeks.slice(wi * 7, wi * 7 + 7);
+                                    return `<div class="week-col">${weekDays.map(d => {
+                                        const level = d.count === 0 ? 0 : d.count <= 2 ? 1 : d.count <= 5 ? 2 : 3;
+                                        return `<div class="strip-cell level${level}" title="${d.date}: ${d.count}次"></div>`;
+                                    }).join('')}</div>`;
                                 }).join('')}
                             </div>
-                        `).join('')}
-                    </div>
+                        </div>
+                    `).join('')}
                 </div>
             </div>
-            <div class="heatmap-legend">
-                <span>少</span>
-                <div class="heatmap-cell" data-level="0"></div>
-                <div class="heatmap-cell" data-level="1"></div>
-                <div class="heatmap-cell" data-level="2"></div>
-                <div class="heatmap-cell" data-level="3"></div>
-                <span>多</span>
+
+            <div class="mobile-table">
+                <div class="table-header">
+                    <span>分类</span>
+                    <span>信号数</span>
+                    <span>强度</span>
+                </div>
+                ${catConfig.map(c => {
+                    const barLen = 10;
+                    const filled = Math.round((c.count / maxCount) * barLen);
+                    const bar = '█'.repeat(filled) + '░'.repeat(barLen - filled);
+                    return `
+                        <div class="table-row" data-category="${c.key}">
+                            <span class="row-cat"><span class="cat-dot" style="background:${c.color}"></span>${c.label}</span>
+                            <span class="row-count">${c.count}</span>
+                            <span class="row-bar" style="color:${c.color}">${bar}</span>
+                        </div>
+                        <div class="table-detail" id="detail-${c.key}">
+                            <div class="detail-content">
+                                <div class="detail-item"><span>信号数：</span><em>${c.count}</em></div>
+                                <div class="detail-item"><span>占比：</span><em>${Math.round(c.count / total * 100)}%</em></div>
+                                <div class="detail-item"><span>热门标签：</span><em>${getTopTagsForCategory(c.key, topTags)}</em></div>
+                            </div>
+                        </div>
+                    `;
+                }).join('')}
+            </div>
+
+            <div class="mobile-total">
+                <span class="total-dot"></span>
+                <span>总信号：<em>${total}</em></span>
+                <span class="total-rate">活跃${activityRate}%</span>
+            </div>
+
+            <div class="mobile-section">
+                <div class="mobile-section-title">📡 最近活跃</div>
+                <div class="recent-list">
+                    ${feed.slice(0, 6).map(a => `
+                        <a class="recent-item" href="${a.href}">
+                            <span class="recent-cat" style="color:${catConfig.find(c => c.key === a.category)?.color || 'var(--gray)'}">${catConfig.find(c => c.key === a.category)?.label || a.category}</span>
+                            <span class="recent-title">${a.description.length > 14 ? a.description.slice(0, 14) + '...' : a.description}</span>
+                        </a>
+                    `).join('')}
+                </div>
+            </div>
+
+            <div class="mobile-section">
+                <div class="mobile-section-title">🏷️ 热门标签</div>
+                <div class="tag-cloud">
+                    ${topTags.slice(0, 8).map(([tag, count]) => `
+                        <span class="tag-item" data-tag="${tag}">#${tag}<span class="tag-count">${count}</span></span>
+                    `).join('')}
+                </div>
             </div>
         </div>`;
 
-    // 最近记录表
-    const recentSection = `
-        <div class="dash-section">
-            <div class="dash-section-title">📡 最近信号接收记录</div>
-            <div class="recent-table-wrap">
-                <table class="recent-table">
-                    <thead><tr><th>时间</th><th>类型</th><th>内容</th><th>标签</th></tr></thead>
-                    <tbody>
-                        ${recentLogs.map(log => `
-                            <tr>
-                                <td>${log.timestamp.slice(0, 10)}</td>
-                                <td style="color:${catColorMap[log.typeLabel]}">${catLabelMap[log.typeLabel]}</td>
-                                <td class="recent-desc"><a href="${log.href}">${log.description.slice(0, 20)}</a></td>
-                                <td>${log.tags.slice(0, 1).map(t => '#' + t).join('')}</td>
-                            </tr>
-                        `).join('')}
-                    </tbody>
-                </table>
-            </div>
-        </div>`;
+    // 绑定展开事件
+    document.querySelectorAll('.table-row').forEach(row => {
+        row.addEventListener('click', function() {
+            const cat = this.dataset.category;
+            const detail = document.getElementById('detail-' + cat);
+            if (detail) {
+                detail.classList.toggle('open');
+            }
+        });
+    });
 
-    container.innerHTML = `
-        <div class="dashboard-container">
-            <div class="dash-header">📊 观测站仪表盘</div>
-            ${signalSection}
-            ${tagGalaxySection}
-            ${recentSection}
-            ${heatmapSection}
-        </div>`;
+    // 绑定标签点击
+    document.querySelectorAll('.tag-item').forEach(el => {
+        el.addEventListener('click', function() {
+            window.executeCommand('grep ' + this.dataset.tag);
+        });
+    });
 
     showView('dashboard');
+}
+
+function getTopTagsForCategory(category, topTags) {
+    // 返回前3个热门标签
+    return topTags.slice(0, 3).map(([t]) => '#' + t).join(' ') || '无';
 }
