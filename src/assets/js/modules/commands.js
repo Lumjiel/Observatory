@@ -35,9 +35,10 @@ const commands = {
         showView('log');
     },
 
-    status() { renderDashboard(); },
+    stats() { renderDashboard(); },
     dashboard() { renderDashboard(); },
 
+    repo() { renderErrors(); },
     errors() { renderErrors(); },
     milestones() { renderMilestones(); },
     projects() { renderProjects(); },

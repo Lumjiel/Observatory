@@ -9,7 +9,6 @@ import { renderSidebarSkills, renderRecentErrors, renderQuote } from './modules/
 
 import { initCommandInput } from './modules/events/input.js';
 import { initKeyboard } from './modules/events/keyboard.js';
-import { initMobileNav } from './modules/events/mobile.js';
 
 function initTheme() {
     const saved = localStorage.getItem('terminal-theme');
@@ -72,7 +71,6 @@ try {
 
     initCommandInput();
     initKeyboard();
-    initMobileNav();
 
     renderLogStream();
     showView('log');

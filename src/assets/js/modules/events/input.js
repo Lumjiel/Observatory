@@ -3,11 +3,29 @@ import { state, saveCommandHistory } from '../state.js';
 import { executeCommand } from '../commands.js';
 
 export function initCommandInput() {
-    const { cmdInput } = state.dom;
+    const { cmdInput, mobileCmdInput } = state.dom;
     const { tagCounts } = state;
-    if (!cmdInput) return;
 
-    cmdInput.addEventListener('keydown', function(e) {
+    // 桌面端输入框
+    if (cmdInput) {
+        cmdInput.addEventListener('keydown', handleKeyDown);
+    }
+
+    // 移动端输入框
+    if (mobileCmdInput) {
+        mobileCmdInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                const cmd = this.value.trim();
+                if (cmd) {
+                    executeCommand(cmd);
+                }
+                this.value = '';
+            }
+        });
+    }
+
+    // Tab 补全
+    function handleKeyDown(e) {
         if (e.key === 'Enter') {
             const cmd = this.value.trim();
             if (cmd) {
@@ -36,7 +54,7 @@ export function initCommandInput() {
         } else if (e.key === 'Tab') {
             e.preventDefault();
             const val = this.value.toLowerCase();
-            const commands = ['filter', 'grep', 'status', 'dashboard', 'errors', 'milestones', 'skills', 'neofetch', 'about', 'help', 'clear', 'theme', 'export', '/admin'];
+            const commands = ['filter', 'grep', 'stats', 'repo', 'milestones', 'skills', 'neofetch', 'about', 'help', 'clear', 'theme', 'export', '/admin'];
             const allTags = Object.keys(tagCounts);
             const parts = this.value.split(/\s+/);
             if (parts.length === 1) {
@@ -59,5 +77,5 @@ export function initCommandInput() {
                 if (match) this.value = parts[0] + ' ' + match + ' ';
             }
         }
-    });
+    }
 }

@@ -59,8 +59,8 @@ export const state = {
     // DOM 引用
     dom: {
         cmdInput: null,
+        mobileCmdInput: null,
         viewContainers: {},
-        mobileNav: null,
         themeToggle: null,
     }
 };
@@ -69,6 +69,7 @@ export const state = {
 export function initDOM() {
     state.dom = {
         cmdInput: document.getElementById('cmdInput'),
+        mobileCmdInput: document.getElementById('mobileCmdInput'),
         viewContainers: {
             log: document.getElementById('view-log'),
             dashboard: document.getElementById('view-dashboard'),
@@ -79,7 +80,6 @@ export function initDOM() {
             about: document.getElementById('view-about'),
             help: document.getElementById('view-help'),
         },
-        mobileNav: document.getElementById('mobileNav'),
         themeToggle: document.getElementById('themeToggle'),
     };
 }

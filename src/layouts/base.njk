@@ -33,7 +33,10 @@
             <span class="cmd-hint">↑↓ 历史 | Tab 补全 | Enter 执行</span>
         </div>
 
-        
+        <div class="mobile-cmd-area" id="mobileCmd">
+            <input type="text" class="mobile-cmd-input" id="mobileCmdInput" placeholder="/stats /repo /log ...">
+        </div>
+
         <div class="content-layout">
             <div class="main-content">
                 {{ content | safe }}
@@ -55,13 +58,6 @@
             </aside>
         </div>
     </div>
-
-    <nav class="mobile-nav" id="mobileNav">
-        <button data-view="log"><span class="nav-icon">📡</span>信号</button>
-        <button data-view="dashboard"><span class="nav-icon">✨</span>星系</button>
-        <button data-view="errors"><span class="nav-icon">🛰️</span>外部信号</button>
-        <button data-view="about"><span class="nav-icon">⚙️</span>系统</button>
-    </nav>
 
     <script>
         window.ARTICLES_DATA = {{ collections.articles | jsonify | safe }};
