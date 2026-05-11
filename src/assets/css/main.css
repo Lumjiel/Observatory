@@ -198,12 +198,6 @@ body.light .status-bar {
     }
 }
 
-.signal-overview {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap: 0.8rem;
-    margin-bottom: 1.5rem;
-}
 
 .content-layout {
     display: grid;
@@ -287,64 +281,6 @@ body.light .status-bar {
     border-left: 2px solid var(--magenta-dim);
     padding-left: 0.6rem;
     font-family: var(--font-sans);
-}
-.signal-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 1rem;
-    min-height: 100px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    cursor: pointer;
-    transition: all var(--transition);
-    position: relative;
-    overflow: hidden;
-}
-.signal-card:hover {
-    border-color: var(--border-active);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-}
-.signal-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 0;
-    height: 100%;
-    transition: width var(--transition);
-}
-.signal-card.green::before { background: var(--green); }
-.signal-card.amber::before { background: var(--amber); }
-.signal-card.magenta::before { background: var(--magenta); }
-.signal-card.blue::before { background: var(--blue); }
-.signal-card:hover::before { width: 6px; }
-.signal-card .sig-value {
-    font-size: 2rem;
-    font-weight: 700;
-    color: var(--text);
-    display: block;
-    margin-bottom: 0.2rem;
-}
-.signal-card.green .sig-value { color: var(--green); }
-.signal-card.amber .sig-value { color: var(--amber); }
-.signal-card.magenta .sig-value { color: var(--magenta); }
-.signal-card.blue .sig-value { color: var(--blue); }
-.signal-card .sig-label {
-    font-size: 0.7rem;
-    color: var(--gray);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-}
-.signal-card.active {
-    border-color: var(--green);
-    background: rgba(0, 200, 150, 0.06);
-}
-.signal-card.active::before {
-    width: 6px;
-    background: var(--green) !important;
 }
 
 .command-area {
@@ -686,10 +622,6 @@ body.light .status-bar {
 
 .dash-footer { color: var(--green); font-size: 0.8rem; padding: 0.5rem 0; }
 
-/* dashboard container */
-.dashboard-container { padding: 0.75rem; max-width: 900px; margin: 0 auto; }
-.dash-header { color: var(--green); font-size: 0.85rem; font-weight: 600; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border); }
-
 /* source list (horizontal bar style) */
 .source-list { display: flex; flex-direction: column; gap: 0.35rem; }
 .source-row { display: flex; align-items: center; gap: 0.5rem; font-size: 0.82rem; }
@@ -825,10 +757,7 @@ body.light .status-bar {
     .command-area {
         display: none;
     }
-    .signal-overview {
-        display: none;
-    }
-    .events-header {
+        .events-header {
         display: none;
     }
     body.view-log-active .events-header {
@@ -872,21 +801,7 @@ body.light .status-bar {
     .dashboard-grid {
         grid-template-columns: 1fr;
     }
-    .signal-overview {
-        grid-template-columns: 1fr;
-        gap: 0.5rem;
-    }
-    .signal-card {
-        padding: 0.6rem 0.8rem;
-        min-height: 60px;
-    }
-    .signal-card .sig-value {
-        font-size: 1.5rem;
-    }
-    .signal-card .sig-label {
-        font-size: 0.65rem;
-    }
-    .article-content table {
+        .article-content table {
         display: block;
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;

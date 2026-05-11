@@ -1,3 +1,10 @@
+---
+title: Spring容器启动流程
+date: 2026-05-10T01:03:37.995Z
+category: tutorials
+tags: Spring 源码, Spring 容器启动
+---
+
 本文基于Spring Framework源码，以「AnnotationConfigApplicationContext」为入口（Java Config方式），全面拆解Spring容器启动的完整流程，包含初始化、配置类注册、容器刷新三大核心步骤，结合源码逐句分析关键逻辑，补充核心概念、扩展知识点及实战关联，助力深入理解Spring底层原理。
 
 **核心前提**：Spring容器启动的本质是「创建BeanFactory、注册BeanDefinition、初始化Bean、建立依赖关系」的过程。无论是Java Config（AnnotationConfigApplicationContext）还是XML配置（ClassPathXmlApplicationContext），核心流程一致，均继承自AbstractApplicationContext，核心方法refresh()定义于此类中。

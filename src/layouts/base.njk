@@ -33,8 +33,7 @@
             <span class="cmd-hint">↑↓ 历史 | Tab 补全 | Enter 执行</span>
         </div>
 
-        <div class="signal-overview" id="signalOverview"></div>
-
+        
         <div class="content-layout">
             <div class="main-content">
                 {{ content | safe }}
@@ -69,6 +68,6 @@
         window.SITE_DATA = {{ site | jsonify | safe }};
         window.GITHUB_DATA = {{ github | jsonify | safe }};
     </script>
-    <script src="/assets/js/bundle.js"></script>
+    <script src="/assets/js/bundle.js" defer></script>
 </body>
 </html>

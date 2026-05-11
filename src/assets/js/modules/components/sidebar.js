@@ -8,6 +8,7 @@ export function renderSidebarSkills() {
     const cats = [
         { name: '教程', count: categoryStats.tutorials, color: 'green' },
         { name: '博客', count: categoryStats.blog, color: 'blue' },
+        { name: '随笔', count: categoryStats.essays, color: 'magenta' },
         { name: '项目', count: categoryStats.projects, color: 'amber' },
     ];
     const total = categoryStats.total;

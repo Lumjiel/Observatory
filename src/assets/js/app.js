@@ -1,38 +1,15 @@
-// ============================================================
-// 终端观测站 - 主入口
-// ============================================================
-
 import { state, initDOM } from './modules/state.js';
 import { showView, handleHashRoute } from './modules/router.js';
 import { generateParticles } from './modules/utils/particles.js';
 import { formatUptime } from './modules/utils/text.js';
 
-// 渲染器
 import { renderLogStream } from './modules/renderers/logStream.js';
-import { renderDashboard } from './modules/renderers/dashboard.js';
-import { renderErrors } from './modules/renderers/errors.js';
-import { renderMilestones } from './modules/renderers/milestones.js';
-import { renderProjects } from './modules/renderers/projects.js';
-import { renderSkillsView } from './modules/renderers/skills.js';
-import { renderHelp } from './modules/renderers/help.js';
-import { renderAbout } from './modules/renderers/about.js';
-
-// 组件
-import { renderSignalOverview } from './modules/components/signalOverview.js';
 import { renderFilterChips } from './modules/components/filterChips.js';
 import { renderSidebarSkills, renderRecentErrors, renderQuote } from './modules/components/sidebar.js';
 
-// 事件
 import { initCommandInput } from './modules/events/input.js';
 import { initKeyboard } from './modules/events/keyboard.js';
 import { initMobileNav } from './modules/events/mobile.js';
-
-// 命令（注入渲染器）
-import { setRenderers } from './modules/commands.js';
-
-// ============================================================
-// 初始化
-// ============================================================
 
 function initTheme() {
     const saved = localStorage.getItem('terminal-theme');
@@ -56,7 +33,6 @@ function updateStatusBar() {
     if (activeCount) activeCount.textContent = '📋 ' + state.feed.length + '篇文章';
 }
 
-// 面包屑导航
 document.querySelectorAll('.breadcrumb-category').forEach(function(link) {
     link.addEventListener('click', function(e) {
         e.preventDefault();
@@ -71,7 +47,6 @@ document.querySelectorAll('.breadcrumb-category').forEach(function(link) {
     });
 });
 
-// 主题切换
 const themeToggle = state.dom.themeToggle;
 if (themeToggle) {
     themeToggle.addEventListener('click', function() {
@@ -82,44 +57,13 @@ if (themeToggle) {
     });
 }
 
-// hash 路由处理
-window.addEventListener('hashchange', () => {
-    handleHashRoute({
-        renderLogStream,
-        renderDashboard,
-        renderErrors,
-        renderMilestones,
-        renderProjects,
-        renderSkillsView,
-        renderAbout,
-        renderHelp
-    });
-});
-
-// ============================================================
-// 启动
-// ============================================================
+window.addEventListener('hashchange', handleHashRoute);
 
 try {
     initDOM();
-    setRenderers({
-        renderLogStream,
-        renderFilterChips,
-        renderSignalOverview,
-        renderDashboard,
-        renderErrors,
-        renderMilestones,
-        renderProjects,
-        renderSkillsView,
-        renderAbout,
-        renderHelp,
-        showView
-    });
-
     initTheme();
     generateParticles();
-    renderSignalOverview();
-    renderFilterChips();
+        renderFilterChips();
     renderSidebarSkills();
     renderRecentErrors();
     renderQuote();
@@ -132,16 +76,7 @@ try {
 
     renderLogStream();
     showView('log');
-    handleHashRoute({
-        renderLogStream,
-        renderDashboard,
-        renderErrors,
-        renderMilestones,
-        renderProjects,
-        renderSkillsView,
-        renderAbout,
-        renderHelp
-    });
+    handleHashRoute();
 } catch(e) {
     console.error(e);
 } finally {

@@ -1,63 +1,63 @@
-// 命令执行器
 import { state, setActiveFilter, setActiveKeyword, clearFilterCache } from './state.js';
 import { playClickSound } from './utils/audio.js';
+import { renderLogStream } from './renderers/logStream.js';
+import { renderDashboard } from './renderers/dashboard.js';
+import { renderErrors } from './renderers/errors.js';
+import { renderMilestones } from './renderers/milestones.js';
+import { renderProjects } from './renderers/projects.js';
+import { renderSkillsView } from './renderers/skills.js';
+import { renderAbout } from './renderers/about.js';
+import { renderHelp } from './renderers/help.js';
+import { renderFilterChips } from './components/filterChips.js';
+import { showView } from './router.js';
 
-// 渲染器通过 setRenderers 注入
-let renderers = {};
+const VALID_CATEGORIES = ['all', 'tutorials', 'blog', 'essays', 'projects'];
 
-export function setRenderers(r) {
-    renderers = r;
-}
-
-export function executeCommand(cmdStr) {
-    playClickSound();
-    const parts = cmdStr.trim().split(/\s+/);
-    const cmd = parts[0].toLowerCase();
-    const arg = parts.slice(1).join(' ');
-
-    if (cmd === 'filter') {
+const commands = {
+    filter(arg) {
         const cat = arg.toLowerCase();
-        if (['all', 'tutorials', 'blog', 'essays', 'projects'].includes(cat)) {
-            clearFilterCache();
-            setActiveFilter(cat === 'all' ? null : cat);
-            setActiveKeyword(null);
-            renderers.renderLogStream?.(state.activeFilter);
-            renderers.renderFilterChips?.();
-            renderers.renderSignalOverview?.();
-            renderers.showView?.('log');
-        }
-    } else if (cmd === 'grep') {
-        if (arg) {
-            clearFilterCache();
-            setActiveKeyword(arg);
-            setActiveFilter(null);
-            renderers.renderLogStream?.(null, arg);
-            renderers.renderFilterChips?.();
-            renderers.showView?.('log');
-        }
-    } else if (cmd === 'status' || cmd === 'dashboard') {
-        renderers.renderDashboard?.();
-    } else if (cmd === 'errors') {
-        renderers.renderErrors?.();
-    } else if (cmd === 'milestones') {
-        renderers.renderMilestones?.();
-    } else if (cmd === 'projects') {
-        renderers.renderProjects?.();
-    } else if (cmd === 'skills' || cmd === 'neofetch') {
-        renderers.renderSkillsView?.();
-    } else if (cmd === 'about') {
-        renderers.renderAbout?.();
-    } else if (cmd === 'help') {
-        renderers.renderHelp?.();
-    } else if (cmd === 'clear') {
+        if (!VALID_CATEGORIES.includes(cat)) return;
+        clearFilterCache();
+        setActiveFilter(cat === 'all' ? null : cat);
+        setActiveKeyword(null);
+        renderLogStream(state.activeFilter);
+        renderFilterChips();
+                showView('log');
+    },
+
+    grep(arg) {
+        if (!arg) return;
+        clearFilterCache();
+        setActiveKeyword(arg);
+        setActiveFilter(null);
+        renderLogStream(null, arg);
+        renderFilterChips();
+        showView('log');
+    },
+
+    status() { renderDashboard(); },
+    dashboard() { renderDashboard(); },
+
+    errors() { renderErrors(); },
+    milestones() { renderMilestones(); },
+    projects() { renderProjects(); },
+
+    skills() { renderSkillsView(); },
+    neofetch() { renderSkillsView(); },
+
+    about() { renderAbout(); },
+    help() { renderHelp(); },
+
+    clear() {
         clearFilterCache();
         setActiveFilter(null);
         setActiveKeyword(null);
-        renderers.renderLogStream?.();
-        renderers.renderFilterChips?.();
-        renderers.renderSignalOverview?.();
-        renderers.showView?.('log');
-    } else if (cmd === 'theme') {
+        renderLogStream();
+        renderFilterChips();
+                showView('log');
+    },
+
+    theme(arg) {
         if (arg === 'dark') {
             document.body.classList.remove('light');
             localStorage.setItem('terminal-theme', 'dark');
@@ -65,8 +65,12 @@ export function executeCommand(cmdStr) {
             document.body.classList.add('light');
             localStorage.setItem('terminal-theme', 'light');
         }
-    } else if (cmd === 'export') {
-        const data = state.activeFilter ? state.feed.filter(l => l.typeLabel === state.activeFilter) : state.feed;
+    },
+
+    export(arg) {
+        const data = state.activeFilter
+            ? state.feed.filter(l => l.typeLabel === state.activeFilter)
+            : state.feed;
         if (arg === 'json') {
             const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
             const a = document.createElement('a');
@@ -74,14 +78,28 @@ export function executeCommand(cmdStr) {
             a.download = 'articles-export.json';
             a.click();
         } else {
-            const text = data.map(l => '[' + l.typeLabel + '] ' + l.timestamp + ' ' + l.description).join('\n');
+            const text = data.map(l => `[${l.typeLabel}] ${l.timestamp} ${l.description}`).join('\n');
             const a = document.createElement('a');
             a.href = URL.createObjectURL(new Blob([text], { type: 'text/plain' }));
             a.download = 'articles-export.txt';
             a.click();
         }
-    } else if (cmd === '/admin') {
+    },
+
+    '/admin'() {
         window.location.href = '/admin';
+    }
+};
+
+export function executeCommand(cmdStr) {
+    playClickSound();
+    const parts = cmdStr.trim().split(/\s+/);
+    const cmd = parts[0].toLowerCase();
+    const arg = parts.slice(1).join(' ');
+
+    const handler = commands[cmd];
+    if (handler) {
+        handler(arg);
     }
 }
 
