@@ -16,6 +16,7 @@ const CATEGORY_LABELS = {
 export default function(eleventyConfig) {
   eleventyConfig.addPassthroughCopy("src/assets");
   eleventyConfig.addPassthroughCopy("src/img");
+  eleventyConfig.addPassthroughCopy("content/images");
 
   eleventyConfig.addFilter("jsonify", (data) => JSON.stringify(data));
 
@@ -39,7 +40,7 @@ export default function(eleventyConfig) {
   });
 
   eleventyConfig.addShortcode('articleContent', function(filename, category) {
-    const filePath = path.join(process.cwd(), 'src', 'articles', category, filename);
+    const filePath = path.join(process.cwd(), 'content', 'articles', category, filename);
     if (fs.existsSync(filePath)) {
       const raw = fs.readFileSync(filePath, 'utf-8');
       const { content } = matter(raw);

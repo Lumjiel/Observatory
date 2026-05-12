@@ -12,8 +12,10 @@ import rateLimit from 'express-rate-limit';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, '..');
-const ARTICLES_DIR = path.join(ROOT, 'src', 'articles');
+const CONTENT_DIR = path.join(ROOT, 'content');
+const ARTICLES_DIR = path.join(CONTENT_DIR, 'articles');
 const ARTICLES_JSON = path.join(ROOT, 'src', 'articles', '_data', 'articles.json');
+const IMAGES_DIR = path.join(CONTENT_DIR, 'images');
 const SITE_DIR = path.join(ROOT, '_site');
 const PORT = process.env.PORT || 8080;
 const ADMIN_PATH = process.env.ADMIN_PATH || '/admin';
@@ -408,6 +410,41 @@ app.get('/api/preview', (req, res) => {
   if (!checkAuth(req)) return res.status(401).json({ error: 'Unauthorized' });
   const { content } = req.query;
   res.json({ html: content ? marked.parse(content) : '' });
+});
+
+// 图片上传
+app.post('/api/upload-image', (req, res) => {
+  if (!checkAuth(req)) return res.status(401).json({ error: 'Unauthorized' });
+  const { image, slug, year } = req.body;
+  if (!image) return res.status(400).json({ error: '缺少图片数据' });
+
+  const targetYear = year || new Date().getFullYear().toString();
+  const targetSlug = slug || 'misc';
+  const uploadDir = path.join(IMAGES_DIR, targetYear, targetSlug);
+
+  try {
+    fs.mkdirSync(uploadDir, { recursive: true });
+  } catch (e) {
+    return res.status(500).json({ error: '创建目录失败' });
+  }
+
+  // 解析 base64 数据
+  const matches = image.match(/^data:image\/(\w+);base64,(.+)$/);
+  if (!matches) return res.status(400).json({ error: '无效的图片格式' });
+
+  const ext = matches[1];
+  const data = matches[2];
+  const filename = `${Date.now()}.${ext}`;
+  const filePath = path.join(uploadDir, filename);
+
+  try {
+    fs.writeFileSync(filePath, Buffer.from(data, 'base64'));
+  } catch (e) {
+    return res.status(500).json({ error: '保存图片失败' });
+  }
+
+  const imagePath = `/img/${targetYear}/${targetSlug}/${filename}`;
+  res.json({ success: true, path: imagePath });
 });
 
 // 文章复制

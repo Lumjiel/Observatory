@@ -1,93 +1,144 @@
 [
   {
-    "id": "article_1778230484902_lrpdq",
-    "slug": "terminal-blog-observatory",
-    "title": "终端博客系统搭建记录",
-    "category": "projects",
-    "tags": [
-      "项目",
-      "Eleventy",
-      "Web"
-    ],
-    "excerpt": "基于 Eleventy 的静态博客，终端风格界面。",
-    "readingTime": "30 min",
-    "date": "2026-05-12",
-    "filename": "terminal-blog-observatory.md",
-    "source": "manual",
-    "sourceLogId": null,
-    "status": "published"
-  },
-  {
-    "id": "article_1778230484887_gp20i",
+    "id": "article_0b4264c0-bd30-4e90-801a-bc8b2d94ab41",
     "slug": "android-开发环境搭建完整笔记",
     "title": "Android 开发环境搭建完整笔记",
-    "category": "tech",
+    "category": "tutorials",
     "tags": [
       "jdk17"
     ],
     "excerpt": "一、安装 JDK（Java 开发工具包）\n\n1. 提前准备：创建专用文件夹\n\n- **操作步骤**：\n    \n    1. 在非 C 盘（如 F 盘）创建多层文件夹，示例路径：`F:\\Chengxusheji\\Android`\n    2. 在该文件夹下再创建 3 个子文件夹：`software`...",
     "readingTime": "13 min",
-    "date": "2026-05-08",
+    "date": "2026-05-12",
     "filename": "Android 开发环境搭建完整笔记.md",
     "source": "manual",
     "sourceLogId": null,
     "status": "published"
   },
   {
-    "id": "article_1778230484888_eq30y",
-    "slug": "aop切面编程",
-    "title": "AOP切面编程",
-    "category": "tech",
-    "tags": [
-      "AOP切面编程"
-    ],
-    "excerpt": "一、AOP核心认知\n\n1.1 什么是AOP？\n\nAOP（Aspect-Oriented Programming，面向切面编程）是一种补充OOP（面向对象编程）的编程思想。OOP以“类/对象”为核心，将功能封装为垂直的模块；而AOP则针对“横切关注点”（贯穿多个模块、与核心业务无关的功能），将其抽离为...",
-    "readingTime": "23 min",
-    "date": "2026-05-08",
-    "filename": "AOP切面编程.md",
-    "source": "manual",
-    "sourceLogId": null,
-    "status": "published"
-  },
-  {
-    "id": "article_1778230484890_jaadt",
+    "id": "article_fbedc3ca-c582-4143-85f9-087c04aed6d2",
     "slug": "flutter-环境配置",
     "title": "Flutter 环境配置",
-    "category": "tech",
+    "category": "tutorials",
     "tags": [
       "Flutter",
       "环境配置"
     ],
     "excerpt": "一、前置准备：明确依赖与下载工具\n\n1. 必备依赖清单\n\n- 操作系统：Windows 10/11（64 位）\n- 基础工具：\n    - Android Studio（用于 Android SDK、模拟器、开发工具支持）\n    - Flutter SDK（核心开发框架）\n    - Git（可选...",
     "readingTime": "12 min",
-    "date": "2026-05-08",
+    "date": "2026-05-12",
     "filename": "Flutter 环境配置.md",
     "source": "manual",
     "sourceLogId": null,
     "status": "published"
   },
   {
-    "id": "article_1778230484890_oxhvi",
+    "id": "article_99f92684-dd6a-490a-88f5-d94e8e44b151",
+    "slug": "maven配置",
+    "title": "Maven配置",
+    "category": "tutorials",
+    "tags": [
+      "Maven配置"
+    ],
+    "excerpt": "一、Maven 简介\n\nMaven 是基于项目对象模型（POM）的项目管理与自动化构建工具，核心功能为**依赖管理**和**项目构建自动化**。\n\n- 主要支持 Java 平台，也兼容其他编程语言（如 Scala、Kotlin 等）\n    \n- 可通过简单配置完成项目构建、文档生成、报告输出、依赖...",
+    "readingTime": "15 min",
+    "date": "2026-05-12",
+    "filename": "Maven配置.md",
+    "source": "manual",
+    "sourceLogId": null,
+    "status": "published"
+  },
+  {
+    "id": "article_20eff2f6-4934-4913-919e-3a37622380e3",
+    "slug": "mysql配置",
+    "title": "MySql配置",
+    "category": "tutorials",
+    "tags": [
+      "MySql配置"
+    ],
+    "excerpt": "0. 卸载旧版 MySQL（关键！80% 安装失败源于此）\n\n如果电脑之前装过 MySQL，必须彻底卸载干净，否则会导致新安装启动失败！\n\n检查是否有旧版残留\n\n1. 查看安装路径：默认路径一般是 `C:\\Program Files\\MySQL` 或 `D:\\Program Files\\MySQL`...",
+    "readingTime": "11 min",
+    "date": "2026-05-12",
+    "filename": "MySql配置.md",
+    "source": "manual",
+    "sourceLogId": null,
+    "status": "published"
+  },
+  {
+    "id": "article_a38a2044-cbe6-4bdd-8c15-a59bee414eaf",
+    "slug": "node-js-vue-完整安装配置",
+    "title": "Node.js + Vue 完整安装配置",
+    "category": "tutorials",
+    "tags": [
+      "Node",
+      "js",
+      "Vue",
+      "完整安装配置"
+    ],
+    "excerpt": "一、前置知识：Node.js 和 Vue 是什么？有什么用？\n\n1. Node.js\n\n- **是什么**：简单说，Node.js 是一个能让 JavaScript 脱离浏览器运行的环境（基于 Chrome 的 V8 引擎）。原本 JS 只能在网页里写交互效果，有了 Node.js 后，能直接在电脑...",
+    "readingTime": "14 min",
+    "date": "2026-05-12",
+    "filename": "Node.js + Vue 完整安装配置.md",
+    "source": "manual",
+    "sourceLogId": null,
+    "status": "published"
+  },
+  {
+    "id": "article_f04f80d7-8d38-44f4-ae7a-c59b02092ed7",
+    "slug": "sql-server配置",
+    "title": "SQL Server配置",
+    "category": "tutorials",
+    "tags": [
+      "SQL",
+      "Server配置"
+    ],
+    "excerpt": "一、SQL Server 基础操作\n\n1. 新建数据库\n\n在 SQL Server Management Studio（SSMS）的对象资源管理器中：\n\n- 右键 “数据库” 文件夹；\n- 选择 “新建数据库”；\n- 输入数据库名称，确认默认配置（或自定义数据 / 日志文件），点击 “确定”。\n\n2...",
+    "readingTime": "4 min",
+    "date": "2026-05-12",
+    "filename": "SQL Server配置.md",
+    "source": "manual",
+    "sourceLogId": null,
+    "status": "published"
+  },
+  {
+    "id": "article_e784796c-d017-4f9c-9692-cbb1f79cf15c",
     "slug": "java-值传递",
     "title": "Java 值传递",
-    "category": "tech",
+    "category": "blog",
     "tags": [
       "Java",
       "值传递"
     ],
     "excerpt": "一、问题引入：一段 “语法正确但逻辑失效” 的代码\n\n1. 问题场景\n\n实现 “查找二叉搜索树（BST）中第 k 小元素” 功能，以下代码编译无报错，但运行结果始终错误（返回 0）：\n\n\n```\nclass TreeNode {\n    int val;\n    TreeNode left;\n   ...",
     "readingTime": "10 min",
-    "date": "2026-05-08",
+    "date": "2026-05-12",
     "filename": "Java 值传递.md",
     "source": "manual",
     "sourceLogId": null,
     "status": "published"
   },
   {
-    "id": "article_1778230484891_dgl6m",
+    "id": "article_baaf553c-ecce-4160-a870-bc405601cbd1",
+    "slug": "java-并发编程基础概念与常见问题梳理",
+    "title": "Java 并发编程基础概念与常见问题梳理",
+    "category": "blog",
+    "tags": [
+      "Java",
+      "并发编程基础概念与常见问题梳理"
+    ],
+    "excerpt": "在当今的软件开发领域，随着计算机硬件性能的不断提升（尤其是多核处理器的普及）以及业务需求的日益复杂，Java 并发编程的重要性愈发凸显。它打破了单线程程序的性能瓶颈，能够充分利用多核处理器的优势，让程序在同一时间内执行多个任务，从而极大地提高系统的执行效率和资源利用率。\n\n然而，并发编程并非“银弹”...",
+    "readingTime": "22 min",
+    "date": "2026-05-12",
+    "filename": "Java 并发编程基础概念与常见问题梳理.md",
+    "source": "manual",
+    "sourceLogId": null,
+    "status": "published"
+  },
+  {
+    "id": "article_8a11956d-927b-4075-b284-8a1e8e324239",
     "slug": "java垃圾回收机制",
     "title": "Java垃圾回收机制",
-    "category": "tech",
+    "category": "blog",
     "tags": [
       "java",
       "JVM",
@@ -97,84 +148,715 @@
     ],
     "excerpt": "文章标签：#java #JVM #垃圾回收 #CMS #垃圾回收算法 #G1 #分代回收 #STW\n\n一、垃圾回收核心概念\n\n垃圾回收（Garbage Collection，简称GC），本质是JVM（Java虚拟机）提供的“自动清洁工”——它会在后台默默监控内存，把“没人用的对象”（垃圾）占用的内存...",
     "readingTime": "77 min",
-    "date": "2026-05-08",
+    "date": "2026-05-12",
     "filename": "Java垃圾回收机制.md",
     "source": "manual",
     "sourceLogId": null,
     "status": "published"
   },
   {
-    "id": "article_1778230484892_tr312",
+    "id": "article_149f56bc-e211-4bcf-9329-2e2785ada1e1",
     "slug": "java日志框架",
     "title": "Java日志框架",
-    "category": "tech",
+    "category": "blog",
     "tags": [
       "Java日志框架"
     ],
     "excerpt": "在Java开发中，日志是排查问题、监控系统运行状态的核心工具。从JDK自带的日志系统到主流的Logback、Log4j2，再到日志门面SLF4J，各类框架各有优劣。本文将基于基础知识点，对Java常用日志框架进行全面扩展补充.\n\n一、JDK日志（java.util.logging=JUL）\n\n1.1...",
     "readingTime": "29 min",
-    "date": "2026-05-08",
+    "date": "2026-05-12",
     "filename": "Java日志框架.md",
     "source": "manual",
     "sourceLogId": null,
     "status": "published"
   },
   {
-    "id": "article_1778230484892_pthbw",
-    "slug": "maven配置",
-    "title": "Maven配置",
-    "category": "tech",
+    "id": "article_d8bb509d-090d-40e6-a53b-e76e5d7e5710",
+    "slug": "jdk1-8-concurrenthashmap-底层原理详解",
+    "title": "JDK1.8 ConcurrentHashMap 底层原理详解",
+    "category": "blog",
     "tags": [
-      "Maven配置"
+      "JDK1",
+      "ConcurrentHashMap",
+      "底层原理详解"
     ],
-    "excerpt": "一、Maven 简介\n\nMaven 是基于项目对象模型（POM）的项目管理与自动化构建工具，核心功能为**依赖管理**和**项目构建自动化**。\n\n- 主要支持 Java 平台，也兼容其他编程语言（如 Scala、Kotlin 等）\n    \n- 可通过简单配置完成项目构建、文档生成、报告输出、依赖...",
-    "readingTime": "15 min",
-    "date": "2026-05-08",
-    "filename": "Maven配置.md",
+    "excerpt": "​\n\n一、JDK1.8 底层数据结构：彻底抛弃分段锁\n\nJDK1.7 的 `ConcurrentHashMap` 采用 **Segment 分段锁**，锁粒度较大；而 JDK1.8 直接摒弃该设计，采用与 HashMap1.8 同源的 **数组 + 链表 + 红黑树** 结构，并发控制升级为 **C...",
+    "readingTime": "8 min",
+    "date": "2026-05-12",
+    "filename": "JDK1.8 ConcurrentHashMap 底层原理详解.md",
     "source": "manual",
     "sourceLogId": null,
     "status": "published"
   },
   {
-    "id": "article_1778230484893_jt1ig",
-    "slug": "mysql配置",
-    "title": "MySql配置",
-    "category": "tech",
+    "id": "article_87b30239-23db-41dd-9e8f-d8db1e2bd025",
+    "slug": "lock-接口及实现类详解-从-reentrantlock-到并发场景实践",
+    "title": "Lock 接口及实现类详解：从 ReentrantLock 到并发场景实践",
+    "category": "blog",
     "tags": [
-      "MySql配置"
+      "Lock",
+      "接口及实现类详解",
+      "ReentrantLock",
+      "到并发场景实践"
     ],
-    "excerpt": "0. 卸载旧版 MySQL（关键！80% 安装失败源于此）\n\n如果电脑之前装过 MySQL，必须彻底卸载干净，否则会导致新安装启动失败！\n\n检查是否有旧版残留\n\n1. 查看安装路径：默认路径一般是 `C:\\Program Files\\MySQL` 或 `D:\\Program Files\\MySQL`...",
-    "readingTime": "11 min",
-    "date": "2026-05-08",
-    "filename": "MySql配置.md",
+    "excerpt": "在 Java 并发编程领域，同步机制是保障线程安全的核心，而我们最熟悉的莫过于 synchronized 关键字。但自 JDK 5 引入 `java.util.concurrent.locks.Lock` 接口及其实现类后，Java 并发编程的灵活性得到了质的提升。Lock 接口凭借“显式控制”“可...",
+    "readingTime": "36 min",
+    "date": "2026-05-12",
+    "filename": "Lock 接口及实现类详解：从 ReentrantLock 到并发场景实践.md",
     "source": "manual",
     "sourceLogId": null,
     "status": "published"
   },
   {
-    "id": "article_1778230484893_k0za7",
-    "slug": "node-js-vue-完整安装配置",
-    "title": "Node.js + Vue 完整安装配置",
-    "category": "tech",
+    "id": "article_b7759fb5-15d6-42a0-b959-82801e829115",
+    "slug": "rabbitmq可靠性保障全指南-生产者-mq-消费者三层兜底",
+    "title": "RabbitMQ可靠性保障全指南  生产者,MQ,消费者三层兜底",
+    "category": "blog",
     "tags": [
-      "Node",
-      "js",
-      "Vue",
-      "完整安装配置"
+      "RabbitMQ可靠性保障全指南",
+      "生产者",
+      "MQ",
+      "消费者三层兜底"
     ],
-    "excerpt": "一、前置知识：Node.js 和 Vue 是什么？有什么用？\n\n1. Node.js\n\n- **是什么**：简单说，Node.js 是一个能让 JavaScript 脱离浏览器运行的环境（基于 Chrome 的 V8 引擎）。原本 JS 只能在网页里写交互效果，有了 Node.js 后，能直接在电脑...",
+    "excerpt": "在微服务分布式架构中，RabbitMQ作为主流消息队列，核心价值是解耦、削峰填谷和异步通信，但“消息丢失、重复消费、处理失败”等问题，往往成为线上故障的重灾区。很多开发者只掌握RabbitMQ的基础用法，却忽略了可靠性保障的核心逻辑，导致系统上线后频繁出现异常。\n\n其实RabbitMQ的可靠性并非单...",
+    "readingTime": "24 min",
+    "date": "2026-05-12",
+    "filename": "RabbitMQ可靠性保障全指南  生产者,MQ,消费者三层兜底.md",
+    "source": "manual",
+    "sourceLogId": null,
+    "status": "published"
+  },
+  {
+    "id": "article_faa71a0e-c258-46fc-8001-ee0fb9da893c",
+    "slug": "rabbitmq实战全解析-从核心概念到电商订单落地",
+    "title": "RabbitMQ实战全解析：从核心概念到电商订单落地",
+    "category": "blog",
+    "tags": [
+      "RabbitMQ实战全解析",
+      "从核心概念到电商订单落地"
+    ],
+    "excerpt": "在微服务与分布式系统架构中，消息队列是解决系统解耦、削峰填谷、异步通信的核心组件，而RabbitMQ作为AMQP（高级消息队列协议）的成熟实现，凭借其稳定的路由能力、完善的确认机制、灵活的持久化策略以及丰富的插件扩展，成为企业级开发中的首选方案。\n\n很多开发者在使用RabbitMQ时，常会陷入“会用...",
+    "readingTime": "41 min",
+    "date": "2026-05-12",
+    "filename": "RabbitMQ实战全解析：从核心概念到电商订单落地.md",
+    "source": "manual",
+    "sourceLogId": null,
+    "status": "published"
+  },
+  {
+    "id": "article_e2703418-e82b-404a-98d6-8a6f78a2343d",
+    "slug": "spring-核心-ioc-深度解析-从原理到实战",
+    "title": "Spring 核心  IOC 深度解析：从原理到实战",
+    "category": "blog",
+    "tags": [
+      "afterPropertiesSet方",
+      "destroy方",
+      "postProcessBeforeInitialization",
+      "postProcessAfterInitialization"
+    ],
+    "excerpt": "一、IOC 核心概念：从「手动控制」到「容器托管」\n\n1.1 什么是 IOC？\n\n**IOC（Inversion of Control）控制反转** 是 Spring 框架的灵魂，核心是将对象的创建、依赖管理、生命周期控制从业务代码中剥离，交由 Spring 容器统一管理。\n\n**传统开发模式**（...",
+    "readingTime": "19 min",
+    "date": "2026-05-12",
+    "filename": "Spring 核心  IOC 深度解析：从原理到实战.md",
+    "source": "manual",
+    "sourceLogId": null,
+    "status": "published"
+  },
+  {
+    "id": "article_6a0198f8-8f5b-4015-9118-834548539ff9",
+    "slug": "synchronized-深度剖析-从语法到锁升级的完整演进",
+    "title": "synchronized 深度剖析：从语法到锁升级的完整演进",
+    "category": "blog",
+    "tags": [
+      "synchronized",
+      "深度剖析",
+      "从语法到锁升级的完整演进"
+    ],
+    "excerpt": "在 Java 并发编程领域，synchronized 无疑是最基础、最经典的同步机制。从 JDK 1.0 诞生时的“重量级锁”，到 JDK 6 引入的锁升级机制（偏向锁→轻量级锁→重量级锁），synchronized 历经多代优化，从“性能鸡肋”蜕变为“高效可靠”的线程安全保障工具。然而，很多开发者...",
+    "readingTime": "32 min",
+    "date": "2026-05-12",
+    "filename": "synchronized 深度剖析：从语法到锁升级的完整演进.md",
+    "source": "manual",
+    "sourceLogId": null,
+    "status": "published"
+  },
+  {
+    "id": "article_a44daa9d-5bc7-4fb2-b577-1a952d9afc82",
+    "slug": "volatile-关键字详解-可见性-禁止重排与实战场景",
+    "title": "volatile 关键字详解：可见性、禁止重排与实战场景",
+    "category": "blog",
+    "tags": [
+      "volatile",
+      "关键字详解",
+      "可见性",
+      "禁止重排与实战场景"
+    ],
+    "excerpt": "在 Java 并发编程中，volatile 是一个看似简单却极易被误用的关键字。它常被用来修饰共享变量，以应对多线程环境下的数据可见性问题，但很多开发者仅停留在 “知道它能保证可见性” 的层面，对其底层原理（内存屏障）、适用场景和使用禁忌一知半解，甚至在项目中滥用 volatile 导致线程安全隐患...",
+    "readingTime": "31 min",
+    "date": "2026-05-12",
+    "filename": "volatile 关键字详解：可见性、禁止重排与实战场景.md",
+    "source": "manual",
+    "sourceLogId": null,
+    "status": "published"
+  },
+  {
+    "id": "article_aa1c1697-0d1b-4019-b4bf-36423d1477a0",
+    "slug": "从-url-回车到页面显示",
+    "title": "从 URL 回车到页面显示",
+    "category": "blog",
+    "tags": [
+      "top",
+      "dns"
+    ],
+    "excerpt": "**“输入 URL 回车后，页面是怎么显示出来的?”**  —— 它能串联起计算机网络五层模型的所有核心知识点。本文会按照 **应用层→传输层→网络层→数据链路层→物理层** 的顺序，把每个环节掰开揉碎讲清楚，保证新手看完就能吃透。\n\n首先我们过一下完整流程框架：\n\n1. 浏览器输入 URL 并回车...",
+    "readingTime": "32 min",
+    "date": "2026-05-12",
+    "filename": "从 URL 回车到页面显示.md",
+    "source": "manual",
+    "sourceLogId": null,
+    "status": "published"
+  },
+  {
+    "id": "article_1f210aa0-1d80-4621-979d-a080515a7371",
+    "slug": "从零起步学习-redis-第三章-redis-常用数据类型深层剖析",
+    "title": "从零起步学习 Redis  第三章  Redis 常用数据类型深层剖析",
+    "category": "blog",
+    "tags": [
+      "从零起步学习",
+      "Redis",
+      "第三章",
+      "Redis",
+      "常用数据类型深层剖析"
+    ],
+    "excerpt": "前言：\n\n在前文中，我们已经初步认识了 Redis 并完成了本地环境配置，接下来将开启 Redis 核心知识点的深入学习 ——Redis 常用数据类型的底层实现。不同于表面的 API 使用，深入底层能让我们理解 Redis 的性能优化逻辑、内存占用原理，更是后端面试中 Redis 相关考点的核心。\n...",
+    "readingTime": "24 min",
+    "date": "2026-05-12",
+    "filename": "从零起步学习 Redis  第三章  Redis 常用数据类型深层剖析.md",
+    "source": "manual",
+    "sourceLogId": null,
+    "status": "published"
+  },
+  {
+    "id": "article_1e37b19c-81e2-4744-a9b4-de65b2940d7e",
+    "slug": "从零起步学习-redis-第七章-redis-持久化方案的实现及底层原理解析-rdb-快照与-aof-日志",
+    "title": "从零起步学习 Redis 第七章：Redis 持久化方案的实现及底层原理解析（RDB 快照与 AOF 日志）",
+    "category": "blog",
+    "tags": [
+      "从零起步学习",
+      "Redis",
+      "第七章",
+      "Redis",
+      "持久化方案的实现及底层原理解析"
+    ],
+    "excerpt": "引言\n\nRedis 是典型的**内存型键值数据库**，其高性能、高吞吐、低延迟的核心优势，源于 “将数据主要存储在内存中” 的设计。但纯内存存储存在一个致命缺陷：一旦发生断电、进程崩溃或机器重启，内存中的所有数据都会丢失，这在生产环境中是无法接受的。\n\n为了兼顾 “内存的速度优势” 与 “数据的持久...",
+    "readingTime": "22 min",
+    "date": "2026-05-12",
+    "filename": "从零起步学习 Redis 第七章：Redis 持久化方案的实现及底层原理解析（RDB 快照与 AOF 日志）.md",
+    "source": "manual",
+    "sourceLogId": null,
+    "status": "published"
+  },
+  {
+    "id": "article_fdcdf9bb-577f-4197-aec4-cf196d01b18b",
+    "slug": "匿名内部类",
+    "title": "匿名内部类",
+    "category": "blog",
+    "tags": [
+      "匿名内部类"
+    ],
+    "excerpt": "在 Java 开发中，我们经常会见到这样的代码：\n\n\n```java\nList<TreeNode> queue = new LinkedList<>() {{ add(root); }};\n```\n\n初看之下，这行代码是创建了一个 `LinkedList` 集合并添加了 `root` 元素，但其中的...",
+    "readingTime": "13 min",
+    "date": "2026-05-12",
+    "filename": "匿名内部类.md",
+    "source": "manual",
+    "sourceLogId": null,
+    "status": "published"
+  },
+  {
+    "id": "article_0818bc6a-aff6-4ba9-8c55-0ee78a06e371",
+    "slug": "增强for-迭代器",
+    "title": "增强for(迭代器)",
+    "category": "blog",
+    "tags": [
+      "增强for",
+      "迭代器"
+    ],
+    "excerpt": "一、核心定义与基础语法\n\n1. 普通 for 循环（Index-based For Loop）\n\n- **定义**：基于「索引 / 计数器」的循环，通过控制索引的起始、终止条件和步长，遍历容器或数组，支持灵活操作索引。\n- **核心语法**（数组 / List 通用）：\n    \n    ```ja...",
+    "readingTime": "12 min",
+    "date": "2026-05-12",
+    "filename": "增强for(迭代器).md",
+    "source": "manual",
+    "sourceLogId": null,
+    "status": "published"
+  },
+  {
+    "id": "article_8e97afc5-db09-4a07-9958-ac5b0e20288f",
+    "slug": "并发编程常用工具类-上-countdownlatch-与-semaphore-的协作应用",
+    "title": "并发编程常用工具类（上）：CountDownLatch 与 Semaphore 的协作应用",
+    "category": "blog",
+    "tags": [
+      "并发编程常用工具类",
+      "CountDownLatch",
+      "Semaphore",
+      "的协作应用"
+    ],
+    "excerpt": "在 Java 并发编程领域，JDK 提供的工具类是简化多线程协作的重要武器，它们就像封装好的“并发组件”，帮我们避开底层同步的复杂陷阱。这些工具类的底层核心，都依赖于 AQS（AbstractQueuedSynchronizer）框架——这个我们上一篇详细拆解过的“并发基石”，通过状态控制和队列管理...",
+    "readingTime": "33 min",
+    "date": "2026-05-12",
+    "filename": "并发编程常用工具类（上）：CountDownLatch 与 Semaphore 的协作应用.md",
+    "source": "manual",
+    "sourceLogId": null,
+    "status": "published"
+  },
+  {
+    "id": "article_9c7c2394-9341-4db3-9e0f-09c45bbe4645",
+    "slug": "并发编程常用工具类-下-cyclicbarrier-与-phaser-的协同应用",
+    "title": "并发编程常用工具类（下）：CyclicBarrier 与 Phaser 的协同应用",
+    "category": "blog",
+    "tags": [
+      "并发编程常用工具类",
+      "CyclicBarrier",
+      "Phaser",
+      "的协同应用"
+    ],
+    "excerpt": "在 Java 并发编程中，线程协作是实现高效并行任务的核心，除了上一篇提到的 CountDownLatch 和 Semaphore，CyclicBarrier（循环屏障）和 Phaser（阶段同步器）更是应对多阶段、动态线程场景的“利器”。它们弥补了前两者在多轮同步、动态调整线程数量上的不足，让开发...",
+    "readingTime": "30 min",
+    "date": "2026-05-12",
+    "filename": "并发编程常用工具类（下）：CyclicBarrier 与 Phaser 的协同应用.md",
+    "source": "manual",
+    "sourceLogId": null,
+    "status": "published"
+  },
+  {
+    "id": "article_069dd119-a761-4fcb-9791-68e14a1b0d7c",
+    "slug": "并发编程常见问题排查与解决-从死锁到线程竞争的实战指南",
+    "title": "并发编程常见问题排查与解决：从死锁到线程竞争的实战指南",
+    "category": "blog",
+    "tags": [
+      "并发编程常见问题排查与解决",
+      "从死锁到线程竞争的实战指南"
+    ],
+    "excerpt": "在高并发场景下，Java并发编程是提升系统吞吐量和响应速度的核心手段，但随之而来的死锁、线程竞争、线程泄漏等问题，却常常让开发者陷入困境。这些问题大多具有偶发性、隐蔽性强的特点，线下测试难以复现，线上出现时又会直接影响业务可用性，甚至导致系统崩溃。今天，就结合实际开发案例，系统梳理并发编程中最常见的...",
+    "readingTime": "37 min",
+    "date": "2026-05-12",
+    "filename": "并发编程常见问题排查与解决：从死锁到线程竞争的实战指南.md",
+    "source": "manual",
+    "sourceLogId": null,
+    "status": "published"
+  },
+  {
+    "id": "article_aa10145d-07c1-42d1-a6fa-caaceb086b8e",
+    "slug": "并发编程面试实战-synchronized-volatile-lock-aqs-应答技巧",
+    "title": "并发编程面试实战：synchronized、volatile、Lock、AQS 应答技巧",
+    "category": "blog",
+    "tags": [
+      "并发编程面试实战",
+      "synchronized",
+      "volatile",
+      "Lock",
+      "AQS"
+    ],
+    "excerpt": "在 Java 并发编程面试中，synchronized、volatile、Lock 和 AQS 绝对是“重中之重”—— 它们既是基础同步机制的核心，也是面试官区分候选人“只会用”和“懂原理”的关键标尺。很多候选人面试时栽在这部分，不是因为不会用 API，而是无法讲清底层逻辑、不会结合实际场景分析，甚...",
+    "readingTime": "32 min",
+    "date": "2026-05-12",
+    "filename": "并发编程面试实战：synchronized、volatile、Lock、AQS 应答技巧.md",
+    "source": "manual",
+    "sourceLogId": null,
+    "status": "published"
+  },
+  {
+    "id": "article_fc86bb79-d74f-4c28-af74-fdf5dedac285",
+    "slug": "深度解析-arraylist-扩容机制-从源码到时序图全拆解",
+    "title": "深度解析 ArrayList 扩容机制：从源码到时序图全拆解",
+    "category": "blog",
+    "tags": [
+      "深度解析",
+      "ArrayList",
+      "扩容机制",
+      "从源码到时序图全拆解"
+    ],
+    "excerpt": "在 Java 开发中，ArrayList 是最常用的集合类之一，但其底层的扩容机制却常常成为面试和开发中的高频考点。本文将从底层数据结构出发，结合源码和时序图，完整拆解 ArrayList 的扩容流程，帮你彻底搞懂这一核心机制。\n\n一、ArrayList 底层数据结构\n\nArrayList 的核心是...",
+    "readingTime": "8 min",
+    "date": "2026-05-12",
+    "filename": "深度解析 ArrayList 扩容机制：从源码到时序图全拆解.md",
+    "source": "manual",
+    "sourceLogId": null,
+    "status": "published"
+  },
+  {
+    "id": "article_628bc724-e3b8-4550-81aa-7f0faa969e14",
+    "slug": "深度解析-jdk1-8-concurrenthashmap-从底层结构到并发核心原理",
+    "title": "深度解析 JDK1.8 ConcurrentHashMap：从底层结构到并发核心原理",
+    "category": "blog",
+    "tags": [
+      "深度解析",
+      "JDK1",
+      "ConcurrentHashMap",
+      "从底层结构到并发核心原理"
+    ],
+    "excerpt": "一、JDK1.8 底层数据结构：彻底抛弃分段锁\n\nJDK1.7 的 `ConcurrentHashMap` 采用 **Segment 分段锁**，锁粒度较大；而 JDK1.8 直接摒弃该设计，采用与 HashMap1.8 同源的 **数组 + 链表 + 红黑树** 结构，并发控制升级为 **CAS ...",
+    "readingTime": "7 min",
+    "date": "2026-05-12",
+    "filename": "深度解析 JDK1.8 ConcurrentHashMap：从底层结构到并发核心原理.md",
+    "source": "manual",
+    "sourceLogId": null,
+    "status": "published"
+  },
+  {
+    "id": "article_c63ff827-03fb-497e-bc64-ff6e4d12e4a1",
+    "slug": "第一章-初识mysql及深入理解内部数据类型",
+    "title": "第一章：初识MySQL及深入理解内部数据类型",
+    "category": "blog",
+    "tags": [
+      "第一章",
+      "初识MySQL及深入理解内部数据类型"
+    ],
+    "excerpt": "引言\n\n从今天开始，我们正式启动MySQL的系统性学习之旅！本专栏将完全从零起步，循序渐进地带大家吃透MySQL的整个知识库——从最基础的概念、操作，到进阶的优化、调优，再到生产环境的实战技巧，全程干货无冗余。无论你是刚入门的后端新手，还是想巩固基础的开发从业者，都能从中有所收获。学习过程中，大家有...",
+    "readingTime": "20 min",
+    "date": "2026-05-12",
+    "filename": "第一章：初识MySQL及深入理解内部数据类型.md",
+    "source": "manual",
+    "sourceLogId": null,
+    "status": "published"
+  },
+  {
+    "id": "article_518cadb7-4bd9-4830-bd97-a539f63dafad",
+    "slug": "第七章-初识索引底层运用及性能优化",
+    "title": "第七章：初识索引底层运用及性能优化",
+    "category": "blog",
+    "tags": [
+      "第七章",
+      "初识索引底层运用及性能优化"
+    ],
+    "excerpt": "上一章我们讲解了MySQL数据的底层存储逻辑，了解了一行数据如何以特定行格式存储在数据页中。但当表中数据量达到几十万、几百万甚至上亿条时，单纯依靠全表扫描查询数据，速度会变得极其缓慢——就像在一本没有目录的厚书中找某个知识点，只能逐页翻找，效率极低。而索引，就是MySQL为我们打造的“图书目录”，能...",
+    "readingTime": "28 min",
+    "date": "2026-05-12",
+    "filename": "第七章：初识索引底层运用及性能优化.md",
+    "source": "manual",
+    "sourceLogId": null,
+    "status": "published"
+  },
+  {
+    "id": "article_0a09dbfd-f7dc-4b42-ba00-8784f690082f",
+    "slug": "第三章-dml语句定义及常见用法示例",
+    "title": "第三章：DML语句定义及常见用法示例",
+    "category": "blog",
+    "tags": [
+      "第三章",
+      "DML语句定义及常见用法示例"
+    ],
+    "excerpt": "上一章我们学习了DDL语句，掌握了数据库和表的“创建、修改、删除”等结构定义操作，相当于搭建好了数据存储的“容器”。今天我们进入更核心的学习——DML语句，它是操作“容器”中数据的关键，学会DML，你才能真正实现数据的增、删、改、查，解锁MySQL的核心使用场景。\n\n一、什么是DML？新手必懂的核心...",
+    "readingTime": "23 min",
+    "date": "2026-05-12",
+    "filename": "第三章：DML语句定义及常见用法示例.md",
+    "source": "manual",
+    "sourceLogId": null,
+    "status": "published"
+  },
+  {
+    "id": "article_ecb25369-4f51-45ce-a519-fdd8ef6b1726",
+    "slug": "第九章-从数据页的角度看b-树及mysql中数据的底层存储原理",
+    "title": "第九章：从数据页的角度看B+树及MySQL中数据的底层存储原理",
+    "category": "blog",
+    "tags": [
+      "第九章",
+      "从数据页的角度看B",
+      "树及MySQL中数据的底层存储原理"
+    ],
+    "excerpt": "在MySQL的InnoDB存储引擎中，数据的底层存储并非简单的无序存放，而是通过**表空间-段-区-页-行**的层级结构组织，并基于B+树实现高效的索引和数据查询。这也是MySQL能支撑高并发、大数据量查询的核心原因之一。上一章我们从行的角度解析了单条数据的存储格式，本章将从**数据页**这个Inn...",
+    "readingTime": "22 min",
+    "date": "2026-05-12",
+    "filename": "第九章：从数据页的角度看B+树及MySQL中数据的底层存储原理.md",
+    "source": "manual",
+    "sourceLogId": null,
+    "status": "published"
+  },
+  {
+    "id": "article_2b5a7f38-f396-4076-8d96-b04c3d331198",
+    "slug": "第二章-ddl语句定义及常见用法示例",
+    "title": "第二章：DDL语句定义及常见用法示例",
+    "category": "blog",
+    "tags": [
+      "第二章",
+      "DDL语句定义及常见用法示例"
+    ],
+    "excerpt": "上一章我们入门了MySQL的基础概念，了解了数据库、表的核心作用，今天我们正式进入SQL语句的学习，首先要掌握的就是DDL语句——它是构建数据库结构的“基石”，学会DDL，你才能真正开始创建属于自己的数据库和表，为后续的数据存储、查询打下基础。\n\n一、什么是DDL？新手必懂的核心定义\n\nDDL 的全...",
+    "readingTime": "16 min",
+    "date": "2026-05-12",
+    "filename": "第二章：DDL语句定义及常见用法示例.md",
+    "source": "manual",
+    "sourceLogId": null,
+    "status": "published"
+  },
+  {
+    "id": "article_676818c4-308d-4b06-8055-2f51de368ecb",
+    "slug": "第五章-select语句的执行过程是怎么样的",
+    "title": "第五章：select语句的执行过程是怎么样的？",
+    "category": "blog",
+    "tags": [
+      "第五章",
+      "select语句的执行过程是怎么样的"
+    ],
+    "excerpt": "对于MySQL初学者而言，我们每天写的SELECT语句，看似只是简单的“查数据”，背后却隐藏着MySQL内核复杂的执行逻辑。很多人只会写SQL，却不懂其执行过程，遇到性能瓶颈时无从下手——比如为什么同样的查询，换个索引就快了？为什么有些查询会频繁访问磁盘？\n\n本章我们就从零开始，结合MySQL源码（...",
+    "readingTime": "29 min",
+    "date": "2026-05-12",
+    "filename": "第五章：select语句的执行过程是怎么样的？.md",
+    "source": "manual",
+    "sourceLogId": null,
+    "status": "published"
+  },
+  {
+    "id": "article_36f30cdb-b1a0-4d0f-9bfa-f13f01b921c4",
+    "slug": "第八章-索引深入理解及高级运用-结合常见优化问题讲解",
+    "title": "第八章：索引深入理解及高级运用（结合常见优化问题讲解）",
+    "category": "blog",
+    "tags": [
+      "第八章",
+      "索引深入理解及高级运用",
+      "结合常见优化问题讲解"
+    ],
+    "excerpt": "对于后端开发者而言，MySQL 索引是提升数据库性能的核心手段，也是面试中的高频考点。很多初学者虽然知道“要建索引”，但往往陷入“索引建得越多越好”的误区，甚至建了索引却发现查询速度没提升，反而拖慢了写入性能。今天这篇文章，我们就从零深入拆解索引的核心逻辑、适用场景、优化技巧，结合实际开发中的常见问...",
+    "readingTime": "21 min",
+    "date": "2026-05-12",
+    "filename": "第八章：索引深入理解及高级运用（结合常见优化问题讲解）.md",
+    "source": "manual",
+    "sourceLogId": null,
+    "status": "published"
+  },
+  {
+    "id": "article_64c5828a-1de1-47bd-899f-8fc2ab42d03e",
+    "slug": "第六章-mysql数据库中的一条数据是如何存储的",
+    "title": "第六章：MySQL数据库中的一条数据是如何存储的？",
+    "category": "blog",
+    "tags": [
+      "第六章",
+      "MySQL数据库中的一条数据是如何存储的"
+    ],
+    "excerpt": "在MySQL的学习之路中，我们已经掌握了表的创建、SQL语句的执行，但你有没有想过一个问题：当我们执行 `INSERT INTO` 插入一条数据后，这条数据在底层到底是如何被存储的？它以什么格式存在磁盘上？为什么有的字段能存很长的内容，有的却会被限制？今天这一章，我们就结合InnoDB源码（基于My...",
+    "readingTime": "26 min",
+    "date": "2026-05-12",
+    "filename": "第六章：MySQL数据库中的一条数据是如何存储的？.md",
+    "source": "manual",
+    "sourceLogId": null,
+    "status": "published"
+  },
+  {
+    "id": "article_250c54b5-1e36-40aa-a4a2-fd527a5aeec4",
+    "slug": "第十一章-mysql中常见的索引失效情况原因分析及解决方案",
+    "title": "第十一章：MySQL中常见的索引失效情况原因分析及解决方案",
+    "category": "blog",
+    "tags": [
+      "第十一章",
+      "MySQL中常见的索引失效情况原因分析及解决方案"
+    ],
+    "excerpt": "**前言**：\n\n在 MySQL 数据库中，很多时候 SQL 的 CRUD 性能极差，并不是因为数据量真的大到无法处理，而是开发者对索引底层实现不够透彻，写出了让索引 “失效” 的 SQL。本文就带你一次性搞懂：MySQL 中最常见的 6 类索引失效场景，从**本质原因**到**检测方式**，再到*...",
+    "readingTime": "8 min",
+    "date": "2026-05-12",
+    "filename": "第十一章：MySQL中常见的索引失效情况原因分析及解决方案.md",
+    "source": "manual",
+    "sourceLogId": null,
+    "status": "published"
+  },
+  {
+    "id": "article_8af4cf55-9845-42c6-9a61-e4271c1717ea",
+    "slug": "第十三章-mysql-事务详解-原理-特性-并发问题与隔离级别",
+    "title": "第十三章：MySQL 事务详解：原理、特性、并发问题与隔离级别",
+    "category": "blog",
+    "tags": [
+      "第十三章",
+      "MySQL",
+      "事务详解",
+      "原理",
+      "特性"
+    ],
+    "excerpt": "在日常开发中，你是否遇到过这样的场景：测试库中几百条数据查询飞快，上线后生产库几十万条数据，相同的 SQL 突然慢到超时？90% 的情况下，问题都出在**索引**上。\n\n一、索引的本质：不止是 “目录” 那么简单\n\n1.1 索引到底是什么？\n\n用一个最通俗的比喻：索引就像一本书的 “目录”。\n\n如果...",
+    "readingTime": "18 min",
+    "date": "2026-05-12",
+    "filename": "第十三章：MySQL 事务详解：原理、特性、并发问题与隔离级别.md",
+    "source": "manual",
+    "sourceLogId": null,
+    "status": "published"
+  },
+  {
+    "id": "article_307ce5a6-a8be-4885-82a8-f5bfefe94441",
+    "slug": "第十二章-mysql分页性能如何优化",
+    "title": "第十二章：MySQL分页性能如何优化",
+    "category": "blog",
+    "tags": [
+      "第十二章",
+      "MySQL分页性能如何优化"
+    ],
+    "excerpt": "前言：\n\n所以今天我们就来系统地讲解 MySQL 分页（pagination）在大数据量下常见的性能问题，深入分析背后的执行机制，用真实场景举例说明为什么 LIMIT OFFSET 会变慢，并给出多种实用的优化方案与实践建议（含完整 SQL 示例、优缺点详细比较与工程化落地注意事项）。本文适合后端开...",
+    "readingTime": "33 min",
+    "date": "2026-05-12",
+    "filename": "第十二章：MySQL分页性能如何优化.md",
+    "source": "manual",
+    "sourceLogId": null,
+    "status": "published"
+  },
+  {
+    "id": "article_2df68097-4737-4521-8bf0-eef9376abfd6",
+    "slug": "第十五章-mysql-可重复读隔离级别-工作原理与幻读问题解析",
+    "title": "第十五章   MySQL 可重复读隔离级别：工作原理与幻读问题解析",
+    "category": "blog",
+    "tags": [
+      "第十五章",
+      "MySQL",
+      "可重复读隔离级别",
+      "工作原理与幻读问题解析"
+    ],
+    "excerpt": "本文针对 MySQL InnoDB 存储引擎默认的 REPEATABLE READ（可重复读）隔离级别，从幻读定义、工作机制、例外场景、实战验证到解决方案进行全面解析，帮助 Java 后端开发者彻底理解其核心逻辑与应用边界，规避并发场景下的数据一致性风险。\n\n一、核心结论\n\nMySQL InnoDB...",
+    "readingTime": "18 min",
+    "date": "2026-05-12",
+    "filename": "第十五章   MySQL 可重复读隔离级别：工作原理与幻读问题解析.md",
+    "source": "manual",
+    "sourceLogId": null,
+    "status": "published"
+  },
+  {
+    "id": "article_2185e75c-13ea-4b72-9544-b04df9856248",
+    "slug": "第十六章-mysql-分库分表的考量策略-java后端实战版",
+    "title": "第十六章：MySQL 分库分表的考量策略（Java后端实战版）",
+    "category": "blog",
+    "tags": [
+      "第十六章",
+      "MySQL",
+      "分库分表的考量策略",
+      "Java后端实战版"
+    ],
+    "excerpt": "作为Java后端开发者，我们几乎都会经历这样一个过程：系统初期用单库单表快速上线，随着业务爆发，数据量从几十万飙升到千万、上亿，查询变慢、锁竞争加剧、数据库CPU飙升，此时分库分表就从“可选优化”变成了“必做操作”。\n\n很多初学者面对分库分表会感到迷茫：垂直拆分和水平拆分有啥区别？什么时候该分表，什...",
+    "readingTime": "26 min",
+    "date": "2026-05-12",
+    "filename": "第十六章：MySQL 分库分表的考量策略（Java后端实战版）.md",
+    "source": "manual",
+    "sourceLogId": null,
+    "status": "published"
+  },
+  {
+    "id": "article_ac33bc19-c0ba-48c6-a2b1-9de9bc83ae49",
+    "slug": "第十四章-mysql-事务中如何解决幻读问题-mvcc中通过readview来解决幻读问题详解",
+    "title": "第十四章：MySQL 事务中如何解决幻读问题（MVCC中通过ReadView来解决幻读问题详解）",
+    "category": "blog",
+    "tags": [
+      "第十四章",
+      "MySQL",
+      "事务中如何解决幻读问题",
+      "MVCC中通过ReadView来解决幻读问题详解"
+    ],
+    "excerpt": "引言\n\n在前文中，我们讲解到了 MySQL 中的事务和隔离级别，也知晓了在 MySQL 中默认的隔离级别是可重复读，那么在可重复读的情况下，依然可能会出现“幻读”的问题，那么此时我们又可以怎么解决？\n\n这就引出了我们本文要讲解的重点——MVCC（多版本并发控制）。\n\n一、先回顾：什么是幻读（Phan...",
+    "readingTime": "13 min",
+    "date": "2026-05-12",
+    "filename": "第十四章：MySQL 事务中如何解决幻读问题（MVCC中通过ReadView来解决幻读问题详解）.md",
+    "source": "manual",
+    "sourceLogId": null,
+    "status": "published"
+  },
+  {
+    "id": "article_e7660d01-83e7-4cdc-8f56-5ecd17ba00e3",
+    "slug": "第十章-深入了解b-树及b-树的性能优势",
+    "title": "第十章：深入了解B+树及B+树的性能优势",
+    "category": "blog",
+    "tags": [
+      "第十章",
+      "深入了解B",
+      "树及B",
+      "树的性能优势"
+    ],
+    "excerpt": "在MySQL的学习之路中，索引是提升查询性能的核心，而B+树则是MySQL索引的“灵魂”——无论是InnoDB还是MyISAM存储引擎，都以B+树作为底层索引结构。很多初学者会有疑问：为什么数据库不选择我们熟悉的二叉树、红黑树，偏偏青睐B+树？B+树的底层结构到底有什么优势，能支撑千万级、亿级数据的...",
+    "readingTime": "21 min",
+    "date": "2026-05-12",
+    "filename": "第十章：深入了解B+树及B+树的性能优势.md",
+    "source": "manual",
+    "sourceLogId": null,
+    "status": "published"
+  },
+  {
+    "id": "article_3511b19f-4ad3-422a-957b-3ce726fbe792",
+    "slug": "第四章-dql查询全解析",
+    "title": "第四章：DQL查询全解析",
+    "category": "blog",
+    "tags": [
+      "第四章",
+      "DQL查询全解析"
+    ],
+    "excerpt": "对于后端开发者、数据库初学者来说，MySQL中的DQL（数据查询语言）是日常工作中最常用、最核心的知识点之一。不同于DML（数据操纵语言）的“增删改”，DQL专注于“查数据”——如何快速、准确地从数据库中提取所需信息，直接决定了系统的性能和开发效率。今天，我们就从概念到实战，一步步拆解DQL的核心用...",
+    "readingTime": "21 min",
+    "date": "2026-05-12",
+    "filename": "第四章：DQL查询全解析.md",
+    "source": "manual",
+    "sourceLogId": null,
+    "status": "published"
+  },
+  {
+    "id": "article_5a770755-7784-4ce6-a19c-39b6b8c2b3e0",
+    "slug": "设计模式",
+    "title": "设计模式",
+    "category": "blog",
+    "tags": [
+      "设计模式"
+    ],
+    "excerpt": "设计模式是解决特定场景软件设计问题的最佳实践，核心价值是解耦、复用、可维护。本文按三大类梳理23种模式，每个模式配套「核心逻辑图+Java实战案例+代码片段」，兼顾面试考点与开发落地，避免纯抽象定义。\n\n一、创建型模式（5种）\n\n核心目标：封装对象创建过程，解耦创建与使用，提高灵活性。\n\n1. 工厂...",
+    "readingTime": "67 min",
+    "date": "2026-05-12",
+    "filename": "设计模式.md",
+    "source": "manual",
+    "sourceLogId": null,
+    "status": "published"
+  },
+  {
+    "id": "article_2b903da5-6bfc-4e58-95db-7d7c2916bb56",
+    "slug": "银行家算法",
+    "title": "银行家算法",
+    "category": "blog",
+    "tags": [
+      "银行家算法"
+    ],
+    "excerpt": "Dijkstra在1965年提出的银行家算法是著名的死锁避免算法，这个用于一个银行家给多个顾客贷款的算法可以直接用于操作系统给进程分配资源，这时只要把银行家换成操作系统，把顾客换成进程，把资金换成资源，把银行家决定是否放贷时所用的判断过程（即判断顾客是否有信誉和偿还能力）换成操作系统决定是否分配资源...",
     "readingTime": "14 min",
-    "date": "2026-05-08",
-    "filename": "Node.js + Vue 完整安装配置.md",
+    "date": "2026-05-12",
+    "filename": "银行家算法.md",
     "source": "manual",
     "sourceLogId": null,
     "status": "published"
   },
   {
-    "id": "article_1778230484893_pauuy",
+    "id": "article_fea7eb81-6a9b-4559-b74d-3c6b22a85432",
+    "slug": "aqs-abstractqueuedsynchronizer-核心原理探索",
+    "title": "AQS（AbstractQueuedSynchronizer）核心原理探索",
+    "category": "blog",
+    "tags": [
+      "AQS",
+      "核心原理探索"
+    ],
+    "excerpt": "在 Java 并发编程的世界里，有一个“隐形基石”——AbstractQueuedSynchronizer（简称 AQS）。它就像一个通用的“同步框架模板”，几乎支撑了 Java 并发包中所有核心同步工具的实现：从我们日常开发中常用的 ReentrantLock（可重入锁），到协调多线程等待的 Co...",
+    "readingTime": "40 min",
+    "date": "2026-05-10T05:47:06.052Z",
+    "filename": "aqs-abstractqueuedsynchronizer-核心原理探索.md",
+    "source": "manual",
+    "sourceLogId": null,
+    "status": "published"
+  },
+  {
+    "id": "article_2471cbe1-ad2d-4e90-bce6-f82727bc0aee",
+    "slug": "rabbitmq的延迟消息在项目中的运用及实现剖析",
+    "title": "RabbitMQ的延迟消息在项目中的运用及实现剖析",
+    "category": "blog",
+    "tags": [
+      "RabbitMQ"
+    ],
+    "excerpt": "对于后端开发者而言，RabbitMQ 的延迟消息不仅是项目中的高频应用，更是面试时的“必考题”——尤其是当面试官抛出这个经典场景时，很多人容易陷入“知其然不知其所以然”的困境：\n\n**用户下单后未支付，如何在指定时间（如30分钟）自动取消订单？**\n\n相信很多同学都能说出“用 MQ”“用死信队列”，...",
+    "readingTime": "13 min",
+    "date": "2026-05-10T05:28:01.684Z",
+    "filename": "RabbitMQ的延迟消息在项目中的运用及实现剖析.md",
+    "source": "manual",
+    "sourceLogId": null,
+    "status": "published"
+  },
+  {
+    "id": "article_d11b8f01-f0f6-4e42-adc5-aff8754f8ced",
     "slug": "spring容器启动流程",
     "title": "Spring容器启动流程",
-    "category": "tech",
+    "category": "tutorials",
     "tags": [
       "doRegisterBean",
       "postProcessBeforeInitialization",
@@ -185,113 +867,14 @@
     ],
     "excerpt": "本文基于Spring Framework源码，以「AnnotationConfigApplicationContext」为入口（Java Config方式），全面拆解Spring容器启动的完整流程，包含初始化、配置类注册、容器刷新三大核心步骤，结合源码逐句分析关键逻辑，补充核心概念、扩展知识点及实战...",
     "readingTime": "25 min",
-    "date": "2026-05-08",
+    "date": "2026-05-10",
     "filename": "Spring容器启动流程.md",
     "source": "manual",
     "sourceLogId": null,
     "status": "published"
   },
   {
-    "id": "article_1778230484894_ephrn",
-    "slug": "sql-server配置",
-    "title": "SQL Server配置",
-    "category": "tech",
-    "tags": [
-      "SQL",
-      "Server配置"
-    ],
-    "excerpt": "一、SQL Server 基础操作\n\n1. 新建数据库\n\n在 SQL Server Management Studio（SSMS）的对象资源管理器中：\n\n- 右键 “数据库” 文件夹；\n- 选择 “新建数据库”；\n- 输入数据库名称，确认默认配置（或自定义数据 / 日志文件），点击 “确定”。\n\n2...",
-    "readingTime": "4 min",
-    "date": "2026-05-08",
-    "filename": "SQL Server配置.md",
-    "source": "manual",
-    "sourceLogId": null,
-    "status": "published"
-  },
-  {
-    "id": "article_1778230484895_2g6om",
-    "slug": "从-url-回车到页面显示",
-    "title": "从 URL 回车到页面显示",
-    "category": "tech",
-    "tags": [
-      "top",
-      "dns"
-    ],
-    "excerpt": "**“输入 URL 回车后，页面是怎么显示出来的?”**  —— 它能串联起计算机网络五层模型的所有核心知识点。本文会按照 **应用层→传输层→网络层→数据链路层→物理层** 的顺序，把每个环节掰开揉碎讲清楚，保证新手看完就能吃透。\n\n首先我们过一下完整流程框架：\n\n1. 浏览器输入 URL 并回车...",
-    "readingTime": "32 min",
-    "date": "2026-05-08",
-    "filename": "从 URL 回车到页面显示.md",
-    "source": "manual",
-    "sourceLogId": null,
-    "status": "published"
-  },
-  {
-    "id": "article_1778230484896_m70ql",
-    "slug": "匿名内部类",
-    "title": "匿名内部类",
-    "category": "tech",
-    "tags": [
-      "匿名内部类"
-    ],
-    "excerpt": "在 Java 开发中，我们经常会见到这样的代码：\n\n\n```java\nList<TreeNode> queue = new LinkedList<>() {{ add(root); }};\n```\n\n初看之下，这行代码是创建了一个 `LinkedList` 集合并添加了 `root` 元素，但其中的...",
-    "readingTime": "13 min",
-    "date": "2026-05-08",
-    "filename": "匿名内部类.md",
-    "source": "manual",
-    "sourceLogId": null,
-    "status": "published"
-  },
-  {
-    "id": "article_1778230484896_8ib5v",
-    "slug": "增强for-迭代器",
-    "title": "增强for(迭代器)",
-    "category": "tech",
-    "tags": [
-      "增强for",
-      "迭代器"
-    ],
-    "excerpt": "一、核心定义与基础语法\n\n1. 普通 for 循环（Index-based For Loop）\n\n- **定义**：基于「索引 / 计数器」的循环，通过控制索引的起始、终止条件和步长，遍历容器或数组，支持灵活操作索引。\n- **核心语法**（数组 / List 通用）：\n    \n    ```ja...",
-    "readingTime": "12 min",
-    "date": "2026-05-08",
-    "filename": "增强for(迭代器).md",
-    "source": "manual",
-    "sourceLogId": null,
-    "status": "published"
-  },
-  {
-    "id": "article_1778230484897_skg0z",
-    "slug": "设计模式",
-    "title": "设计模式",
-    "category": "tech",
-    "tags": [
-      "设计模式"
-    ],
-    "excerpt": "设计模式是解决特定场景软件设计问题的最佳实践，核心价值是解耦、复用、可维护。本文按三大类梳理23种模式，每个模式配套「核心逻辑图+Java实战案例+代码片段」，兼顾面试考点与开发落地，避免纯抽象定义。\n\n一、创建型模式（5种）\n\n核心目标：封装对象创建过程，解耦创建与使用，提高灵活性。\n\n1. 工厂...",
-    "readingTime": "67 min",
-    "date": "2026-05-08",
-    "filename": "设计模式.md",
-    "source": "manual",
-    "sourceLogId": null,
-    "status": "published"
-  },
-  {
-    "id": "article_1778230484897_rzlp2",
-    "slug": "银行家算法",
-    "title": "银行家算法",
-    "category": "tech",
-    "tags": [
-      "银行家算法"
-    ],
-    "excerpt": "Dijkstra在1965年提出的银行家算法是著名的死锁避免算法，这个用于一个银行家给多个顾客贷款的算法可以直接用于操作系统给进程分配资源，这时只要把银行家换成操作系统，把顾客换成进程，把资金换成资源，把银行家决定是否放贷时所用的判断过程（即判断顾客是否有信誉和偿还能力）换成操作系统决定是否分配资源...",
-    "readingTime": "14 min",
-    "date": "2026-05-08",
-    "filename": "银行家算法.md",
-    "source": "manual",
-    "sourceLogId": null,
-    "status": "published"
-  },
-  {
-    "id": "article_1778230484903_4tvod",
+    "id": "article_2b2a1f5e-8ee5-49f6-a696-231904326506",
     "slug": "概率预测如何涌现智能-语言的边界与高维向量的革命",
     "title": "概率预测如何涌现智能？语言的边界与高维向量的革命",
     "category": "essays",
@@ -307,10 +890,10 @@
     "status": "published"
   },
   {
-    "id": "article_1778230484901_bxq19",
+    "id": "article_1ee2bab5-191a-440b-b5c1-28d8f99552b5",
     "slug": "12-项目实践-mcp协议详解-让ai模型优雅调用外部工具的标准化方案",
     "title": "项目实践｜MCP协议详解:让AI模型优雅调用外部工具的标准化方案",
-    "category": "reading",
+    "category": "projects",
     "tags": [
       "阅读"
     ],
@@ -323,10 +906,10 @@
     "status": "published"
   },
   {
-    "id": "article_1778230484901_uaphc",
+    "id": "article_b120440a-d2c8-452a-8343-51a4b6bfa126",
     "slug": "13-mcp-工具实现详解",
     "title": "MCP 工具实现详解",
-    "category": "reading",
+    "category": "projects",
     "tags": [
       "阅读"
     ],
@@ -339,10 +922,10 @@
     "status": "published"
   },
   {
-    "id": "article_1778230484902_md4b3",
+    "id": "article_12fddf9f-b959-49ad-ba55-aa3e313bde57",
     "slug": "14-项目实践-etl-pipeline-完整解析-从多源文档到向量库的全链路实现",
     "title": "项目实践｜ETL Pipeline 完整解析:从多源文档到向量库的全链路实现",
-    "category": "reading",
+    "category": "projects",
     "tags": [
       "阅读"
     ],
@@ -355,10 +938,10 @@
     "status": "published"
   },
   {
-    "id": "article_1778230484901_d4fq5",
+    "id": "article_7c7f7cdd-0f96-4d1e-ab69-f3dae59d0ac0",
     "slug": "10-前端目录结构与职责划分详解",
     "title": "前端目录结构与职责划分详解",
-    "category": "reading",
+    "category": "projects",
     "tags": [
       "阅读"
     ],
@@ -371,10 +954,10 @@
     "status": "published"
   },
   {
-    "id": "article_1778230484901_mdo9n",
+    "id": "article_c5b85bb7-9de0-45ea-8c2d-4e7126c3c5cc",
     "slug": "11-zustand-状态管理实战详解-轻量高效的react状态方案",
     "title": "Zustand 状态管理实战详解:轻量高效的React状态方案",
-    "category": "reading",
+    "category": "projects",
     "tags": [
       "阅读"
     ],
@@ -387,10 +970,10 @@
     "status": "published"
   },
   {
-    "id": "article_1778230484900_i8r42",
+    "id": "article_108d65d9-b750-425d-b679-98dbbd2f3304",
     "slug": "07-会话记忆压缩策略揭秘-轻松解决token爆炸难题",
     "title": "会话记忆压缩策略揭秘，轻松解决Token爆炸难题",
-    "category": "reading",
+    "category": "projects",
     "tags": [
       "阅读"
     ],
@@ -403,10 +986,10 @@
     "status": "published"
   },
   {
-    "id": "article_1778230484900_olb3p",
+    "id": "article_5115c402-17cc-4272-8474-a6e7eee3b635",
     "slug": "08-模型路由降级机制详解-基于断路器模式-实现高可用ai服务",
     "title": "模型路由降级机制详解:基于断路器模式，实现高可用AI服务",
-    "category": "reading",
+    "category": "projects",
     "tags": [
       "阅读"
     ],
@@ -419,10 +1002,10 @@
     "status": "published"
   },
   {
-    "id": "article_1778230484900_5wfep",
+    "id": "article_5b1898a2-92a9-4192-ba73-69a98151796b",
     "slug": "09-ragent项目7种设计模式深度解析-从源码看设计模式落地实践",
     "title": "Ragent项目7种设计模式深度解析:从源码看设计模式落地实践",
-    "category": "reading",
+    "category": "projects",
     "tags": [
       "阅读"
     ],
@@ -435,10 +1018,10 @@
     "status": "published"
   },
   {
-    "id": "article_1778230484898_lat6w",
+    "id": "article_ecfe996a-bfed-4a2e-b05d-f87f198ff287",
     "slug": "04-从零到一理解rag完整链路-代码逐行拆解-实战解析",
     "title": "从零到一理解RAG完整链路:代码逐行拆解+实战解析",
-    "category": "reading",
+    "category": "projects",
     "tags": [
       "阅读"
     ],
@@ -451,10 +1034,10 @@
     "status": "published"
   },
   {
-    "id": "article_1778230484899_wyeyr",
+    "id": "article_c5d78038-db52-4773-8551-c18fe912106e",
     "slug": "05-rag系统核心之意图识别与意图树实现全解析",
     "title": "RAG系统核心之意图识别与意图树实现全解析",
-    "category": "reading",
+    "category": "projects",
     "tags": [
       "阅读"
     ],
@@ -467,10 +1050,10 @@
     "status": "published"
   },
   {
-    "id": "article_1778230484899_1vzcg",
+    "id": "article_eecc235b-57c6-4368-a3e8-4b1246627b49",
     "slug": "06-rag系统性能天花板-多通道检索架构全解析-附代码与实践",
     "title": "RAG系统性能天花板:多通道检索架构全解析（附代码与实践）",
-    "category": "reading",
+    "category": "projects",
     "tags": [
       "阅读"
     ],
@@ -483,10 +1066,10 @@
     "status": "published"
   },
   {
-    "id": "article_1778230484897_cxcnh",
+    "id": "article_eceeedde-fdac-4445-a3e1-c70d159437d7",
     "slug": "01-自研rag项目framework分层解析-从配置到链路追踪的全链路设计",
     "title": "自研RAG项目Framework分层解析:从配置到链路追踪的全链路设计",
-    "category": "reading",
+    "category": "projects",
     "tags": [
       "阅读"
     ],
@@ -499,10 +1082,10 @@
     "status": "published"
   },
   {
-    "id": "article_1778230484898_hzsk9",
+    "id": "article_b776b48f-9e15-42c5-a86b-8868d5d952c8",
     "slug": "02-sse推送原理与落地实现",
     "title": "SSE推送原理与落地实现",
-    "category": "reading",
+    "category": "projects",
     "tags": [
       "阅读"
     ],
@@ -515,10 +1098,10 @@
     "status": "published"
   },
   {
-    "id": "article_1778230484898_rchkf",
+    "id": "article_b0951902-84c4-4bcd-8fe1-40f8cc28387c",
     "slug": "03-详解rag项目链路追踪实现-注解-aop优雅搞定全流程监控",
     "title": "详解RAG项目链路追踪实现:注解+AOP优雅搞定全流程监控",
-    "category": "reading",
+    "category": "projects",
     "tags": [
       "阅读"
     ],
@@ -531,7 +1114,7 @@
     "status": "published"
   },
   {
-    "id": "article_1778230484903_zl5a3",
+    "id": "article_1f2b725a-c5e5-4ee7-9fdf-19898ec61f21",
     "slug": "彻底搞懂token-大模型的-翻译官-是如何炼成的",
     "title": "彻底搞懂Token:大模型的“翻译官”是如何炼成的？",
     "category": "essays",
@@ -547,39 +1130,7 @@
     "status": "published"
   },
   {
-    "id": "article_1778230484894_sc64k",
-    "slug": "一文读懂rag-从原理到落地-搭建智能知识库原来这么简单",
-    "title": "一文读懂RAG:从原理到落地，搭建智能知识库原来这么简单",
-    "category": "tech",
-    "tags": [
-      "技术"
-    ],
-    "excerpt": "你是否想搭建一个能精准回答问题的智能知识库？是否想做一个靠谱的AI知识客服，无需人工干预就能响应各类咨询？如果你的答案是肯定的，那有一项技术你一定绕不开——RAG。",
-    "readingTime": "12 min",
-    "date": "2026-03-11",
-    "filename": "一文读懂RAG：从原理到落地，搭建智能知识库原来这么简单.md",
-    "source": "manual",
-    "sourceLogId": null,
-    "status": "published"
-  },
-  {
-    "id": "article_1778230484890_63jac",
-    "slug": "cloud-code-从入门到实战-一篇读懂编程-agent-的完全指南",
-    "title": "Cloud Code 从入门到实战:一篇读懂编程 Agent 的完全指南",
-    "category": "tech",
-    "tags": [
-      "技术"
-    ],
-    "excerpt": "最近，Cloud Code 在开发者圈子里热度持续攀升。作为一款强大的编程 Agent，它不仅能帮你写代码、改代码，还能通过多模态、MCP、插件等机制，成为你手中的“超级开发助手”。但很多同学只是简单...",
-    "readingTime": "6 min",
-    "date": "2026-03-09",
-    "filename": "Cloud Code 从入门到实战：一篇读懂编程 Agent 的完全指南.md",
-    "source": "manual",
-    "sourceLogId": null,
-    "status": "published"
-  },
-  {
-    "id": "article_1778230484902_6qlxn",
+    "id": "article_0c1f6447-850f-46a2-924c-c0d193db64aa",
     "slug": "别再用旧地图探索新大陆-一个正在被重构的商业模式",
     "title": "别再用旧地图探索新大陆:一个正在被重构的商业模式",
     "category": "essays",
@@ -595,7 +1146,7 @@
     "status": "published"
   },
   {
-    "id": "article_1778230484903_rzile",
+    "id": "article_e717a2cd-1016-4502-8b93-b2601be9356f",
     "slug": "当ai夺走工作-它还能夺走什么-一份写给自己的未来生存指南",
     "title": "当AI夺走工作，它还能夺走什么？——一份写给自己的未来生存指南",
     "category": "essays",
@@ -611,7 +1162,7 @@
     "status": "published"
   },
   {
-    "id": "article_1778230484903_kf73x",
+    "id": "article_761f9576-55d0-4ba0-bd4d-b4872399fa39",
     "slug": "渐进式披露-cloud-code团队踩坑无数后悟出的ai-agent设计真谛",
     "title": "渐进式披露:Cloud Code团队踩坑无数后悟出的AI Agent设计真谛",
     "category": "essays",
@@ -622,24 +1173,6 @@
     "readingTime": "6 min",
     "date": "2026-03-04",
     "filename": "渐进式披露：Cloud Code团队踩坑无数后悟出的AI Agent设计真谛.md",
-    "source": "manual",
-    "sourceLogId": null,
-    "status": "published"
-  },
-  {
-    "id": "article_1778230484894_geqlu",
-    "slug": "understanding-c-pointers",
-    "title": "理解 C 语言指针",
-    "category": "tech",
-    "tags": [
-      "C",
-      "指针",
-      "内存管理"
-    ],
-    "excerpt": "数组名是常量指针，sizeof 行为不同。画了内存图后豁然开朗。",
-    "readingTime": "8 min",
-    "date": "2026-03-03",
-    "filename": "understanding-c-pointers.md",
     "source": "manual",
     "sourceLogId": null,
     "status": "published"

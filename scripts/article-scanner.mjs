@@ -9,8 +9,9 @@ const __dirname = path.dirname(__filename);
 const ROOT = path.resolve(__dirname, '..');
 
 const CATEGORIES = ['tutorials', 'blog', 'projects', 'essays'];
-const ARTICLES_DIR = path.join(ROOT, 'src', 'articles');
-const OUTPUT_FILE = path.join(ARTICLES_DIR, '_data', 'articles.json');
+const CONTENT_DIR = path.join(ROOT, 'content');
+const CONTENT_ARTICLES_DIR = path.join(CONTENT_DIR, 'articles');
+const OUTPUT_FILE = path.join(ROOT, 'src', 'articles', '_data', 'articles.json');
 
 function extractTags(frontmatter, content, title) {
     if (frontmatter.tags && Array.isArray(frontmatter.tags) && frontmatter.tags.length > 0) {
@@ -49,8 +50,22 @@ function generateSlug(title, filename) {
     return base.toLowerCase().replace(/[^a-z0-9一-龥]+/g, '-').replace(/^-|-$/g, '');
 }
 
-function scanCategory(category) {
-    const categoryDir = path.join(ARTICLES_DIR, category);
+function loadExistingIndex() {
+    try {
+        if (fs.existsSync(OUTPUT_FILE)) {
+            const data = JSON.parse(fs.readFileSync(OUTPUT_FILE, 'utf-8'));
+            const map = new Map();
+            data.forEach(a => map.set(`${a.slug}:${a.category}`, a));
+            return map;
+        }
+    } catch (err) {
+        console.warn(`  读取已有索引失败: ${err.message}，将重新生成`);
+    }
+    return new Map();
+}
+
+function scanCategory(category, existingMap) {
+    const categoryDir = path.join(CONTENT_ARTICLES_DIR, category);
     const articles = [];
 
     if (!fs.existsSync(categoryDir)) {
@@ -96,8 +111,12 @@ function scanCategory(category) {
         const excerpt = frontmatter.excerpt || generateExcerpt(content);
         const tags = extractTags(frontmatter, content, title);
 
+        const key = `${slug}:${category}`;
+        const existing = existingMap.get(key);
+        const id = existing ? existing.id : `article_${randomUUID()}`;
+
         articles.push({
-            id: `article_${randomUUID()}`,
+            id,
             slug,
             title,
             category,
@@ -118,9 +137,10 @@ function scanCategory(category) {
 function scanArticles() {
     console.log('📡 开始扫描文章...');
 
+    const existingMap = loadExistingIndex();
     let allArticles = [];
     for (const category of CATEGORIES) {
-        const articles = scanCategory(category);
+        const articles = scanCategory(category, existingMap);
         console.log(`  [${category}] 发现 ${articles.length} 篇文章`);
         allArticles.push(...articles);
     }
