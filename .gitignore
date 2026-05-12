@@ -3,6 +3,8 @@ _site/
 .DS_Store
 *.log
 *.map
+logs/
+src/assets/js/bundle.js
 
 # IDE
 .vscode/
