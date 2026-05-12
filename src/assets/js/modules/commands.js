@@ -14,7 +14,7 @@ import { showView } from './router.js';
 const VALID_CATEGORIES = ['all', 'tutorials', 'blog', 'essays', 'projects'];
 
 const commands = {
-    filter(arg) {
+    '/filter'(arg) {
         const cat = arg.toLowerCase();
         if (!VALID_CATEGORIES.includes(cat)) return;
         clearFilterCache();
@@ -25,7 +25,7 @@ const commands = {
                 showView('log');
     },
 
-    grep(arg) {
+    '/grep'(arg) {
         if (!arg) return;
         clearFilterCache();
         setActiveKeyword(arg);
@@ -35,21 +35,17 @@ const commands = {
         showView('log');
     },
 
-    stats() { renderDashboard(); },
-    dashboard() { renderDashboard(); },
+    '/stats'() { renderDashboard(); },
+    '/issues'() { renderErrors(); },
+    '/milestones'() { renderMilestones(); },
+    '/projects'() { renderProjects(); },
 
-    repo() { renderErrors(); },
-    errors() { renderErrors(); },
-    milestones() { renderMilestones(); },
-    projects() { renderProjects(); },
+    '/skills'() { renderSkillsView(); },
 
-    skills() { renderSkillsView(); },
-    neofetch() { renderSkillsView(); },
+    '/about'() { renderAbout(); },
+    '/help'() { renderHelp(); },
 
-    about() { renderAbout(); },
-    help() { renderHelp(); },
-
-    clear() {
+    '/clear'() {
         clearFilterCache();
         setActiveFilter(null);
         setActiveKeyword(null);
@@ -58,7 +54,7 @@ const commands = {
                 showView('log');
     },
 
-    theme(arg) {
+    '/theme'(arg) {
         if (arg === 'dark') {
             document.body.classList.remove('light');
             localStorage.setItem('terminal-theme', 'dark');
@@ -68,7 +64,7 @@ const commands = {
         }
     },
 
-    export(arg) {
+    '/export'(arg) {
         const data = state.activeFilter
             ? state.feed.filter(l => l.typeLabel === state.activeFilter)
             : state.feed;
@@ -101,7 +97,39 @@ export function executeCommand(cmdStr) {
     const handler = commands[cmd];
     if (handler) {
         handler(arg);
+    } else if (cmdStr.trim()) {
+        const suggestion = findSimilar(cmd);
+        showError('Error: ' + cmd + ' not found.', suggestion);
     }
+}
+
+function showError(msg, suggestion) {
+    // 移除之前的错误输出
+    const prev = document.querySelector('.cmd-error-output');
+    if (prev) prev.remove();
+
+    const errorEl = document.createElement('div');
+    errorEl.className = 'cmd-error-output';
+    errorEl.style.cssText = 'margin-top:0.5rem;padding:0.4rem 0.6rem;background:rgba(255,60,60,0.08);border-left:2px solid #FF4444;color:#FF4444;font-family:var(--font-mono);font-size:0.8rem;line-height:1.4;';
+    errorEl.innerHTML = msg + (suggestion ? `<br><span style="color:#00E5A0;cursor:pointer;" onclick="executeCommand('${suggestion}');this.closest('.cmd-error-output').remove();">→ Did you mean: ${suggestion}?</span>` : '');
+
+    const cmdArea = document.querySelector('.command-area') || document.querySelector('.mobile-cmd-area');
+    if (cmdArea) {
+        cmdArea.style.marginBottom = '0';
+        cmdArea.insertAdjacentElement('afterend', errorEl);
+    }
+
+    setTimeout(() => errorEl.remove(), 3000);
+}
+
+function findSimilar(cmd) {
+    const cmds = Object.keys(commands);
+    for (const c of cmds) {
+        if (c.slice(1).startsWith(cmd.slice(1)) || cmd.slice(1).startsWith(c.slice(1))) {
+            return c;
+        }
+    }
+    return null;
 }
 
 window.executeCommand = executeCommand;

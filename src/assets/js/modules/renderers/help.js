@@ -1,4 +1,5 @@
 // 帮助视图
+import { state } from '../state.js';
 import { showView } from '../router.js';
 
 export function renderHelp() {
@@ -8,20 +9,20 @@ export function renderHelp() {
     container.innerHTML = `
         <h2 style="color:var(--green);">📖 可用命令</h2>
         <pre style="color:var(--text); line-height:1.6;">
-filter [all|tutorials|blog|essays|projects]       按分类筛选
-grep [关键词]                                    全文搜索
-status / dashboard                               打开星系（仪表盘）
-errors                                           外部信号（GitHub仓库）
-milestones                                       全部文章
-projects                                         项目展板
-skills / neofetch                                技能树
-about                                            系统（关于）
-help                                             显示此帮助
-clear                                            清除筛选/返回文章流
-theme dark|light                                 切换主题
-export txt|json                                  导出当前视图
+/filter [category]    筛选：all|tutorials|blog|essays|projects
+/grep [关键词]        搜索文章标题和描述
+/stats                统计概览
+/issues              GitHub 仓库 Issues
+/projects             项目列表
+/milestones           文章列表
+/skills               技能栈
+/about                关于
+/help                 显示帮助
+/clear                清除筛选
+/theme [dark|light]   切换主题
+/export [txt|json]    导出数据
         </pre>
-        <p style="color:var(--text-dim);">快捷键: j/k 移动 | Esc 关闭 | / 聚焦搜索 | Tab 补全</p>`;
+        <p style="color:var(--text-dim);">快捷键: j/k 移动 | Esc 关闭 | Tab 补全</p>`;
 
     showView('help');
 }

@@ -19,10 +19,10 @@ export function renderFilterChips() {
             const filter = this.dataset.filter;
             if (filter === 'all') {
                 setActiveFilter(null);
-                window.executeCommand('filter all');
+                window.executeCommand('/filter all');
             } else {
                 setActiveFilter(filter);
-                window.executeCommand('filter ' + filter);
+                window.executeCommand('/filter ' + filter);
             }
         });
     });

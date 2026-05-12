@@ -26,15 +26,19 @@
         </div>
     </header>
 
+    <div class="mobile-cmd-area" id="mobileCmd">
+        <div class="command-area">
+            <span class="prompt">$</span>
+            <input type="text" class="cmd-input mobile-cmd-input" id="mobileCmdInput" placeholder="/help /stats ...">
+            <span class="cmd-hint">Tab 补全 | Enter 执行</span>
+        </div>
+    </div>
+
     <div class="main-container" id="mainContainer">
         <div class="command-area" id="desktopCmd">
             <span class="prompt">$</span>
-            <input type="text" class="cmd-input" id="cmdInput" placeholder="输入命令... (help 查看全部)" autofocus>
+            <input type="text" class="cmd-input" id="cmdInput" placeholder="/help /stats ..." autofocus>
             <span class="cmd-hint">↑↓ 历史 | Tab 补全 | Enter 执行</span>
-        </div>
-
-        <div class="mobile-cmd-area" id="mobileCmd">
-            <input type="text" class="mobile-cmd-input" id="mobileCmdInput" placeholder="/stats /repo /log ...">
         </div>
 
         <div class="content-layout">

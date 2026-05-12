@@ -143,7 +143,7 @@ export function renderDashboard() {
     // 绑定标签点击
     document.querySelectorAll('.tag-item').forEach(el => {
         el.addEventListener('click', function() {
-            window.executeCommand('grep ' + this.dataset.tag);
+            window.executeCommand('/grep ' + this.dataset.tag);
         });
     });
 

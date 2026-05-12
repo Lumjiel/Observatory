@@ -4,16 +4,13 @@ import { closeDetail } from '../components/detail.js';
 
 export function initKeyboard() {
     document.addEventListener('keydown', function(e) {
-        if (e.target === state.dom.cmdInput) return;
-        if (e.key === '/') {
-            e.preventDefault();
-            if (state.dom.cmdInput) state.dom.cmdInput.focus();
-        } else if (e.key === 'Escape') {
+        if (e.target === state.dom.cmdInput || e.target === state.dom.mobileCmdInput) return;
+        if (e.key === 'Escape') {
             if (state.openLogId) {
                 const entry = document.querySelector('.log-entry[data-log-id="' + state.openLogId + '"]');
                 closeDetail(state.openLogId, entry);
             } else if (state.activeFilter || state.activeKeyword) {
-                window.executeCommand('clear');
+                window.executeCommand('/clear');
             }
         } else if (e.key === 'j' || e.key === 'ArrowDown') {
             e.preventDefault();

@@ -12,7 +12,7 @@ export function initMobileNav() {
         const btn = e.target.closest('button');
         if (btn) {
             const view = btn.dataset.view;
-            window.executeCommand(view === 'log' ? 'clear' : view);
+            window.executeCommand(view === 'log' ? '/clear' : '/' + view);
         }
     });
 
