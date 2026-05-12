@@ -5,16 +5,16 @@ import { showView } from '../router.js';
 const VERSION = 'v1.0';
 
 const BUBBLES = [
-  '"Code is like humor. When you have to explain it, it\'s bad." — Cory House',
-  '"First, solve the problem. Then, write the code." — John Johnson',
-  '"Talk is cheap. Show me the code." — Linus Torvalds',
-  '"程序员的三大谎言：我明天就改、注释以后补、这是别人的bug"',
-  '"Stay hungry, stay foolish." — Steve Jobs',
-  '"The best way to predict the future is to invent it." — Alan Kay',
-  '"Premature optimization is the root of all evil." — Donald Knuth',
-  '"Any fool can write code that a computer can understand. Good programmers write code that humans can understand." — Martin Fowler',
-  '"程序员的思维：能跑就行，改什么改"',
-  '"调试三件套：print、print、print"',
+  '$ whoami\n> 凌晨三点还在 debug 的 CS 大二狗',
+  '$ man love\n> No manual entry for love',
+  '$ ./run.sh\n> Segmentation fault (core dumped)',
+  '$ sudo rm -rf /\n> [sudo] password for Lumjiel: ********\n> 兄弟你别执行这个啊！',
+  '$ git push --force\n> Force push accepted. 后果自负。',
+  '$ cat README.md\n> README.md: No such file or directory',
+  '$ echo "世界上最慢的编译"\n> 正在编译... 预计完成时间：明天',
+  '$ npm install\n> added 2333 packages in 47m',
+  '$ 能跑。\n> 别问为什么。',
+  '$ 注释以后再补。\n> 以后是哪一天？',
 ];
 
 const ASCII_ROBOT = `
@@ -64,19 +64,23 @@ export function renderAbout() {
 
       <div class="about-body" id="aboutBody" style="display:none">
         <div class="about-section">
-          <div class="about-section-title">📡 外部信号源</div>
+          <div class="about-section-title">📡 系统信息</div>
           <div class="about-contacts">
             <div class="about-contact-item">
               <span class="contact-label">操作者</span>
-              <span class="contact-value">杰哥</span>
+              <span class="contact-value">Lumjiel</span>
+            </div>
+            <div class="about-contact-item">
+              <span class="contact-label">工作目录</span>
+              <span class="contact-value">~/project/terminal-observatory</span>
+            </div>
+            <div class="about-contact-item">
+              <span class="contact-label">编辑器</span>
+              <span class="contact-value">Claude Code</span>
             </div>
             <div class="about-contact-item">
               <span class="contact-label">状态</span>
-              <span class="contact-value status-ok">🟢 在线</span>
-            </div>
-            <div class="about-contact-item">
-              <span class="contact-label">位置</span>
-              <span class="contact-value">某大学·图书馆·自习室角落</span>
+              <span class="contact-value" id="aboutStatus">🟢 摸鱼中...</span>
             </div>
             <div class="about-contact-item">
               <span class="contact-label">GitHub</span>
@@ -111,6 +115,20 @@ export function renderAbout() {
 
   showView('about');
   startTypewriter();
+  startStatusUpdater();
+}
+
+const STATUS_STATES = ['摸鱼中...', '编译中...', 'debug中...', '重构中...', '看文档中...', '喝水中...'];
+let statusInterval;
+
+function startStatusUpdater() {
+  if (statusInterval) clearInterval(statusInterval);
+  const statusEl = document.getElementById('aboutStatus');
+  if (!statusEl) return;
+  statusInterval = setInterval(() => {
+    const state = STATUS_STATES[Math.floor(Math.random() * STATUS_STATES.length)];
+    statusEl.textContent = '🟢 ' + state;
+  }, 2000);
 }
 
 // 打字机效果
