@@ -42,8 +42,12 @@ function checkAuth(req) {
 app.use((req, res, next) => {
   const cookies = {};
   req.headers.cookie && req.headers.cookie.split(';').forEach(c => {
-    const [k, v] = c.trim().split('=');
-    cookies[k] = v;
+    const eqIdx = c.indexOf('=');
+    if (eqIdx > 0) {
+      const k = c.slice(0, eqIdx).trim();
+      const v = c.slice(eqIdx + 1).trim();
+      cookies[k] = v;
+    }
   });
   req.cookies = cookies;
   next();
@@ -257,7 +261,16 @@ app.post('/api/logout', (req, res) => {
 
 app.get('/api/articles', (req, res) => {
   if (!checkAuth(req)) return res.status(401).json({ error: 'Unauthorized' });
-  res.json(listArticles());
+  let articles = listArticles();
+  const q = req.query.q;
+  if (q) {
+    const keyword = q.toLowerCase();
+    articles = articles.filter(a =>
+      (a.title || '').toLowerCase().includes(keyword) ||
+      (a.tags || []).some(t => t.toLowerCase().includes(keyword))
+    );
+  }
+  res.json(articles);
 });
 
 app.get('/api/articles/:slug', (req, res) => {
@@ -307,7 +320,7 @@ app.post('/api/articles', (req, res) => {
 
   if (DEV && lrServer) lrServer.refresh('/');
 
-  res.json({ success: true, slug, path: filePath });
+  res.json({ success: true, slug, path: safePath });
 });
 
 app.put('/api/articles/:slug', (req, res) => {
@@ -530,6 +543,9 @@ app.post('/api/articles/batch-move', (req, res) => {
 // ============================================================
 
 app.get(ADMIN_PATH, (req, res) => {
+  console.log('DEBUG /admin route hit');
+  console.log('DEBUG cookies:', req.cookies);
+  console.log('DEBUG AUTH_VALUE:', AUTH_VALUE);
   if (checkAuth(req)) {
     res.send(renderAdminPage(listArticles()));
   } else {
@@ -550,6 +566,8 @@ if (fs.existsSync(SITE_DIR)) {
   app.use(express.static(SITE_DIR, { index: ['index.html', 'index.htm'] }));
   app.use((req, res, next) => {
     if (res.headersSent) return next();
+    // 只对非 API 和非管理路径的请求 fallback 到 index.html
+    if (req.path.startsWith('/api') || req.path.startsWith('/admin')) return next();
     res.sendFile(path.join(SITE_DIR, 'index.html'));
   });
 } else {
@@ -613,7 +631,26 @@ if (DEV) {
   startDevServer();
 }
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`[观测站] 网站已托管在 http://localhost:${PORT}`);
   console.log(`[观测站] 管理界面 http://localhost:${PORT}${ADMIN_PATH}`);
 });
+
+// Graceful Shutdown（PM2 / Docker / kill 信号优雅关闭）
+function shutdown(signal) {
+  console.log(`\n[观测站] 收到 ${signal}，正在关闭...`);
+  if (lrServer) {
+    try { lrServer.close(); } catch (e) {}
+  }
+  server.close(() => {
+    console.log('[观测站] 已关闭，再见！');
+    process.exit(0);
+  });
+  setTimeout(() => {
+    console.error('[观测站] 强制退出');
+    process.exit(1);
+  }, 10000);
+}
+
+process.on('SIGTERM', () => shutdown('SIGTERM'));
+process.on('SIGINT',  () => shutdown('SIGINT'));

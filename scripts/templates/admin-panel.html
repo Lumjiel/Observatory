@@ -318,7 +318,7 @@
   .form-group textarea:focus { border-color: var(--green); background: var(--surface-raised); }
   .form-group input::placeholder, .form-group textarea::placeholder { color: var(--text-dim); }
   .form-group select { cursor: pointer; }
-  .form-group textarea { resize: vertical; width: 100%; height: 500px; line-height: 1.7; background: var(--bg); color: var(--text); }
+  .form-group textarea { resize: vertical; width: 100% !important; height: 600px !important; line-height: 1.7; background: var(--bg) !important; color: var(--text) !important; }
 
   .tag-input-wrapper {
     display: flex;
@@ -580,8 +580,10 @@
         </div>
       </div>
 
-      <div class="form-section-title" style="padding-top: 0.5rem;"> 📄 内容 (Markdown)</div>
-      <textarea id="articleContent" placeholder="支持 Markdown 语法..." style="width:100%; height:500px; background:var(--bg); color:var(--text); resize:vertical;"></textarea>
+      <div class="form-section" style="display:flex; flex-direction:column;">
+        <div class="form-section-title"> 📄 内容 (Markdown)</div>
+        <textarea id="articleContent" placeholder="支持 Markdown 语法..." style="width:100%; height:600px; background:var(--bg); color:var(--text); resize:vertical;"></textarea>
+      </div>
     </div>
   </div>
 
@@ -621,6 +623,23 @@ let currentTags = [];
 let showPreview = false;
 let allArticles = [];
 let selectedSlugs = new Set();
+
+function debounce(fn, delay) {
+  let timer;
+  return function(...args) {
+    clearTimeout(timer);
+    timer = setTimeout(() => fn.apply(this, args), delay);
+  };
+}
+
+function scrollToArticle(slug) {
+  const el = document.querySelector('[data-slug="' + slug + '"]');
+  if (el) {
+    document.querySelectorAll('.article-item').forEach(item => item.classList.remove('active'));
+    el.classList.add('active');
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+}
 
 function showToast(msg, isError = false) {
   const toast = document.getElementById('toast');
@@ -669,18 +688,18 @@ function renderArticleList(articles) {
   `).join('');
 }
 
-document.getElementById('searchInput').addEventListener('input', function() {
-  const q = this.value.trim().toLowerCase();
+document.getElementById('searchInput').addEventListener('input', debounce(async function() {
+  const q = this.value.trim();
   if (!q) {
-    renderArticleList(allArticles);
+    await loadArticleList();
   } else {
-    const filtered = allArticles.filter(a =>
-      a.title.toLowerCase().includes(q) ||
-      (a.tags || []).some(t => t.toLowerCase().includes(q))
-    );
-    renderArticleList(filtered);
+    const res = await fetch(API + '?q=' + encodeURIComponent(q));
+    if (res.ok) {
+      allArticles = await res.json();
+      renderArticleList(allArticles);
+    }
   }
-});
+}, 300));
 
 function handleItemClick(slug, event) {
   if (event.target.type === 'checkbox') return;
@@ -711,8 +730,17 @@ async function batchDeleteSelected() {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ slugs })
   });
-  if (res.ok) { showToast('已删除'); selectedSlugs.clear(); setTimeout(() => window.location.reload(), 1000); }
-  else { const data = await res.json(); showToast(data.error || '删除失败', true); }
+  if (res.ok) {
+    showToast('已删除');
+    const deletedSlugs = new Set(slugs.map(s => s.slug));
+    allArticles = allArticles.filter(a => !deletedSlugs.has(a.slug));
+    selectedSlugs.clear();
+    updateBatchButtons();
+    renderArticleList(allArticles);
+  } else {
+    const data = await res.json();
+    showToast(data.error || '删除失败', true);
+  }
 }
 
 function showMoveDialog() { document.getElementById('moveDialog').classList.add('show'); }
@@ -730,8 +758,19 @@ async function doBatchMove() {
     body: JSON.stringify({ slugs, targetCategory: target })
   });
   hideMoveDialog();
-  if (res.ok) { showToast('已移动'); selectedSlugs.clear(); setTimeout(() => window.location.reload(), 1000); }
-  else { const data = await res.json(); showToast(data.error || '移动失败', true); }
+  if (res.ok) {
+    showToast('已移动');
+    const movedSlugs = new Set(slugs.map(s => s.slug));
+    allArticles = allArticles.map(a =>
+      movedSlugs.has(a.slug) ? { ...a, category: target } : a
+    );
+    selectedSlugs.clear();
+    updateBatchButtons();
+    renderArticleList(allArticles);
+  } else {
+    const data = await res.json();
+    showToast(data.error || '移动失败', true);
+  }
 }
 
 function loadArticle(slug) {
@@ -808,24 +847,49 @@ async function saveArticle() {
   if (currentSlug) res = await fetch(API + '/' + currentSlug, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
   else res = await fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
   const data = await res.json();
-  if (res.ok) { showToast(currentSlug ? '保存成功' : '创建成功'); setTimeout(() => window.location.reload(), 1000); }
-  else { showToast(data.error || '操作失败', true); }
+  if (res.ok) {
+    showToast(currentSlug ? '保存成功' : '创建成功');
+    await loadArticleList();
+    if (data.slug) {
+      currentSlug = data.slug;
+      scrollToArticle(data.slug);
+    }
+  } else {
+    showToast(data.error || '操作失败', true);
+  }
 }
 
 async function deleteCurrentArticle() {
   if (!currentSlug) return;
   if (!confirm('确定删除这篇文章？')) return;
   const res = await fetch(API + '/' + currentSlug, { method: 'DELETE' });
-  if (res.ok) { showToast('已删除'); setTimeout(() => window.location.reload(), 1000); }
-  else { const data = await res.json(); showToast(data.error || '删除失败', true); }
+  if (res.ok) {
+    showToast('已删除');
+    const slugToDelete = currentSlug;
+    currentSlug = null;
+    newArticle();
+    allArticles = allArticles.filter(a => a.slug !== slugToDelete);
+    renderArticleList(allArticles);
+  } else {
+    const data = await res.json();
+    showToast(data.error || '删除失败', true);
+  }
 }
 
 async function duplicateArticle() {
   if (!currentSlug) { showToast('请先加载一篇文章', true); return; }
   const res = await fetch(API + '/' + currentSlug + '/duplicate', { method: 'POST' });
   const data = await res.json();
-  if (res.ok) { showToast('已复制'); setTimeout(() => window.location.reload(), 1000); }
-  else { showToast(data.error || '复制失败', true); }
+  if (res.ok) {
+    showToast('已复制');
+    await loadArticleList();
+    if (data.slug) {
+      currentSlug = data.slug;
+      scrollToArticle(data.slug);
+    }
+  } else {
+    showToast(data.error || '复制失败', true);
+  }
 }
 
 async function togglePreview() {
