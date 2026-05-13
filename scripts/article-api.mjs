@@ -165,6 +165,7 @@ function listArticles() {
     tags: a.tags || [],
     excerpt: a.excerpt || '',
     order: a.order !== undefined ? a.order : 0,
+    draft: a.draft || false,
     path: getArticlePath(a),
   }));
 }
@@ -189,6 +190,7 @@ function getArticle(slug) {
     excerpt: entry.excerpt || data.excerpt || '',
     readingTime: entry.readingTime || data.readingTime || '1 min',
     order: entry.order !== undefined ? entry.order : 0,
+    draft: entry.draft !== undefined ? entry.draft : (data.draft || false),
     path: filePath,
     content,
   };
@@ -248,12 +250,9 @@ function renderLoginPage() {
 
 function renderAdminPage(articles) {
   const categoryLabels = { tutorials: '教程', blog: '博客', essays: '随笔', projects: '项目' };
-  const categoryOptions = Object.entries(categoryLabels)
-    .map(([v, l]) => `<option value="${escapeHtml(v)}">${escapeHtml(l)}</option>`)
-    .join('');
 
   const articleList = articles.map(a => `
-    <div class="article-item" data-slug="${escapeHtml(a.slug)}" onclick="window.handleItemClick('${escapeHtml(a.slug)}', event)">
+    <div class="article-item${a.draft ? ' article-draft' : ''}" data-slug="${escapeHtml(a.slug)}" onclick="window.handleItemClick('${escapeHtml(a.slug)}', event)">
       <div class="article-item-title">${escapeHtml(a.title || '')}</div>
       <div class="article-item-meta">
         <span class="cat-tag cat-${escapeHtml(a.category || '')}">${escapeHtml(categoryLabels[a.category] || a.category || '')}</span>
@@ -267,10 +266,51 @@ function renderAdminPage(articles) {
     : '';
 
   return readTemplate(PANEL_TPL)
+    .replace(/%%PAGE_MODE%%/g, 'list')
     .replace('%%ARTICLE_COUNT%%', articles.length)
     .replace('%%ARTICLE_LIST%%', articleList)
     .replace('%%EMPTY_STATE%%', emptyState)
-    .replace('%%CATEGORY_OPTIONS%%', categoryOptions);
+    .replace('%%CATEGORY_OPTIONS%%', buildCategoryOptions());
+}
+
+// 文章编辑器全屏页面（新建）
+function renderNewArticlePage() {
+  const tpl = readTemplate(PANEL_TPL);
+  return tpl
+    .replace(/%%PAGE_MODE%%/g, 'editor')
+    .replace('%%ARTICLE_COUNT%%', '')
+    .replace('%%ARTICLE_LIST%%', '')
+    .replace('%%EMPTY_STATE%%', '')
+    .replace('%%CATEGORY_OPTIONS%%', buildCategoryOptions());
+}
+
+function buildCategoryOptions() {
+  const labels = { tutorials: '教程', blog: '博客', essays: '随笔', projects: '项目' };
+  return Object.entries(labels)
+    .map(([v, l]) => `<option value="${escapeHtml(v)}">${escapeHtml(l)}</option>`)
+    .join('');
+}
+
+// 文章编辑器全屏页面（编辑已有文章）
+function renderArticlePage(article) {
+  const tpl = readTemplate(PANEL_TPL);
+  return tpl
+    .replace(/%%PAGE_MODE%%/g, 'editor')
+    .replace('%%ARTICLE_COUNT%%', '')
+    .replace('%%ARTICLE_LIST%%', '')
+    .replace('%%EMPTY_STATE%%', '')
+    .replace('%%CATEGORY_OPTIONS%%', buildCategoryOptions());
+}
+
+// 站点设置全屏页面
+function renderSettingsPage() {
+  const tpl = readTemplate(PANEL_TPL);
+  return tpl
+    .replace(/%%PAGE_MODE%%/g, 'settings')
+    .replace('%%ARTICLE_COUNT%%', '')
+    .replace('%%ARTICLE_LIST%%', '')
+    .replace('%%EMPTY_STATE%%', '')
+    .replace('%%CATEGORY_OPTIONS%%', '');
 }
 
 // ============================================================
@@ -324,7 +364,7 @@ app.get('/api/articles/:slug', (req, res) => {
 
 app.post('/api/articles', (req, res) => {
   if (!checkAuth(req)) return res.status(401).json({ error: 'Unauthorized' });
-  const { title, category, content, tags, excerpt, readingTime, order } = req.body;
+  const { title, category, content, tags, excerpt, draft } = req.body;
   if (!title || !category || !content) {
     return res.status(400).json({ error: '缺少必填字段' });
   }
@@ -334,10 +374,10 @@ app.post('/api/articles', (req, res) => {
 
   const slug = title.toLowerCase().replace(/[^a-z0-9一-龥]+/g, '-').replace(/^-|-$/g, '');
   const filename = `${slug}.md`;
-  const safePath = safePath(ARTICLES_DIR, path.join(category, filename));
-  if (!safePath) return res.status(400).json({ error: '无效的路径' });
+  const articlePath = safePath(ARTICLES_DIR, path.join(category, filename));
+  if (!articlePath) return res.status(400).json({ error: '无效的路径' });
 
-  if (fs.existsSync(safePath)) {
+  if (fs.existsSync(articlePath)) {
     return res.status(409).json({ error: '文章已存在' });
   }
 
@@ -349,12 +389,11 @@ app.post('/api/articles', (req, res) => {
     category,
     tags: tags || [],
     excerpt: excerpt || '',
-    readingTime: readingTime || '1 min',
-    order: order || 0,
+    draft: draft || false,
   });
 
-  fs.writeFileSync(safePath, frontmatter);
-  updateArticleIndex(slug, { title, category, tags, excerpt, readingTime, order });
+  fs.writeFileSync(articlePath, frontmatter);
+  updateArticleIndex(slug, { title, category, tags, excerpt, draft: draft || false });
 
   try {
     execSync('npx eleventy --incremental', { cwd: ROOT, stdio: 'inherit' });
@@ -364,13 +403,13 @@ app.post('/api/articles', (req, res) => {
 
   if (DEV && lrServer) lrServer.refresh('/');
 
-  res.json({ success: true, slug, path: safePath });
+  res.json({ success: true, slug, path: articlePath });
 });
 
 app.put('/api/articles/:slug', (req, res) => {
   if (!checkAuth(req)) return res.status(401).json({ error: 'Unauthorized' });
   const { slug } = req.params;
-  const { title, content, category, tags, excerpt, readingTime, order } = req.body;
+  const { title, content, category, tags, excerpt, draft } = req.body;
 
   const article = getArticle(slug);
   if (!article) return res.status(404).json({ error: '文章不存在' });
@@ -391,8 +430,7 @@ app.put('/api/articles/:slug', (req, res) => {
     category: newCategory,
     tags: tags !== undefined ? tags : article.tags,
     excerpt: excerpt !== undefined ? excerpt : article.excerpt,
-    readingTime: readingTime !== undefined ? readingTime : article.readingTime,
-    order: order !== undefined ? order : article.order,
+    draft: draft !== undefined ? draft : (article.draft || false),
   });
 
   try {
@@ -412,8 +450,7 @@ app.put('/api/articles/:slug', (req, res) => {
     category: newCategory,
     tags: tags !== undefined ? tags : article.tags,
     excerpt: excerpt !== undefined ? excerpt : article.excerpt,
-    readingTime: readingTime !== undefined ? readingTime : article.readingTime,
-    order: order !== undefined ? order : article.order,
+    draft: draft !== undefined ? draft : (article.draft || false),
   });
 
   try {
@@ -538,8 +575,7 @@ app.post('/api/articles/:slug/duplicate', (req, res) => {
     category: article.category,
     tags: article.tags,
     excerpt: article.excerpt,
-    readingTime: article.readingTime,
-    order: 0,
+    draft: article.draft || false,
   });
 
   fs.writeFileSync(filePath, frontmatter);
@@ -548,8 +584,7 @@ app.post('/api/articles/:slug/duplicate', (req, res) => {
     category: article.category,
     tags: article.tags,
     excerpt: article.excerpt,
-    readingTime: article.readingTime,
-    order: 0,
+    draft: article.draft || false,
   });
 
   try {
@@ -645,18 +680,79 @@ app.post('/api/articles/batch-move', (req, res) => {
 });
 
 // ============================================================
+// GitHub 仓库管理 API
+// ============================================================
+
+const GITHUB_DATA_PATH = path.join(ROOT, 'src/_data/github.json');
+const SITE_DATA_PATH = path.join(ROOT, 'src/_data/site.json');
+
+app.get('/api/github', (req, res) => {
+  if (!checkAuth(req)) return res.status(401).json({ error: 'Unauthorized' });
+  const siteData = fs.existsSync(SITE_DATA_PATH)
+    ? JSON.parse(fs.readFileSync(SITE_DATA_PATH, 'utf-8'))
+    : { shownRepos: [] };
+  const githubData = fs.existsSync(GITHUB_DATA_PATH)
+    ? JSON.parse(fs.readFileSync(GITHUB_DATA_PATH, 'utf-8'))
+    : { repos: [], lastFetched: null };
+  const shownSet = new Set(siteData.shownRepos || []);
+  const repos = (githubData.repos || []).map(r => ({
+    ...r,
+    shown: shownSet.has(r.name)
+  }));
+  res.json({ repos, shownRepos: siteData.shownRepos || [], lastFetched: githubData.lastFetched });
+});
+
+app.put('/api/github/repos', (req, res) => {
+  if (!checkAuth(req)) return res.status(401).json({ error: 'Unauthorized' });
+  const { shownRepos } = req.body;
+  if (!Array.isArray(shownRepos)) return res.status(400).json({ error: 'shownRepos 必须是数组' });
+  const siteData = fs.existsSync(SITE_DATA_PATH)
+    ? JSON.parse(fs.readFileSync(SITE_DATA_PATH, 'utf-8'))
+    : {};
+  siteData.shownRepos = shownRepos;
+  fs.writeFileSync(SITE_DATA_PATH, JSON.stringify(siteData, null, 2));
+  res.json({ success: true });
+});
+
+app.post('/api/github/refresh', (req, res) => {
+  if (!checkAuth(req)) return res.status(401).json({ error: 'Unauthorized' });
+  exec('node scripts/github-scraper.mjs', { cwd: ROOT }, (err, stdout, stderr) => {
+    if (err) {
+      console.error('[观测站] GitHub 刷新失败:', stderr || err.message);
+      return res.status(500).json({ error: '刷新失败: ' + (stderr || err.message) });
+    }
+    res.json({ success: true, output: stdout });
+  });
+});
+
+// ============================================================
 // 管理界面路由（必须在静态中间件之前）
 // ============================================================
 
+// 文章列表 + 默认编辑器视图
 app.get(ADMIN_PATH, (req, res) => {
-  console.log('DEBUG /admin route hit');
-  console.log('DEBUG cookies:', req.cookies);
-  console.log('DEBUG AUTH_VALUE:', AUTH_VALUE);
   if (checkAuth(req)) {
     res.send(renderAdminPage(listArticles()));
   } else {
     res.send(renderLoginPage());
   }
+});
+
+// 文章编辑器全屏视图（含新建）
+app.get(ADMIN_PATH + '/article/:slug', (req, res) => {
+  if (!checkAuth(req)) return res.redirect(ADMIN_PATH);
+  if (req.params.slug === 'new') {
+    return res.send(renderNewArticlePage());
+  }
+  const article = getArticle(req.params.slug);
+  if (!article) return res.redirect(ADMIN_PATH);
+  res.send(renderArticlePage(article));
+});
+
+// 站点设置全屏视图
+app.get(ADMIN_PATH + '/settings', (req, res) => {
+  if (!checkAuth(req)) return res.redirect(ADMIN_PATH);
+  res.send(renderSettingsPage());
 });
 
 app.get('/logout', (req, res) => {
@@ -718,8 +814,8 @@ function startDevServer() {
     ignored: [
       path.join(ROOT, 'src', 'assets', 'js', 'bundle.js'),
       path.join(ROOT, 'src', 'assets', 'js', 'bundle.js.map'),
-      path.join(ROOT, 'src', 'assets', 'js', 'admin-panel.js'),
-      path.join(ROOT, 'src', 'assets', 'js', 'admin-panel.js.map'),
+      path.join(ROOT, 'src', 'assets', 'js', 'admin-panel.bundle.js'),
+      path.join(ROOT, 'src', 'assets', 'js', 'admin-panel.bundle.js.map'),
     ],
   });
 
