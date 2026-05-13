@@ -7,8 +7,12 @@ import chokidar from 'chokidar';
 import livereload from 'livereload';
 import matter from 'gray-matter';
 import { randomUUID } from 'crypto';
-import { marked } from 'marked';
+import dotenv from 'dotenv';
+import markdownIt from 'markdown-it';
+import sanitizeHtml from 'sanitize-html';
 import rateLimit from 'express-rate-limit';
+
+dotenv.config();
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, '..');
@@ -18,6 +22,8 @@ const ARTICLES_JSON = path.join(ROOT, 'src', 'articles', '_data', 'articles.json
 const IMAGES_DIR = path.join(CONTENT_DIR, 'images');
 const SITE_DIR = path.join(ROOT, '_site');
 const PORT = process.env.PORT || 8080;
+
+const md = markdownIt();
 const ADMIN_PATH = process.env.ADMIN_PATH || '/admin';
 const DEV = process.env.NODE_ENV !== 'production';
 
@@ -94,6 +100,40 @@ function safePath(baseDir, userPath) {
     return null; // 路径穿越尝试
   }
   return resolved;
+}
+
+// ============================================================
+// 图片路径解析 — Obsidian ![[Pasted_image_xxx.png]] → 实际存储路径
+// 搜索 content/images/{year}/{slug}/ 下是否存在同名文件
+// ============================================================
+function resolveImagePath(filename, slug) {
+  if (!slug) return `/img/${filename}`;
+  try {
+    const yearDirs = fs.readdirSync(IMAGES_DIR, { withFileTypes: true });
+    for (const entry of yearDirs) {
+      if (!entry.isDirectory()) continue;
+      const candidate = path.join(IMAGES_DIR, entry.name, slug, filename);
+      if (fs.existsSync(candidate)) {
+        return `/img/${entry.name}/${slug}/${filename}`;
+      }
+    }
+  } catch (e) {
+    // 目录不存在，忽略
+  }
+  // fallback: 使用当前年份
+  const year = new Date().getFullYear().toString();
+  return `/img/${year}/${slug}/${filename}`;
+}
+
+// 保存时将 Obsidian 图片语法转为带目录的标准 Markdown 路径
+function convertObsidianImages(content, slug) {
+  return content.replace(
+    /!\[\[(Pasted_image_.+?\.png)\]\]/g,
+    (match, filename) => {
+      const resolved = resolveImagePath(filename, slug);
+      return `![${filename}](${resolved})`;
+    }
+  );
 }
 
 // ============================================================
@@ -213,7 +253,7 @@ function renderAdminPage(articles) {
     .join('');
 
   const articleList = articles.map(a => `
-    <div class="article-item" data-slug="${escapeHtml(a.slug)}" onclick="loadArticle('${escapeHtml(a.slug)}')">
+    <div class="article-item" data-slug="${escapeHtml(a.slug)}" onclick="window.handleItemClick('${escapeHtml(a.slug)}', event)">
       <div class="article-item-title">${escapeHtml(a.title || '')}</div>
       <div class="article-item-meta">
         <span class="cat-tag cat-${escapeHtml(a.category || '')}">${escapeHtml(categoryLabels[a.category] || a.category || '')}</span>
@@ -301,7 +341,9 @@ app.post('/api/articles', (req, res) => {
     return res.status(409).json({ error: '文章已存在' });
   }
 
-  const frontmatter = matter.stringify(content, {
+  // 保存时转换 Obsidian 图片语法为标准路径
+  const convertedContent = convertObsidianImages(content, slug);
+  const frontmatter = matter.stringify(convertedContent, {
     title,
     date: new Date().toISOString(),
     category,
@@ -315,7 +357,7 @@ app.post('/api/articles', (req, res) => {
   updateArticleIndex(slug, { title, category, tags, excerpt, readingTime, order });
 
   try {
-    execSync('npx eleventy', { cwd: ROOT, stdio: 'inherit' });
+    execSync('npx eleventy --incremental', { cwd: ROOT, stdio: 'inherit' });
   } catch (e) {
     console.error('[观测站] 重建失败:', e.message);
   }
@@ -342,7 +384,8 @@ app.put('/api/articles/:slug', (req, res) => {
   }
 
   const newContent = content !== undefined ? content : article.content;
-  const frontmatter = matter.stringify(newContent, {
+  const finalContent = convertObsidianImages(newContent, slug);
+  const frontmatter = matter.stringify(finalContent, {
     title: title || article.title,
     date: new Date().toISOString(),
     category: newCategory,
@@ -374,7 +417,7 @@ app.put('/api/articles/:slug', (req, res) => {
   });
 
   try {
-    execSync('npx eleventy', { cwd: ROOT, stdio: 'inherit' });
+    execSync('npx eleventy --incremental', { cwd: ROOT, stdio: 'inherit' });
   } catch (e) {
     console.error('[观测站] 重建失败:', e.message);
   }
@@ -395,7 +438,7 @@ app.delete('/api/articles/:slug', (req, res) => {
   removeArticleIndex(slug, article.category);
 
   try {
-    execSync('npx eleventy', { cwd: ROOT, stdio: 'inherit' });
+    execSync('npx eleventy --incremental', { cwd: ROOT, stdio: 'inherit' });
   } catch (e) {
     console.error('[观测站] 重建失败:', e.message);
   }
@@ -405,11 +448,36 @@ app.delete('/api/articles/:slug', (req, res) => {
   res.json({ success: true });
 });
 
-// Markdown 预览
-app.get('/api/preview', (req, res) => {
+// Markdown 预览（POST 方式避免 URL 长度限制）
+app.post('/api/preview', (req, res) => {
   if (!checkAuth(req)) return res.status(401).json({ error: 'Unauthorized' });
-  const { content } = req.query;
-  res.json({ html: content ? marked.parse(content) : '' });
+  const { content, slug } = req.body;
+
+  if (!content) return res.json({ html: '' });
+
+  // 图片路径转换：兼容 Obsidian 语法 + 相对路径
+  const processed = content
+    .replace(
+      /!\[\[(Pasted_image_.+?\.png)\]\]/g,
+      (match, filename) => {
+        const resolved = resolveImagePath(filename, slug);
+        return `![${filename}](${resolved})`;
+      }
+    )
+    .replace(/\]\(img\//g, '](/img/');
+
+  const html = md.render(processed);
+  const cleanHtml = sanitizeHtml(html, {
+    allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']),
+    allowedAttributes: {
+      ...sanitizeHtml.defaults.allowedAttributes,
+      img: ['src', 'alt', 'title'],
+      a: ['href', 'title', 'target', 'rel']
+    },
+    allowedSchemes: ['http', 'https', 'mailto']
+  });
+
+  res.json({ html: cleanHtml });
 });
 
 // 图片上传
@@ -463,7 +531,8 @@ app.post('/api/articles/:slug/duplicate', (req, res) => {
     return res.status(409).json({ error: '文章已存在' });
   }
 
-  const frontmatter = matter.stringify(article.content, {
+  const convertedContent = convertObsidianImages(article.content, newSlug);
+  const frontmatter = matter.stringify(convertedContent, {
     title: newTitle,
     date: new Date().toISOString(),
     category: article.category,
@@ -484,7 +553,7 @@ app.post('/api/articles/:slug/duplicate', (req, res) => {
   });
 
   try {
-    execSync('npx eleventy', { cwd: ROOT, stdio: 'inherit' });
+    execSync('npx eleventy --incremental', { cwd: ROOT, stdio: 'inherit' });
   } catch (e) {
     console.error('[观测站] 重建失败:', e.message);
   }
@@ -520,11 +589,11 @@ app.post('/api/articles/batch-delete', (req, res) => {
     if (article && fs.existsSync(article.path)) {
       fs.unlinkSync(article.path);
     }
-    removeArticleIndex(slug, category);
+    removeArticleIndex(slug, category || (article ? article.category : undefined));
   });
 
   try {
-    execSync('npx eleventy', { cwd: ROOT, stdio: 'inherit' });
+    execSync('npx eleventy --incremental', { cwd: ROOT, stdio: 'inherit' });
   } catch (e) {
     console.error('[观测站] 重建失败:', e.message);
   }
@@ -565,7 +634,7 @@ app.post('/api/articles/batch-move', (req, res) => {
   });
 
   try {
-    execSync('npx eleventy', { cwd: ROOT, stdio: 'inherit' });
+    execSync('npx eleventy --incremental', { cwd: ROOT, stdio: 'inherit' });
   } catch (e) {
     console.error('[观测站] 重建失败:', e.message);
   }
@@ -596,8 +665,11 @@ app.get('/logout', (req, res) => {
 });
 
 // ============================================================
-// 静态文件托管 + SPA fallback
+// 静态文件托管 + 图片实时服务 + SPA fallback
 // ============================================================
+
+// 优先从 content/images 提供图片（上传后立即可用，无需等 Eleventy 重建）
+app.use('/img', express.static(IMAGES_DIR));
 
 if (fs.existsSync(SITE_DIR)) {
   app.use(express.static(SITE_DIR, { index: ['index.html', 'index.htm'] }));
@@ -617,13 +689,21 @@ if (fs.existsSync(SITE_DIR)) {
 
 let lrServer = null;
 
+// 预先设置 unhandledException 处理，防止 livereload 端口冲突导致进程崩溃
+process.on('uncaughtException', (err) => {
+  if (err.code === 'EADDRINUSE' || err.message?.includes('EADDRINUSE')) {
+    console.warn(`[观测站] 端口冲突忽略: ${err.address}:${err.port || 3002}`);
+    return;
+  }
+  console.error('[观测站] 未捕获的错误:', err);
+});
+
 function startDevServer() {
   console.log('[观测站] 正在构建...');
   try {
     execSync('node scripts/build-js.mjs && node scripts/article-scanner.mjs && npx eleventy', { cwd: ROOT, stdio: 'inherit' });
   } catch (e) {
-    console.error('[观测站] 初始构建失败:', e.message);
-    return;
+    console.error('[观测站] 初始构建失败(非致命):', e.message);
   }
 
   const lrPort = 3002;
@@ -638,6 +718,8 @@ function startDevServer() {
     ignored: [
       path.join(ROOT, 'src', 'assets', 'js', 'bundle.js'),
       path.join(ROOT, 'src', 'assets', 'js', 'bundle.js.map'),
+      path.join(ROOT, 'src', 'assets', 'js', 'admin-panel.js'),
+      path.join(ROOT, 'src', 'assets', 'js', 'admin-panel.js.map'),
     ],
   });
 
@@ -648,8 +730,8 @@ function startDevServer() {
     rebuildTimer = setTimeout(() => {
       console.log('[观测站] 正在重建...');
       try {
-        execSync('npm run build', { cwd: ROOT, stdio: 'inherit' });
-        lrServer.refresh('/');
+        execSync('npx eleventy', { cwd: ROOT, stdio: 'inherit' });
+        if (lrServer) lrServer.refresh('/');
         console.log('[观测站] 重建完成');
       } catch (e) {
         console.error('[观测站] 重建失败:', e.message);
