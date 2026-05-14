@@ -2,27 +2,20 @@ import express from 'express';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { execSync } from 'child_process';
+import { spawn } from 'child_process';
 import chokidar from 'chokidar';
 import livereload from 'livereload';
 import matter from 'gray-matter';
 import { randomUUID } from 'crypto';
-import dotenv from 'dotenv';
-import markdownIt from 'markdown-it';
-import sanitizeHtml from 'sanitize-html';
+import { marked } from 'marked';
 import rateLimit from 'express-rate-limit';
-
-dotenv.config();
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, '..');
-const CONTENT_DIR = path.join(ROOT, 'content');
-const ARTICLES_DIR = path.join(CONTENT_DIR, 'articles');
-const IMAGES_DIR = path.join(CONTENT_DIR, 'images');
+const ARTICLES_DIR = path.join(ROOT, 'src', 'articles');
+const ARTICLES_JSON = path.join(ROOT, 'src', 'articles', '_data', 'articles.json');
 const SITE_DIR = path.join(ROOT, '_site');
 const PORT = process.env.PORT || 8080;
-
-const md = markdownIt();
 const ADMIN_PATH = process.env.ADMIN_PATH || '/admin';
 const DEV = process.env.NODE_ENV !== 'production';
 
@@ -49,12 +42,8 @@ function checkAuth(req) {
 app.use((req, res, next) => {
   const cookies = {};
   req.headers.cookie && req.headers.cookie.split(';').forEach(c => {
-    const eqIdx = c.indexOf('=');
-    if (eqIdx > 0) {
-      const k = c.slice(0, eqIdx).trim();
-      const v = c.slice(eqIdx + 1).trim();
-      cookies[k] = v;
-    }
+    const [k, v] = c.trim().split('=');
+    cookies[k] = v;
   });
   req.cookies = cookies;
   next();
@@ -102,96 +91,121 @@ function safePath(baseDir, userPath) {
 }
 
 // ============================================================
-// 图片路径解析 — Obsidian ![[Pasted_image_xxx.png]] → 实际存储路径
-// 搜索 content/images/{year}/{slug}/ 下是否存在同名文件
+// 异步构建队列（防止 execSync 阻塞事件循环）
 // ============================================================
-function resolveImagePath(filename, slug) {
-  if (!slug) return `/img/${filename}`;
+
+let buildQueue = Promise.resolve();
+
+function enqueueBuild() {
+  buildQueue = buildQueue.then(() => runCommand('eleventy', ['npx', 'eleventy']), () => runCommand('eleventy', ['npx', 'eleventy']));
+  return buildQueue;
+}
+
+function runCommand(name, cmdArgs) {
+  return new Promise((resolve, reject) => {
+    const [cmd, ...args] = cmdArgs;
+    const child = spawn(cmd, args, { cwd: ROOT, stdio: 'inherit', shell: true });
+    child.on('close', (code) => {
+      if (code === 0) resolve();
+      else reject(new Error(`${name} exited with code ${code}`));
+    });
+    child.on('error', reject);
+  });
+}
+
+// ============================================================
+// 文章数据读写（基于 articles.json 增量更新）
+// ============================================================
+
+function readArticlesIndex() {
   try {
-    const yearDirs = fs.readdirSync(IMAGES_DIR, { withFileTypes: true });
-    for (const entry of yearDirs) {
-      if (!entry.isDirectory()) continue;
-      const candidate = path.join(IMAGES_DIR, entry.name, slug, filename);
-      if (fs.existsSync(candidate)) {
-        return `/img/${entry.name}/${slug}/${filename}`;
-      }
-    }
-  } catch (e) {
-    // 目录不存在，忽略
+    return JSON.parse(fs.readFileSync(ARTICLES_JSON, 'utf8'));
+  } catch {
+    return [];
   }
-  // fallback: 使用当前年份
-  const year = new Date().getFullYear().toString();
-  return `/img/${year}/${slug}/${filename}`;
 }
 
-// 保存时将 Obsidian 图片语法转为带目录的标准 Markdown 路径
-function convertObsidianImages(content, slug) {
-  return content.replace(
-    /!\[\[(Pasted_image_.+?\.png)\]\]/g,
-    (match, filename) => {
-      const resolved = resolveImagePath(filename, slug);
-      return `![${filename}](${resolved})`;
-    }
-  );
+function saveArticlesIndex(articles) {
+  fs.writeFileSync(ARTICLES_JSON, JSON.stringify(articles, null, 2));
 }
 
-// ============================================================
-// 文章数据读写（直接扫描 Markdown 文件，不依赖 articles.json）
-// ============================================================
-
-// 生成 slug（与 POST /api/articles 保持一致）
-function makeSlug(title) {
-  return title.toLowerCase().replace(/[^a-z0-9一-龥]+/g, '-').replace(/^-|-$/g, '');
+function getArticlePath(entry) {
+  return path.join(ARTICLES_DIR, entry.category, entry.filename);
 }
 
-// 扫描所有文章，返回不含 content 的列表
+// 从 articles.json 读取列表（不含 content）
 function listArticles() {
-  const results = [];
-  for (const cat of VALID_CATEGORIES) {
-    const dir = path.join(ARTICLES_DIR, cat);
-    if (!fs.existsSync(dir)) continue;
-    for (const file of fs.readdirSync(dir)) {
-      if (!file.endsWith('.md')) continue;
-      const filePath = path.join(dir, file);
-      const raw = fs.readFileSync(filePath, 'utf-8');
-      const { data } = matter(raw);
-      const slug = file.replace(/\.md$/, '');
-      results.push({
-        slug,
-        category: cat,
-        title: data.title || slug,
-        tags: data.tags || [],
-        excerpt: data.excerpt || '',
-        order: data.order || 0,
-        draft: data.draft || false,
-        path: filePath,
-      });
-    }
-  }
-  return results;
+  return readArticlesIndex().map(a => ({
+    slug: a.slug,
+    category: a.category,
+    title: a.title,
+    tags: a.tags || [],
+    excerpt: a.excerpt || '',
+    order: a.order !== undefined ? a.order : 0,
+    path: getArticlePath(a),
+  }));
 }
 
 // 读取单篇（含 content）
 function getArticle(slug) {
-  for (const cat of VALID_CATEGORIES) {
-    const filePath = path.join(ARTICLES_DIR, cat, `${slug}.md`);
-    if (!fs.existsSync(filePath)) continue;
-    const raw = fs.readFileSync(filePath, 'utf-8');
-    const { data, content } = matter(raw);
-    return {
+  const index = readArticlesIndex();
+  const entry = index.find(a => a.slug === slug);
+  if (!entry) return null;
+
+  const filePath = getArticlePath(entry);
+  if (!fs.existsSync(filePath)) return null;
+
+  const raw = fs.readFileSync(filePath, 'utf-8');
+  const { data, content } = matter(raw);
+
+  return {
+    slug: entry.slug,
+    category: entry.category,
+    title: entry.title || data.title || entry.slug,
+    tags: entry.tags || data.tags || [],
+    excerpt: entry.excerpt || data.excerpt || '',
+    readingTime: entry.readingTime || data.readingTime || '1 min',
+    order: entry.order !== undefined ? entry.order : 0,
+    path: filePath,
+    content,
+  };
+}
+
+// 增量更新 articles.json 中单篇文章的元数据
+function updateArticleIndex(slug, updates) {
+  const articles = readArticlesIndex();
+  const idx = articles.findIndex(a => a.slug === slug);
+  const now = new Date().toISOString().split('T')[0];
+
+  if (idx !== -1) {
+    articles[idx] = { ...articles[idx], ...updates, date: now };
+  } else {
+    articles.push({
+      id: `article_${randomUUID()}`,
       slug,
-      category: cat,
-      title: data.title || slug,
-      tags: data.tags || [],
-      excerpt: data.excerpt || '',
-      readingTime: data.readingTime || '1 min',
-      order: data.order || 0,
-      draft: data.draft || false,
-      path: filePath,
-      content,
-    };
+      title: updates.title || slug,
+      category: updates.category,
+      tags: updates.tags || [],
+      excerpt: updates.excerpt || '',
+      readingTime: updates.readingTime || '1 min',
+      date: now,
+      filename: `${slug}.md`,
+      source: 'manual',
+      sourceLogId: null,
+      status: 'published',
+    });
   }
-  return null;
+
+  saveArticlesIndex(articles);
+}
+
+// 从 articles.json 中删除一篇文章
+function removeArticleIndex(slug, category) {
+  const articles = readArticlesIndex();
+  const filtered = articles.filter(
+    a => !(a.slug === slug && a.category === category)
+  );
+  saveArticlesIndex(filtered);
 }
 
 // ============================================================
@@ -209,11 +223,14 @@ function renderLoginPage() {
   return readTemplate(LOGIN_TPL);
 }
 
-function renderAdminPage(articles) {
+function renderAdminPage(articles, pageMode = 'list') {
   const categoryLabels = { tutorials: '教程', blog: '博客', essays: '随笔', projects: '项目' };
+  const categoryOptions = Object.entries(categoryLabels)
+    .map(([v, l]) => `<option value="${escapeHtml(v)}">${escapeHtml(l)}</option>`)
+    .join('');
 
   const articleList = articles.map(a => `
-    <div class="article-item${a.draft ? ' article-draft' : ''}" data-slug="${escapeHtml(a.slug)}" onclick="window.handleItemClick('${escapeHtml(a.slug)}', event)">
+    <div class="article-item" data-slug="${escapeHtml(a.slug)}" onclick="loadArticle('${escapeHtml(a.slug)}')">
       <div class="article-item-title">${escapeHtml(a.title || '')}</div>
       <div class="article-item-meta">
         <span class="cat-tag cat-${escapeHtml(a.category || '')}">${escapeHtml(categoryLabels[a.category] || a.category || '')}</span>
@@ -227,51 +244,11 @@ function renderAdminPage(articles) {
     : '';
 
   return readTemplate(PANEL_TPL)
-    .replace(/%%PAGE_MODE%%/g, 'list')
     .replace('%%ARTICLE_COUNT%%', articles.length)
     .replace('%%ARTICLE_LIST%%', articleList)
     .replace('%%EMPTY_STATE%%', emptyState)
-    .replace('%%CATEGORY_OPTIONS%%', buildCategoryOptions());
-}
-
-// 文章编辑器全屏页面（新建）
-function renderNewArticlePage() {
-  const tpl = readTemplate(PANEL_TPL);
-  return tpl
-    .replace(/%%PAGE_MODE%%/g, 'editor')
-    .replace('%%ARTICLE_COUNT%%', '')
-    .replace('%%ARTICLE_LIST%%', '')
-    .replace('%%EMPTY_STATE%%', '')
-    .replace('%%CATEGORY_OPTIONS%%', buildCategoryOptions());
-}
-
-function buildCategoryOptions() {
-  const labels = { tutorials: '教程', blog: '博客', essays: '随笔', projects: '项目' };
-  return Object.entries(labels)
-    .map(([v, l]) => `<option value="${escapeHtml(v)}">${escapeHtml(l)}</option>`)
-    .join('');
-}
-
-// 文章编辑器全屏页面（编辑已有文章）
-function renderArticlePage(article) {
-  const tpl = readTemplate(PANEL_TPL);
-  return tpl
-    .replace(/%%PAGE_MODE%%/g, 'editor')
-    .replace('%%ARTICLE_COUNT%%', '')
-    .replace('%%ARTICLE_LIST%%', '')
-    .replace('%%EMPTY_STATE%%', '')
-    .replace('%%CATEGORY_OPTIONS%%', buildCategoryOptions());
-}
-
-// 站点设置全屏页面
-function renderSettingsPage() {
-  const tpl = readTemplate(PANEL_TPL);
-  return tpl
-    .replace(/%%PAGE_MODE%%/g, 'settings')
-    .replace('%%ARTICLE_COUNT%%', '')
-    .replace('%%ARTICLE_LIST%%', '')
-    .replace('%%EMPTY_STATE%%', '')
-    .replace('%%CATEGORY_OPTIONS%%', '');
+    .replace('%%CATEGORY_OPTIONS%%', categoryOptions)
+    .replace('%%PAGE_MODE%%', pageMode);
 }
 
 // ============================================================
@@ -304,16 +281,7 @@ app.post('/api/logout', (req, res) => {
 
 app.get('/api/articles', (req, res) => {
   if (!checkAuth(req)) return res.status(401).json({ error: 'Unauthorized' });
-  let articles = listArticles();
-  const q = req.query.q;
-  if (q) {
-    const keyword = q.toLowerCase();
-    articles = articles.filter(a =>
-      (a.title || '').toLowerCase().includes(keyword) ||
-      (a.tags || []).some(t => t.toLowerCase().includes(keyword))
-    );
-  }
-  res.json(articles);
+  res.json(listArticles());
 });
 
 app.get('/api/articles/:slug', (req, res) => {
@@ -323,9 +291,9 @@ app.get('/api/articles/:slug', (req, res) => {
   res.json(article);
 });
 
-app.post('/api/articles', (req, res) => {
+app.post('/api/articles', async (req, res) => {
   if (!checkAuth(req)) return res.status(401).json({ error: 'Unauthorized' });
-  const { title, category, content, tags, excerpt, draft } = req.body;
+  const { title, category, content, tags, excerpt, readingTime, order } = req.body;
   if (!title || !category || !content) {
     return res.status(400).json({ error: '缺少必填字段' });
   }
@@ -335,41 +303,37 @@ app.post('/api/articles', (req, res) => {
 
   const slug = title.toLowerCase().replace(/[^a-z0-9一-龥]+/g, '-').replace(/^-|-$/g, '');
   const filename = `${slug}.md`;
-  const articlePath = safePath(ARTICLES_DIR, path.join(category, filename));
-  if (!articlePath) return res.status(400).json({ error: '无效的路径' });
+  const filePath = safePath(ARTICLES_DIR, path.join(category, filename));
+  if (!filePath) return res.status(400).json({ error: '无效的路径' });
 
-  if (fs.existsSync(articlePath)) {
+  if (fs.existsSync(filePath)) {
     return res.status(409).json({ error: '文章已存在' });
   }
 
-  // 保存时转换 Obsidian 图片语法为标准路径
-  const convertedContent = convertObsidianImages(content, slug);
-  const frontmatter = matter.stringify(convertedContent, {
+  const frontmatter = matter.stringify(content, {
     title,
     date: new Date().toISOString(),
     category,
     tags: tags || [],
     excerpt: excerpt || '',
-    draft: draft || false,
+    readingTime: readingTime || '1 min',
+    order: order || 0,
   });
 
-  fs.writeFileSync(articlePath, frontmatter);
+  fs.writeFileSync(filePath, frontmatter);
+  updateArticleIndex(slug, { title, category, tags, excerpt, readingTime, order });
 
-  try {
-    execSync('npx eleventy --incremental', { cwd: ROOT, stdio: 'inherit' });
-  } catch (e) {
-    console.error('[观测站] 重建失败:', e.message);
-  }
+  await enqueueBuild().catch(e => console.error('[观测站] 重建失败:', e.message));
 
   if (DEV && lrServer) lrServer.refresh('/');
 
-  res.json({ success: true, slug, path: articlePath });
+  res.json({ success: true, slug, path: filePath });
 });
 
-app.put('/api/articles/:slug', (req, res) => {
+app.put('/api/articles/:slug', async (req, res) => {
   if (!checkAuth(req)) return res.status(401).json({ error: 'Unauthorized' });
   const { slug } = req.params;
-  const { title, content, category, tags, excerpt, draft } = req.body;
+  const { title, content, category, tags, excerpt, readingTime, order } = req.body;
 
   const article = getArticle(slug);
   if (!article) return res.status(404).json({ error: '文章不存在' });
@@ -383,14 +347,14 @@ app.put('/api/articles/:slug', (req, res) => {
   }
 
   const newContent = content !== undefined ? content : article.content;
-  const finalContent = convertObsidianImages(newContent, slug);
-  const frontmatter = matter.stringify(finalContent, {
+  const frontmatter = matter.stringify(newContent, {
     title: title || article.title,
     date: new Date().toISOString(),
     category: newCategory,
     tags: tags !== undefined ? tags : article.tags,
     excerpt: excerpt !== undefined ? excerpt : article.excerpt,
-    draft: draft !== undefined ? draft : (article.draft || false),
+    readingTime: readingTime !== undefined ? readingTime : article.readingTime,
+    order: order !== undefined ? order : article.order,
   });
 
   try {
@@ -404,18 +368,24 @@ app.put('/api/articles/:slug', (req, res) => {
     fs.unlinkSync(oldPath);
   }
 
-  try {
-    execSync('npx eleventy --incremental', { cwd: ROOT, stdio: 'inherit' });
-  } catch (e) {
-    console.error('[观测站] 重建失败:', e.message);
-  }
+  // 增量更新索引：只更新已有条目，不新建
+  updateArticleIndex(slug, {
+    title: title || article.title,
+    category: newCategory,
+    tags: tags !== undefined ? tags : article.tags,
+    excerpt: excerpt !== undefined ? excerpt : article.excerpt,
+    readingTime: readingTime !== undefined ? readingTime : article.readingTime,
+    order: order !== undefined ? order : article.order,
+  });
+
+  await enqueueBuild().catch(e => console.error('[观测站] 重建失败:', e.message));
 
   if (DEV && lrServer) lrServer.refresh('/');
 
   res.json({ success: true });
 });
 
-app.delete('/api/articles/:slug', (req, res) => {
+app.delete('/api/articles/:slug', async (req, res) => {
   if (!checkAuth(req)) return res.status(401).json({ error: 'Unauthorized' });
   const { slug } = req.params;
 
@@ -423,87 +393,26 @@ app.delete('/api/articles/:slug', (req, res) => {
   if (!article) return res.status(404).json({ error: '文章不存在' });
 
   fs.unlinkSync(article.path);
+  removeArticleIndex(slug, article.category);
 
-  try {
-    execSync('npx eleventy --incremental', { cwd: ROOT, stdio: 'inherit' });
-  } catch (e) {
+  await enqueueBuild().catch(e => {
     console.error('[观测站] 重建失败:', e.message);
-  }
+  });
 
   if (DEV && lrServer) lrServer.refresh('/');
 
   res.json({ success: true });
 });
 
-// Markdown 预览（POST 方式避免 URL 长度限制）
-app.post('/api/preview', (req, res) => {
+// Markdown 预览
+app.get('/api/preview', (req, res) => {
   if (!checkAuth(req)) return res.status(401).json({ error: 'Unauthorized' });
-  const { content, slug } = req.body;
-
-  if (!content) return res.json({ html: '' });
-
-  // 图片路径转换：兼容 Obsidian 语法 + 相对路径
-  const processed = content
-    .replace(
-      /!\[\[(Pasted_image_.+?\.png)\]\]/g,
-      (match, filename) => {
-        const resolved = resolveImagePath(filename, slug);
-        return `![${filename}](${resolved})`;
-      }
-    )
-    .replace(/\]\(img\//g, '](/img/');
-
-  const html = md.render(processed);
-  const cleanHtml = sanitizeHtml(html, {
-    allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']),
-    allowedAttributes: {
-      ...sanitizeHtml.defaults.allowedAttributes,
-      img: ['src', 'alt', 'title'],
-      a: ['href', 'title', 'target', 'rel']
-    },
-    allowedSchemes: ['http', 'https', 'mailto']
-  });
-
-  res.json({ html: cleanHtml });
-});
-
-// 图片上传
-app.post('/api/upload-image', (req, res) => {
-  if (!checkAuth(req)) return res.status(401).json({ error: 'Unauthorized' });
-  const { image, slug, year } = req.body;
-  if (!image) return res.status(400).json({ error: '缺少图片数据' });
-
-  const targetYear = year || new Date().getFullYear().toString();
-  const targetSlug = slug || 'misc';
-  const uploadDir = path.join(IMAGES_DIR, targetYear, targetSlug);
-
-  try {
-    fs.mkdirSync(uploadDir, { recursive: true });
-  } catch (e) {
-    return res.status(500).json({ error: '创建目录失败' });
-  }
-
-  // 解析 base64 数据
-  const matches = image.match(/^data:image\/(\w+);base64,(.+)$/);
-  if (!matches) return res.status(400).json({ error: '无效的图片格式' });
-
-  const ext = matches[1];
-  const data = matches[2];
-  const filename = `${Date.now()}.${ext}`;
-  const filePath = path.join(uploadDir, filename);
-
-  try {
-    fs.writeFileSync(filePath, Buffer.from(data, 'base64'));
-  } catch (e) {
-    return res.status(500).json({ error: '保存图片失败' });
-  }
-
-  const imagePath = `/img/${targetYear}/${targetSlug}/${filename}`;
-  res.json({ success: true, path: imagePath });
+  const { content } = req.query;
+  res.json({ html: content ? marked.parse(content) : '' });
 });
 
 // 文章复制
-app.post('/api/articles/:slug/duplicate', (req, res) => {
+app.post('/api/articles/:slug/duplicate', async (req, res) => {
   if (!checkAuth(req)) return res.status(401).json({ error: 'Unauthorized' });
   const { slug } = req.params;
   const article = getArticle(slug);
@@ -518,64 +427,63 @@ app.post('/api/articles/:slug/duplicate', (req, res) => {
     return res.status(409).json({ error: '文章已存在' });
   }
 
-  const convertedContent = convertObsidianImages(article.content, newSlug);
-  const frontmatter = matter.stringify(convertedContent, {
+  const frontmatter = matter.stringify(article.content, {
     title: newTitle,
     date: new Date().toISOString(),
     category: article.category,
     tags: article.tags,
     excerpt: article.excerpt,
-    draft: article.draft || false,
+    readingTime: article.readingTime,
+    order: 0,
   });
 
   fs.writeFileSync(filePath, frontmatter);
+  updateArticleIndex(newSlug, {
+    title: newTitle,
+    category: article.category,
+    tags: article.tags,
+    excerpt: article.excerpt,
+    readingTime: article.readingTime,
+    order: 0,
+  });
 
-  try {
-    execSync('npx eleventy --incremental', { cwd: ROOT, stdio: 'inherit' });
-  } catch (e) {
-    console.error('[观测站] 重建失败:', e.message);
-  }
+  await enqueueBuild().catch(e => console.error('[观测站] 重建失败:', e.message));
 
   if (DEV && lrServer) lrServer.refresh('/');
 
   res.json({ success: true, slug: newSlug });
 });
 
-// 批量更新排序（直接写入 frontmatter）
+// 批量更新排序
 app.put('/api/articles/order', (req, res) => {
   if (!checkAuth(req)) return res.status(401).json({ error: 'Unauthorized' });
   const { orders } = req.body;
   if (!Array.isArray(orders)) return res.status(400).json({ error: 'orders 必须是数组' });
 
+  const articles = readArticlesIndex();
   orders.forEach(({ slug, order }) => {
-    const article = getArticle(slug);
-    if (!article) return;
-    const raw = fs.readFileSync(article.path, 'utf-8');
-    const { data, content } = matter(raw);
-    const frontmatter = matter.stringify(content, { ...data, order });
-    fs.writeFileSync(article.path, frontmatter);
+    const idx = articles.findIndex(a => a.slug === slug);
+    if (idx !== -1) articles[idx].order = order;
   });
+  saveArticlesIndex(articles);
   res.json({ success: true });
 });
 
 // 批量删除
-app.post('/api/articles/batch-delete', (req, res) => {
+app.post('/api/articles/batch-delete', async (req, res) => {
   if (!checkAuth(req)) return res.status(401).json({ error: 'Unauthorized' });
   const { slugs } = req.body;
   if (!Array.isArray(slugs)) return res.status(400).json({ error: 'slugs 必须是数组' });
 
-  slugs.forEach(({ slug }) => {
+  slugs.forEach(({ slug, category }) => {
     const article = getArticle(slug);
     if (article && fs.existsSync(article.path)) {
       fs.unlinkSync(article.path);
     }
+    removeArticleIndex(slug, category);
   });
 
-  try {
-    execSync('npx eleventy --incremental', { cwd: ROOT, stdio: 'inherit' });
-  } catch (e) {
-    console.error('[观测站] 重建失败:', e.message);
-  }
+  await enqueueBuild().catch(e => console.error('[观测站] 重建失败:', e.message));
 
   if (DEV && lrServer) lrServer.refresh('/');
 
@@ -583,7 +491,7 @@ app.post('/api/articles/batch-delete', (req, res) => {
 });
 
 // 批量移动
-app.post('/api/articles/batch-move', (req, res) => {
+app.post('/api/articles/batch-move', async (req, res) => {
   if (!checkAuth(req)) return res.status(401).json({ error: 'Unauthorized' });
   const { slugs, targetCategory } = req.body;
   if (!Array.isArray(slugs) || !targetCategory) {
@@ -609,13 +517,10 @@ app.post('/api/articles/batch-move', (req, res) => {
       fs.writeFileSync(safeNewPath, frontmatter);
       fs.unlinkSync(oldPath);
     }
+    updateArticleIndex(slug, { category: targetCategory });
   });
 
-  try {
-    execSync('npx eleventy --incremental', { cwd: ROOT, stdio: 'inherit' });
-  } catch (e) {
-    console.error('[观测站] 重建失败:', e.message);
-  }
+  await enqueueBuild().catch(e => console.error('[观测站] 重建失败:', e.message));
 
   if (DEV && lrServer) lrServer.refresh('/');
 
@@ -623,79 +528,77 @@ app.post('/api/articles/batch-move', (req, res) => {
 });
 
 // ============================================================
-// GitHub 仓库管理 API
+// GitHub 仓库 API
 // ============================================================
 
-const GITHUB_DATA_PATH = path.join(ROOT, 'src/_data/github.json');
-const SITE_DATA_PATH = path.join(ROOT, 'src/_data/site.json');
+const SITE_JSON_PATH = path.join(ROOT, 'src', '_data', 'site.json');
 
+function loadSiteData() {
+  try {
+    return JSON.parse(fs.readFileSync(SITE_JSON_PATH, 'utf-8'));
+  } catch {
+    return {};
+  }
+}
+
+function saveSiteData(data) {
+  fs.writeFileSync(SITE_JSON_PATH, JSON.stringify(data, null, 2));
+}
+
+// 获取 shownRepos
 app.get('/api/github', (req, res) => {
   if (!checkAuth(req)) return res.status(401).json({ error: 'Unauthorized' });
-  const siteData = fs.existsSync(SITE_DATA_PATH)
-    ? JSON.parse(fs.readFileSync(SITE_DATA_PATH, 'utf-8'))
-    : { shownRepos: [] };
-  const githubData = fs.existsSync(GITHUB_DATA_PATH)
-    ? JSON.parse(fs.readFileSync(GITHUB_DATA_PATH, 'utf-8'))
-    : { repos: [], lastFetched: null };
-  const shownSet = new Set(siteData.shownRepos || []);
-  const repos = (githubData.repos || []).map(r => ({
-    ...r,
-    shown: shownSet.has(r.name)
-  }));
-  res.json({ repos, shownRepos: siteData.shownRepos || [], lastFetched: githubData.lastFetched });
+  const siteData = loadSiteData();
+  res.json({ repos: siteData.shownRepos || [] });
 });
 
+// 获取完整 GitHub 仓库列表
+app.get('/api/github/repos', (req, res) => {
+  if (!checkAuth(req)) return res.status(401).json({ error: 'Unauthorized' });
+  const githubJsonPath = path.join(ROOT, 'src', '_data', 'github.json');
+  try {
+    const data = fs.readFileSync(githubJsonPath, 'utf-8');
+    const githubData = JSON.parse(data);
+    res.json(githubData);
+  } catch (e) {
+    res.status(500).json({ error: '无法读取仓库数据' });
+  }
+});
+
+// 保存 shownRepos
 app.put('/api/github/repos', (req, res) => {
   if (!checkAuth(req)) return res.status(401).json({ error: 'Unauthorized' });
   const { shownRepos } = req.body;
-  if (!Array.isArray(shownRepos)) return res.status(400).json({ error: 'shownRepos 必须是数组' });
-  const siteData = fs.existsSync(SITE_DATA_PATH)
-    ? JSON.parse(fs.readFileSync(SITE_DATA_PATH, 'utf-8'))
-    : {};
+  if (!Array.isArray(shownRepos)) return res.status(400).json({ error: '无效的数据' });
+  const siteData = loadSiteData();
   siteData.shownRepos = shownRepos;
-  fs.writeFileSync(SITE_DATA_PATH, JSON.stringify(siteData, null, 2));
+  saveSiteData(siteData);
+  // 触发热更新：重新构建站点
+  if (DEV && lrServer) lrServer.refresh('/');
   res.json({ success: true });
 });
 
-app.post('/api/github/refresh', (req, res) => {
+// 刷新 GitHub 数据
+app.post('/api/github/refresh', async (req, res) => {
   if (!checkAuth(req)) return res.status(401).json({ error: 'Unauthorized' });
-  exec('node scripts/github-scraper.mjs', { cwd: ROOT }, (err, stdout, stderr) => {
-    if (err) {
-      console.error('[观测站] GitHub 刷新失败:', stderr || err.message);
-      return res.status(500).json({ error: '刷新失败: ' + (stderr || err.message) });
-    }
-    res.json({ success: true, output: stdout });
+  // 异步执行，不阻塞
+  const child = spawn('node', ['scripts/github-scraper.mjs'], { cwd: ROOT, stdio: 'inherit' });
+  child.on('close', () => {
+    if (DEV && lrServer) lrServer.refresh('/');
   });
+  res.json({ success: true, refreshing: true });
 });
 
 // ============================================================
 // 管理界面路由（必须在静态中间件之前）
 // ============================================================
 
-// 文章列表 + 默认编辑器视图
 app.get(ADMIN_PATH, (req, res) => {
   if (checkAuth(req)) {
-    res.send(renderAdminPage(listArticles()));
+    res.send(renderAdminPage(listArticles(), 'list'));
   } else {
     res.send(renderLoginPage());
   }
-});
-
-// 文章编辑器全屏视图（含新建）
-app.get(ADMIN_PATH + '/article/:slug', (req, res) => {
-  if (!checkAuth(req)) return res.redirect(ADMIN_PATH);
-  if (req.params.slug === 'new') {
-    return res.send(renderNewArticlePage());
-  }
-  const article = getArticle(req.params.slug);
-  if (!article) return res.redirect(ADMIN_PATH);
-  res.send(renderArticlePage(article));
-});
-
-// 站点设置全屏视图
-app.get(ADMIN_PATH + '/settings', (req, res) => {
-  if (!checkAuth(req)) return res.redirect(ADMIN_PATH);
-  res.send(renderSettingsPage());
 });
 
 app.get('/logout', (req, res) => {
@@ -703,19 +606,32 @@ app.get('/logout', (req, res) => {
   res.redirect(ADMIN_PATH);
 });
 
-// ============================================================
-// 静态文件托管 + 图片实时服务 + SPA fallback
-// ============================================================
+// /admin/drafts → 草稿箱
+app.get('/admin/drafts', (req, res) => {
+  if (!checkAuth(req)) return res.redirect(ADMIN_PATH);
+  res.send(renderAdminPage(listArticles(), 'drafts'));
+});
 
-// 优先从 content/images 提供图片（上传后立即可用，无需等 Eleventy 重建）
-app.use('/img', express.static(IMAGES_DIR));
+// /admin/settings → 设置页
+app.get('/admin/settings', (req, res) => {
+  if (!checkAuth(req)) return res.redirect(ADMIN_PATH);
+  res.send(renderAdminPage(listArticles(), 'settings'));
+});
+
+// /admin/article/:slug → 文章编辑
+app.get('/admin/article/:slug', (req, res) => {
+  if (!checkAuth(req)) return res.redirect(ADMIN_PATH);
+  res.send(renderAdminPage(listArticles(), 'editor'));
+});
+
+// ============================================================
+// 静态文件托管 + SPA fallback
+// ============================================================
 
 if (fs.existsSync(SITE_DIR)) {
   app.use(express.static(SITE_DIR, { index: ['index.html', 'index.htm'] }));
   app.use((req, res, next) => {
     if (res.headersSent) return next();
-    // 只对非 API 和非管理路径的请求 fallback 到 index.html
-    if (req.path.startsWith('/api') || req.path.startsWith('/admin')) return next();
     res.sendFile(path.join(SITE_DIR, 'index.html'));
   });
 } else {
@@ -728,21 +644,19 @@ if (fs.existsSync(SITE_DIR)) {
 
 let lrServer = null;
 
-// 预先设置 unhandledException 处理，防止 livereload 端口冲突导致进程崩溃
-process.on('uncaughtException', (err) => {
-  if (err.code === 'EADDRINUSE' || err.message?.includes('EADDRINUSE')) {
-    console.warn(`[观测站] 端口冲突忽略: ${err.address}:${err.port || 3002}`);
-    return;
-  }
-  console.error('[观测站] 未捕获的错误:', err);
-});
-
-function startDevServer() {
+async function startDevServer() {
   console.log('[观测站] 正在构建...');
   try {
-    execSync('node scripts/build-js.mjs && node scripts/article-scanner.mjs && npx eleventy', { cwd: ROOT, stdio: 'inherit' });
+    await new Promise((resolve, reject) => {
+      const child = spawn('node scripts/build-js.mjs && node scripts/article-scanner.mjs && npx eleventy', [], {
+        cwd: ROOT, stdio: 'inherit', shell: true,
+      });
+      child.on('close', (code) => code === 0 ? resolve() : reject(new Error(`initial-build exited with code ${code}`)));
+      child.on('error', reject);
+    });
   } catch (e) {
-    console.error('[观测站] 初始构建失败(非致命):', e.message);
+    console.error('[观测站] 初始构建失败:', e.message);
+    return;
   }
 
   const lrPort = 3002;
@@ -757,8 +671,6 @@ function startDevServer() {
     ignored: [
       path.join(ROOT, 'src', 'assets', 'js', 'bundle.js'),
       path.join(ROOT, 'src', 'assets', 'js', 'bundle.js.map'),
-      path.join(ROOT, 'src', 'assets', 'js', 'admin-panel.bundle.js'),
-      path.join(ROOT, 'src', 'assets', 'js', 'admin-panel.bundle.js.map'),
     ],
   });
 
@@ -766,11 +678,11 @@ function startDevServer() {
   srcWatcher.on('all', (event, filePath) => {
     console.log(`[观测站] 检测到变化: ${event} ${path.relative(ROOT, filePath)}`);
     clearTimeout(rebuildTimer);
-    rebuildTimer = setTimeout(() => {
+    rebuildTimer = setTimeout(async () => {
       console.log('[观测站] 正在重建...');
       try {
-        execSync('npx eleventy', { cwd: ROOT, stdio: 'inherit' });
-        if (lrServer) lrServer.refresh('/');
+        await runCommand('build', ['npm', 'run', 'build']);
+        lrServer.refresh('/');
         console.log('[观测站] 重建完成');
       } catch (e) {
         console.error('[观测站] 重建失败:', e.message);
