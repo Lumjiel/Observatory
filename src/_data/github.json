@@ -9,7 +9,18 @@
       "stars": 0,
       "forks": 0,
       "url": "https://github.com/Lumjiel/Observatory",
-      "updatedAt": "2026-05-08T08:57:22Z",
+      "updatedAt": "2026-05-12T07:38:46Z",
+      "updatedAgo": "1天前"
+    },
+    {
+      "name": "jie-open-skills",
+      "fullName": "Lumjiel/jie-open-skills",
+      "description": "暂无描述",
+      "language": "HTML",
+      "stars": 0,
+      "forks": 0,
+      "url": "https://github.com/Lumjiel/jie-open-skills",
+      "updatedAt": "2026-05-12T06:44:10Z",
       "updatedAgo": "1天前"
     },
     {
@@ -21,7 +32,7 @@
       "forks": 0,
       "url": "https://github.com/Lumjiel/Horizon",
       "updatedAt": "2026-05-07T09:59:59Z",
-      "updatedAgo": "2天前"
+      "updatedAgo": "6天前"
     },
     {
       "name": "nanobot",
@@ -32,7 +43,7 @@
       "forks": 0,
       "url": "https://github.com/Lumjiel/nanobot",
       "updatedAt": "2026-05-07T05:04:13Z",
-      "updatedAgo": "2天前"
+      "updatedAgo": "6天前"
     },
     {
       "name": "BugPet",
@@ -43,7 +54,7 @@
       "forks": 0,
       "url": "https://github.com/Lumjiel/BugPet",
       "updatedAt": "2026-05-04T05:13:26Z",
-      "updatedAgo": "5天前"
+      "updatedAgo": "9天前"
     },
     {
       "name": "PBTI",
@@ -54,7 +65,7 @@
       "forks": 0,
       "url": "https://github.com/Lumjiel/PBTI",
       "updatedAt": "2026-04-29T14:27:39Z",
-      "updatedAgo": "9天前"
+      "updatedAgo": "14天前"
     },
     {
       "name": "Genesis-Engine",
@@ -65,7 +76,7 @@
       "forks": 0,
       "url": "https://github.com/Lumjiel/Genesis-Engine",
       "updatedAt": "2026-04-29T06:03:13Z",
-      "updatedAgo": "10天前"
+      "updatedAgo": "14天前"
     },
     {
       "name": "Lumjiel.github.io",
@@ -76,7 +87,7 @@
       "forks": 0,
       "url": "https://github.com/Lumjiel/Lumjiel.github.io",
       "updatedAt": "2026-04-19T07:59:40Z",
-      "updatedAgo": "20天前"
+      "updatedAgo": "24天前"
     },
     {
       "name": "langchain4j",
@@ -87,7 +98,7 @@
       "forks": 0,
       "url": "https://github.com/Lumjiel/langchain4j",
       "updatedAt": "2026-04-18T14:11:45Z",
-      "updatedAgo": "20天前"
+      "updatedAgo": "25天前"
     },
     {
       "name": "openclaw",
@@ -98,35 +109,25 @@
       "forks": 0,
       "url": "https://github.com/Lumjiel/openclaw",
       "updatedAt": "2026-04-18T02:14:26Z",
-      "updatedAgo": "21天前"
-    },
-    {
-      "name": "spring-ai",
-      "fullName": "Lumjiel/spring-ai",
-      "description": "An Application Framework for AI Engineering",
-      "language": "Java",
-      "stars": 0,
-      "forks": 0,
-      "url": "https://github.com/Lumjiel/spring-ai",
-      "updatedAt": "2026-04-17T13:18:42Z",
-      "updatedAgo": "21天前"
+      "updatedAgo": "25天前"
     }
   ],
   "contributions": {
-    "2026-05-09": 10,
+    "2026-05-12": 6,
+    "2026-05-10": 7,
+    "2026-05-09": 11,
     "2026-05-08": 1,
     "2026-05-07": 28,
     "2026-05-06": 3,
     "2026-05-04": 10,
     "2026-04-29": 6,
-    "2026-04-18": 10,
+    "2026-04-18": 3,
     "2026-04-27": 1,
     "2026-04-23": 10,
     "2026-04-22": 4,
     "2026-04-21": 2,
     "2026-04-20": 3,
-    "2026-04-19": 4,
-    "2026-04-17": 7
+    "2026-04-19": 4
   },
-  "lastFetched": "2026-05-09T12:20:33.435Z"
+  "lastFetched": "2026-05-13T15:13:56.236Z"
 }

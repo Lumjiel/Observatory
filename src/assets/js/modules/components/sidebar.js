@@ -31,12 +31,13 @@ export function renderQuote() {
     const container = document.getElementById('randomQuote');
     if (!container) return;
     const quotes = [
-        '"Stay hungry, stay foolish." — Steve Jobs',
-        '"The best way to predict the future is to invent it." — Alan Kay',
-        '"Talk is cheap. Show me the code." — Linus Torvalds',
-        '"Premature optimization is the root of all evil." — Donald Knuth',
-        '"Any fool can write code that a computer can understand. Good programmers write code that humans can understand." — Martin Fowler',
-        '"First, solve the problem. Then, write the code." — John Johnson',
+        '这段代码只有我和上帝知道什么意思，现在只剩下上帝了',
+        '能跑就行，改什么改，万一出问题了你负责？',
+        '这不是bug，是隐藏的feature，已经和产品确认过了',
+        '我明天就改，我发誓，这次一定改，保证不拖延',
+        'debug三件套：print、print、print，不行就再加一个',
+        '这个需求很简单嘛，不就是加个功能嘛，估计一个小时就搞定了',
+        '我已经在本地测试过了，绝对没问题，部署上去肯定也没问题',
     ];
     container.textContent = quotes[Math.floor(Math.random() * quotes.length)];
 }

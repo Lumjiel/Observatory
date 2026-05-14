@@ -12,10 +12,21 @@
     "import:article": "node scripts/article-importer.mjs",
     "new-article": "node scripts/new-article.mjs",
     "auto-update": "npm run scan:articles",
-    "server": "node scripts/article-api.mjs"
+    "server": "node scripts/article-api.mjs",
+    "pm2:start": "pm2 start ecosystem.config.cjs",
+    "pm2:stop": "pm2 stop observatory",
+    "pm2:restart": "pm2 restart observatory",
+    "pm2:logs": "pm2 logs observatory",
+    "pm2:status": "pm2 status"
   },
   "dependencies": {
     "@11ty/eleventy": "^3.0.0",
+    "@codemirror/lang-markdown": "^6.5.0",
+    "@codemirror/language-data": "^6.5.2",
+    "@codemirror/state": "^6.6.0",
+    "@codemirror/view": "^6.42.1",
+    "codemirror": "^6.0.2",
+    "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "express-rate-limit": "^8.5.1",
     "gray-matter": "^4.0.3",
@@ -34,6 +45,7 @@
   "devDependencies": {
     "chokidar": "^5.0.0",
     "esbuild": "^0.28.0",
-    "livereload": "^0.10.3"
+    "livereload": "^0.10.3",
+    "pm2": "^7.0.1"
   }
 }

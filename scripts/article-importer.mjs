@@ -8,8 +8,8 @@ const __dirname = path.dirname(__filename);
 const ROOT = path.resolve(__dirname, '..');
 
 const LOGS_FILE = path.join(ROOT, 'src', '_data', 'logs.json');
-const ARTICLES_DIR = path.join(ROOT, 'src', 'articles');
-const CATEGORIES = ['tech', 'reading', 'projects', 'essays'];
+const ARTICLES_DIR = path.join(ROOT, 'content', 'articles');
+const CATEGORIES = ['tutorials', 'blog', 'projects', 'essays'];
 
 function parseArgs() {
     const args = process.argv.slice(2);
@@ -50,9 +50,9 @@ function generateSlug(title) {
 
 function typeToCategory(type) {
     const map = {
-        'INFO': 'tech',
-        'ERROR': 'tech',
-        'READ': 'reading',
+        'INFO': 'tutorials',
+        'ERROR': 'tutorials',
+        'READ': 'blog',
         'BUILD': 'projects',
         'THINK': 'essays',
         'MILESTONE': 'essays',
@@ -165,7 +165,7 @@ function main() {
   # 导入 Markdown 文件
   npm run import:article -- --file path/to/article.md --category tech --title "文章标题"
 
-分类: tech | reading | projects | essays
+分类: tutorials | blog | projects | essays
         `);
     }
 }

@@ -8,14 +8,14 @@ permalink: /articles/
 
 {% if currentCategory %}
   {% set filteredArticles = [] %}
-  {% for article in collections.articles %}
+  {% for article in collections.published %}
     {% if article.category == currentCategory %}
       {% set filteredArticles = filteredArticles.concat([article]) %}
     {% endif %}
   {% endfor %}
   {% set displayArticles = filteredArticles %}
 {% else %}
-  {% set displayArticles = collections.articles %}
+  {% set displayArticles = collections.published %}
 {% endif %}
 
 <div class="articles-page">
@@ -41,10 +41,10 @@ permalink: /articles/
         <a href="/articles/" class="tab {% if not currentCategory %}active{% endif %}">
             <span class="tab-icon">📂</span>
             <span class="tab-label">全部</span>
-            <span class="tab-count">{{ collections.articles.length }}</span>
+            <span class="tab-count">{{ collections.published.length }}</span>
         </a>
         {% set techCount = 0 %}
-        {% for a in collections.articles %}
+        {% for a in collections.published %}
             {% if a.category == 'tutorials' %}{% set techCount = techCount + 1 %}{% endif %}
         {% endfor %}
         <a href="/articles/?category=tutorials" class="tab {% if currentCategory == 'tutorials' %}active{% endif %}">
@@ -53,7 +53,7 @@ permalink: /articles/
             <span class="tab-count">{{ techCount }}</span>
         </a>
         {% set readingCount = 0 %}
-        {% for a in collections.articles %}
+        {% for a in collections.published %}
             {% if a.category == 'blog' %}{% set readingCount = readingCount + 1 %}{% endif %}
         {% endfor %}
         <a href="/articles/?category=blog" class="tab {% if currentCategory == 'blog' %}active{% endif %}">
@@ -62,7 +62,7 @@ permalink: /articles/
             <span class="tab-count">{{ readingCount }}</span>
         </a>
         {% set projectsCount = 0 %}
-        {% for a in collections.articles %}
+        {% for a in collections.published %}
             {% if a.category == 'projects' %}{% set projectsCount = projectsCount + 1 %}{% endif %}
         {% endfor %}
         <a href="/articles/?category=projects" class="tab {% if currentCategory == 'projects' %}active{% endif %}">
@@ -71,7 +71,7 @@ permalink: /articles/
             <span class="tab-count">{{ projectsCount }}</span>
         </a>
         {% set essaysCount = 0 %}
-        {% for a in collections.articles %}
+        {% for a in collections.published %}
             {% if a.category == 'essays' %}{% set essaysCount = essaysCount + 1 %}{% endif %}
         {% endfor %}
         <a href="/articles/?category=essays" class="tab {% if currentCategory == 'essays' %}active{% endif %}">
@@ -107,7 +107,7 @@ permalink: /articles/
         </article>
         {% endfor %}
 
-        {% if collections.articles.length === 0 %}
+        {% if displayArticles.length === 0 %}
         <div class="empty-state">
             <div class="empty-icon">📭</div>
             <p class="empty-message">暂无文章</p>

@@ -26,32 +26,31 @@ async function build() {
         logLevel: 'info',
     });
 
-    // 管理后台：仅当 admin-panel.js 是源文件时才打包
-    const adminFile = 'src/assets/js/admin-panel.js';
-    if (isEsmSource(adminFile)) {
+    // 管理后台：从 admin-panel.src.js → admin-panel.bundle.js
+    // 注意：watch 模式不包含 admin-panel，因为 esbuild 的 outdir 会覆盖源文件
+    // 如果需要重构建 admin-panel，运行 node scripts/build-js.mjs
+    const adminSrc = 'src/assets/js/admin-panel.src.js';
+    const adminOut = 'src/assets/js/admin-panel.bundle.js';
+    if (isEsmSource(adminSrc)) {
         await esbuild.build({
-            entryPoints: [adminFile],
+            entryPoints: [adminSrc],
             bundle: true,
-            outfile: adminFile,
+            outfile: adminOut,
             format: 'iife',
             minify,
             sourcemap,
             target: ['es2020'],
             logLevel: 'info',
-            allowOverwrite: true,
         });
     }
 }
 
 if (isWatch) {
-    const entryPoints = ['src/assets/js/app.js'];
-    if (isEsmSource('src/assets/js/admin-panel.js')) {
-        entryPoints.push('src/assets/js/admin-panel.js');
-    }
+    // 只监听前台 app.js，admin-panel 需手动执行 node scripts/build-js.mjs 构建
     const ctx = await esbuild.context({
-        entryPoints,
+        entryPoints: ['src/assets/js/app.js'],
         bundle: true,
-        outdir: 'src/assets/js',
+        outfile: 'src/assets/js/bundle.js',
         format: 'iife',
         minify,
         sourcemap,

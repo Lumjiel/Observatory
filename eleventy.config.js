@@ -3,6 +3,12 @@ import sanitizeHtml from 'sanitize-html';
 import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const ROOT = path.join(__dirname, '..');
+const IMAGES_DIR = path.join(ROOT, 'content', 'images');
 
 const md = markdownIt();
 
@@ -15,8 +21,7 @@ const CATEGORY_LABELS = {
 
 export default function(eleventyConfig) {
   eleventyConfig.addPassthroughCopy("src/assets");
-  eleventyConfig.addPassthroughCopy("src/img");
-  eleventyConfig.addPassthroughCopy("content/images");
+  eleventyConfig.addPassthroughCopy({ "content/images": "img" });
 
   eleventyConfig.addFilter("jsonify", (data) => JSON.stringify(data));
 
@@ -39,20 +44,49 @@ export default function(eleventyConfig) {
     return [];
   });
 
+  // 已发布文章（排除草稿），用于前台展示
+  eleventyConfig.addCollection('published', () => {
+    const articlesFile = path.join(process.cwd(), 'src', 'articles', '_data', 'articles.json');
+    if (fs.existsSync(articlesFile)) {
+      const data = JSON.parse(fs.readFileSync(articlesFile, 'utf-8'));
+      return data.filter(a => a.draft !== true);
+    }
+    return [];
+  });
+
+  // 解析图片路径：搜索 content/images/{year}/{slug}/ 目录
+  function resolveImagePath(filename, slug) {
+    if (!slug) return `/img/${filename}`;
+    try {
+      const yearDirs = fs.readdirSync(IMAGES_DIR, { withFileTypes: true });
+      for (const entry of yearDirs) {
+        if (!entry.isDirectory()) continue;
+        const candidate = path.join(IMAGES_DIR, entry.name, slug, filename);
+        if (fs.existsSync(candidate)) {
+          return `/img/${entry.name}/${slug}/${filename}`;
+        }
+      }
+    } catch (e) { /* 目录不存在，忽略 */ }
+    const year = new Date().getFullYear().toString();
+    return `/img/${year}/${slug}/${filename}`;
+  }
+
   eleventyConfig.addShortcode('articleContent', function(filename, category) {
     const filePath = path.join(process.cwd(), 'content', 'articles', category, filename);
     if (fs.existsSync(filePath)) {
       const raw = fs.readFileSync(filePath, 'utf-8');
-      const { content } = matter(raw);
-      // 转换图片路径：相对路径 -> 绝对路径
-      // 1. ![[Pasted_image_xxx.png]] -> ![Pasted_image_xxx.png](/img/Pasted_image_xxx.png)
-      // 2. ](img/xxx.png) -> ](/img/xxx.png) (相对路径转绝对)
+      const { data, content } = matter(raw);
+      // 从文件名推断 slug（与 API 保持一致）
+      const slug = (data.title || filename.replace(/\.md$/, ''))
+        .toLowerCase()
+        .replace(/[^a-z0-9一-龥]+/g, '-')
+        .replace(/^-|-$/g, '');
+      // 转换图片路径：Obsidian 语法 + 相对路径 → 绝对路径
       const processed = content.replace(
         /!\[\[(Pasted_image_.+?\.png)\]\]/g,
-        (match, filename) => `![${filename}](/img/${filename})`
+        (match, fn) => `![${fn}](${resolveImagePath(fn, slug)})`
       ).replace(/\]\(img\//g, '](/img/');
       const html = md.render(processed);
-      // 净化 HTML，移除危险标签和属性
       return sanitizeHtml(html, {
         allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']),
         allowedAttributes: {

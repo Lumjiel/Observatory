@@ -16,71 +16,84 @@ if (!username) {
 
 async function fetchWithRetry(url, retries = 3) {
     for (let i = 0; i < retries; i++) {
-        const res = await fetch(url, {
-            headers: {
-                'Accept': 'application/vnd.github.v3+json',
-                'User-Agent': 'terminal-observatory/1.0'
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 10000);
+        try {
+            const res = await fetch(url, {
+                headers: {
+                    'Accept': 'application/vnd.github.v3+json',
+                    'User-Agent': 'terminal-observatory/1.0'
+                },
+                signal: controller.signal
+            });
+            clearTimeout(timeout);
+            if (res.status === 403 && i < retries - 1) {
+                const reset = res.headers.get('X-RateLimit-Reset');
+                const baseDelay = Math.min(1000 * Math.pow(2, i), 30000);
+                const wait = reset
+                    ? Math.max(baseDelay, Math.ceil((parseInt(reset) * 1000 - Date.now()) / 1000) * 1000)
+                    : baseDelay;
+                console.log(`[github-scraper] API 限流，${Math.round(wait / 1000)}s 后重试 (${i + 1}/${retries})`);
+                await new Promise(r => setTimeout(r, wait));
+                continue;
             }
-        });
-        if (res.status === 403 && i < retries - 1) {
-            const reset = res.headers.get('X-RateLimit-Reset');
-            const wait = reset ? Math.ceil((parseInt(reset) * 1000 - Date.now()) / 1000) : 60;
-            console.log(`[github-scraper] API 限流，等待 ${wait}s...`);
-            await new Promise(r => setTimeout(r, wait * 1000));
-            continue;
+            return res;
+        } catch (e) {
+            clearTimeout(timeout);
+            if (i === retries - 1) throw e;
+            await new Promise(r => setTimeout(r, 1000 * Math.pow(2, i)));
         }
-        return res;
     }
 }
 
 async function main() {
-    // 获取仓库列表
-    const reposUrl = `https://api.github.com/users/${username}/repos?sort=updated&per_page=10&type=public`;
-    console.log(`[github-scraper] 正在获取 ${username} 的仓库...`);
-    const reposRes = await fetchWithRetry(reposUrl);
-    if (!reposRes.ok) {
-        console.error(`[github-scraper] 仓库获取失败: ${reposRes.status}`);
-        process.exit(1);
+    try {
+        const reposUrl = `https://api.github.com/users/${username}/repos?sort=updated&per_page=10&type=public`;
+        console.log(`[github-scraper] 正在获取 ${username} 的仓库...`);
+        const reposRes = await fetchWithRetry(reposUrl);
+        if (!reposRes.ok) {
+            throw new Error(`仓库获取失败: ${reposRes.status}`);
+        }
+        const repos = await reposRes.json();
+
+        const eventsUrl = `https://api.github.com/users/${username}/events?per_page=100`;
+        console.log(`[github-scraper] 正在获取贡献热力图...`);
+        const eventsRes = await fetchWithRetry(eventsUrl);
+        const contributionData = {};
+        if (eventsRes.ok) {
+            const events = await eventsRes.json();
+            const now = Date.now();
+            const ninetyDays = 90 * 24 * 60 * 60 * 1000;
+            events.forEach(e => {
+                const day = e.created_at.slice(0, 10);
+                if (now - new Date(e.created_at).getTime() < ninetyDays) {
+                    contributionData[day] = (contributionData[day] || 0) + 1;
+                }
+            });
+        }
+
+        const data = {
+            username,
+            repos: repos.map(r => ({
+                name: r.name,
+                fullName: r.full_name,
+                description: r.description || '暂无描述',
+                language: r.language,
+                stars: r.stargazers_count,
+                forks: r.forks_count,
+                url: r.html_url,
+                updatedAt: r.updated_at,
+                updatedAgo: timeAgo(new Date(r.updated_at))
+            })),
+            contributions: contributionData,
+            lastFetched: new Date().toISOString()
+        };
+
+        writeFileSync(outputPath, JSON.stringify(data, null, 2));
+        console.log(`[github-scraper] 已获取 ${data.repos.length} 个仓库，${Object.keys(contributionData).length} 天有贡献记录`);
+    } catch (err) {
+        console.error(`[github-scraper] 失败，保留旧数据: ${err.message}`);
     }
-    const repos = await reposRes.json();
-
-    // 获取近90天贡献事件
-    const eventsUrl = `https://api.github.com/users/${username}/events?per_page=100`;
-    console.log(`[github-scraper] 正在获取贡献热力图...`);
-    const eventsRes = await fetchWithRetry(eventsUrl);
-    const contributionData = {};
-    if (eventsRes.ok) {
-        const events = await eventsRes.json();
-        // 聚合90天内每天的贡献次数
-        const now = Date.now();
-        const ninetyDays = 90 * 24 * 60 * 60 * 1000;
-        events.forEach(e => {
-            const day = e.created_at.slice(0, 10);
-            if (now - new Date(e.created_at).getTime() < ninetyDays) {
-                contributionData[day] = (contributionData[day] || 0) + 1;
-            }
-        });
-    }
-
-    const data = {
-        username,
-        repos: repos.map(r => ({
-            name: r.name,
-            fullName: r.full_name,
-            description: r.description || '暂无描述',
-            language: r.language,
-            stars: r.stargazers_count,
-            forks: r.forks_count,
-            url: r.html_url,
-            updatedAt: r.updated_at,
-            updatedAgo: timeAgo(new Date(r.updated_at))
-        })),
-        contributions: contributionData,
-        lastFetched: new Date().toISOString()
-    };
-
-    writeFileSync(outputPath, JSON.stringify(data, null, 2));
-    console.log(`[github-scraper] 已获取 ${data.repos.length} 个仓库，${Object.keys(contributionData).length} 天有贡献记录`);
 }
 
 function timeAgo(date) {

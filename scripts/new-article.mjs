@@ -16,10 +16,10 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const ROOT = path.join(__dirname, '..');
 
-const CATEGORIES = ['tech', 'reading', 'projects', 'essays'];
+const CATEGORIES = ['tutorials', 'blog', 'projects', 'essays'];
 const CATEGORY_LABELS = {
-  tech: '技术',
-  reading: '读书',
+  tutorials: '教程',
+  blog: '博客',
   projects: '项目',
   essays: '随笔'
 };
@@ -101,7 +101,7 @@ function showHelp() {
 
 选项:
   -t, --title <标题>      文章标题 (必需)
-  -c, --category <分类>    文章分类: tech/reading/projects/essays
+  -c, --category <分类>    文章分类: tutorials/blog/projects/essays
   --tags <标签>           标签，逗号分隔
   -h, --help             显示帮助
 
@@ -188,7 +188,7 @@ async function main(argv) {
   const frontmatter = generateFrontmatter({ title, category, tags, date, readingTime });
 
   const slug = slugify(title);
-  const filePath = path.join(ROOT, 'src', 'articles', category, `${slug}.md`);
+  const filePath = path.join(ROOT, 'content', 'articles', category, `${slug}.md`);
 
   // 检查是否已存在
   if (fs.existsSync(filePath)) {

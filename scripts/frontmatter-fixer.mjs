@@ -2,11 +2,11 @@ import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
 
-const ARTICLES_DIR = path.join('src', 'articles');
+const ARTICLES_DIR = path.join('content', 'articles');
 
 const CATEGORY_MAP = {
-    'tech': { category: 'tech', tags: ['技术'] },
-    'reading': { category: 'reading', tags: ['阅读'] },
+    'tutorials': { category: 'tutorials', tags: ['教程'] },
+    'blog': { category: 'blog', tags: ['博客'] },
     'projects': { category: 'projects', tags: ['项目'] },
     'essays': { category: 'essays', tags: ['随笔'] },
 };

@@ -2,7 +2,7 @@
 import { state, setCurrentPage, setFilteredLogs, setActiveFilter, setActiveKeyword, getFilterCacheKey, clearFilterCache } from '../state.js';
 import { highlightText, formatTimestamp, getTypeClass, getCatLabel } from '../utils/text.js';
 import { showView } from '../router.js';
-import { toggleDetail } from '../components/detail.js';
+import { toggleDetail, renderDetail } from '../components/detail.js';
 
 export function renderPaginationButtons(totalPages, current) {
     let html = '';
@@ -50,7 +50,8 @@ function renderLogEntry(log, globalIndex, keyword) {
           <span class="log-tag ${log.typeLabel}" data-tag="${log.typeLabel}">[${catLabel}]</span>
           <span class="log-desc"><a href="${log.href}" class="log-link">${descHtml}</a></span>
           <span class="log-meta">${log.tags.slice(0, 3).map(t => `<span class="tag-hover" data-tag="${t}">#${t}</span>`).join(' ')}</span>
-        </div>`;
+        </div>
+        <div class="detail-panel">${renderDetail(log)}</div>`;
     return entry;
 }
 
