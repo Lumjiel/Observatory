@@ -103,7 +103,9 @@ function safePath(baseDir, userPath) {
 let buildQueue = Promise.resolve();
 
 function enqueueBuild() {
-  buildQueue = buildQueue.then(() => runCommand('eleventy', ['npx', 'eleventy']), () => runCommand('eleventy', ['npx', 'eleventy']));
+  buildQueue = buildQueue.then(() => runCommand('eleventy', ['npx', 'eleventy'])).catch(err => {
+    console.error('[观测站] 构建失败:', err.message);
+  });
   return buildQueue;
 }
 
@@ -405,6 +407,7 @@ app.put('/api/articles/:slug', async (req, res) => {
     excerpt: excerpt !== undefined ? excerpt : article.excerpt,
     readingTime: readingTime !== undefined ? readingTime : article.readingTime,
     order: order !== undefined ? order : article.order,
+    filename: `${slug}.md`,
   });
 
   await enqueueBuild().catch(e => console.error('[观测站] 重建失败:', e.message));

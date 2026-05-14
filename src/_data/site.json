@@ -1,17 +1,21 @@
 {
   "title": "观测站",
   "description": "终端博客·观测站",
-  "url": "https://observer.example.com",
+  "url": "http://localhost:8080",
   "author": "student",
   "startDate": "2026-05-07",
   "githubUsername": "Lumjiel",
   "shownRepos": [
-    "Observatory",
-    "Horizon",
     "BugPet",
+    "chaoxing-helper",
+    "Dxkyglxt",
+    "jie-open-skills",
+    "nanobot",
+    "Observatory",
     "PBTI",
-    "Genesis-Engine",
-    "Lumjiel.github.io"
+    "ragent",
+    "Todolist",
+    "zxtx"
   ],
   "location": "某大学·图书馆·自习室角落"
 }
