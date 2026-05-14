@@ -17,3 +17,7 @@ src/assets/js/bundle.js
 # 本地文件
 .trae/
 设计文档.md
+
+# 文章内容和图片（本地私有，不上传 GitHub）
+content/
+src/articles/_data/

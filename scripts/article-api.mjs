@@ -18,7 +18,6 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, '..');
 const CONTENT_DIR = path.join(ROOT, 'content');
 const ARTICLES_DIR = path.join(CONTENT_DIR, 'articles');
-const ARTICLES_JSON = path.join(ROOT, 'src', 'articles', '_data', 'articles.json');
 const IMAGES_DIR = path.join(CONTENT_DIR, 'images');
 const SITE_DIR = path.join(ROOT, '_site');
 const PORT = process.env.PORT || 8080;
@@ -137,100 +136,62 @@ function convertObsidianImages(content, slug) {
 }
 
 // ============================================================
-// 文章数据读写（基于 articles.json 增量更新）
+// 文章数据读写（直接扫描 Markdown 文件，不依赖 articles.json）
 // ============================================================
 
-function readArticlesIndex() {
-  try {
-    return JSON.parse(fs.readFileSync(ARTICLES_JSON, 'utf8'));
-  } catch {
-    return [];
-  }
+// 生成 slug（与 POST /api/articles 保持一致）
+function makeSlug(title) {
+  return title.toLowerCase().replace(/[^a-z0-9一-龥]+/g, '-').replace(/^-|-$/g, '');
 }
 
-function saveArticlesIndex(articles) {
-  fs.writeFileSync(ARTICLES_JSON, JSON.stringify(articles, null, 2));
-}
-
-function getArticlePath(entry) {
-  return path.join(ARTICLES_DIR, entry.category, entry.filename);
-}
-
-// 从 articles.json 读取列表（不含 content）
+// 扫描所有文章，返回不含 content 的列表
 function listArticles() {
-  return readArticlesIndex().map(a => ({
-    slug: a.slug,
-    category: a.category,
-    title: a.title,
-    tags: a.tags || [],
-    excerpt: a.excerpt || '',
-    order: a.order !== undefined ? a.order : 0,
-    draft: a.draft || false,
-    path: getArticlePath(a),
-  }));
+  const results = [];
+  for (const cat of VALID_CATEGORIES) {
+    const dir = path.join(ARTICLES_DIR, cat);
+    if (!fs.existsSync(dir)) continue;
+    for (const file of fs.readdirSync(dir)) {
+      if (!file.endsWith('.md')) continue;
+      const filePath = path.join(dir, file);
+      const raw = fs.readFileSync(filePath, 'utf-8');
+      const { data } = matter(raw);
+      const slug = file.replace(/\.md$/, '');
+      results.push({
+        slug,
+        category: cat,
+        title: data.title || slug,
+        tags: data.tags || [],
+        excerpt: data.excerpt || '',
+        order: data.order || 0,
+        draft: data.draft || false,
+        path: filePath,
+      });
+    }
+  }
+  return results;
 }
 
 // 读取单篇（含 content）
 function getArticle(slug) {
-  const index = readArticlesIndex();
-  const entry = index.find(a => a.slug === slug);
-  if (!entry) return null;
-
-  const filePath = getArticlePath(entry);
-  if (!fs.existsSync(filePath)) return null;
-
-  const raw = fs.readFileSync(filePath, 'utf-8');
-  const { data, content } = matter(raw);
-
-  return {
-    slug: entry.slug,
-    category: entry.category,
-    title: entry.title || data.title || entry.slug,
-    tags: entry.tags || data.tags || [],
-    excerpt: entry.excerpt || data.excerpt || '',
-    readingTime: entry.readingTime || data.readingTime || '1 min',
-    order: entry.order !== undefined ? entry.order : 0,
-    draft: entry.draft !== undefined ? entry.draft : (data.draft || false),
-    path: filePath,
-    content,
-  };
-}
-
-// 增量更新 articles.json 中单篇文章的元数据
-function updateArticleIndex(slug, updates) {
-  const articles = readArticlesIndex();
-  const idx = articles.findIndex(a => a.slug === slug);
-  const now = new Date().toISOString().split('T')[0];
-
-  if (idx !== -1) {
-    articles[idx] = { ...articles[idx], ...updates, date: now };
-  } else {
-    articles.push({
-      id: `article_${randomUUID()}`,
+  for (const cat of VALID_CATEGORIES) {
+    const filePath = path.join(ARTICLES_DIR, cat, `${slug}.md`);
+    if (!fs.existsSync(filePath)) continue;
+    const raw = fs.readFileSync(filePath, 'utf-8');
+    const { data, content } = matter(raw);
+    return {
       slug,
-      title: updates.title || slug,
-      category: updates.category,
-      tags: updates.tags || [],
-      excerpt: updates.excerpt || '',
-      readingTime: updates.readingTime || '1 min',
-      date: now,
-      filename: `${slug}.md`,
-      source: 'manual',
-      sourceLogId: null,
-      status: 'published',
-    });
+      category: cat,
+      title: data.title || slug,
+      tags: data.tags || [],
+      excerpt: data.excerpt || '',
+      readingTime: data.readingTime || '1 min',
+      order: data.order || 0,
+      draft: data.draft || false,
+      path: filePath,
+      content,
+    };
   }
-
-  saveArticlesIndex(articles);
-}
-
-// 从 articles.json 中删除一篇文章
-function removeArticleIndex(slug, category) {
-  const articles = readArticlesIndex();
-  const filtered = articles.filter(
-    a => !(a.slug === slug && a.category === category)
-  );
-  saveArticlesIndex(filtered);
+  return null;
 }
 
 // ============================================================
@@ -393,7 +354,6 @@ app.post('/api/articles', (req, res) => {
   });
 
   fs.writeFileSync(articlePath, frontmatter);
-  updateArticleIndex(slug, { title, category, tags, excerpt, draft: draft || false });
 
   try {
     execSync('npx eleventy --incremental', { cwd: ROOT, stdio: 'inherit' });
@@ -444,15 +404,6 @@ app.put('/api/articles/:slug', (req, res) => {
     fs.unlinkSync(oldPath);
   }
 
-  // 增量更新索引：只更新已有条目，不新建
-  updateArticleIndex(slug, {
-    title: title || article.title,
-    category: newCategory,
-    tags: tags !== undefined ? tags : article.tags,
-    excerpt: excerpt !== undefined ? excerpt : article.excerpt,
-    draft: draft !== undefined ? draft : (article.draft || false),
-  });
-
   try {
     execSync('npx eleventy --incremental', { cwd: ROOT, stdio: 'inherit' });
   } catch (e) {
@@ -472,7 +423,6 @@ app.delete('/api/articles/:slug', (req, res) => {
   if (!article) return res.status(404).json({ error: '文章不存在' });
 
   fs.unlinkSync(article.path);
-  removeArticleIndex(slug, article.category);
 
   try {
     execSync('npx eleventy --incremental', { cwd: ROOT, stdio: 'inherit' });
@@ -579,13 +529,6 @@ app.post('/api/articles/:slug/duplicate', (req, res) => {
   });
 
   fs.writeFileSync(filePath, frontmatter);
-  updateArticleIndex(newSlug, {
-    title: newTitle,
-    category: article.category,
-    tags: article.tags,
-    excerpt: article.excerpt,
-    draft: article.draft || false,
-  });
 
   try {
     execSync('npx eleventy --incremental', { cwd: ROOT, stdio: 'inherit' });
@@ -598,18 +541,20 @@ app.post('/api/articles/:slug/duplicate', (req, res) => {
   res.json({ success: true, slug: newSlug });
 });
 
-// 批量更新排序
+// 批量更新排序（直接写入 frontmatter）
 app.put('/api/articles/order', (req, res) => {
   if (!checkAuth(req)) return res.status(401).json({ error: 'Unauthorized' });
   const { orders } = req.body;
   if (!Array.isArray(orders)) return res.status(400).json({ error: 'orders 必须是数组' });
 
-  const articles = readArticlesIndex();
   orders.forEach(({ slug, order }) => {
-    const idx = articles.findIndex(a => a.slug === slug);
-    if (idx !== -1) articles[idx].order = order;
+    const article = getArticle(slug);
+    if (!article) return;
+    const raw = fs.readFileSync(article.path, 'utf-8');
+    const { data, content } = matter(raw);
+    const frontmatter = matter.stringify(content, { ...data, order });
+    fs.writeFileSync(article.path, frontmatter);
   });
-  saveArticlesIndex(articles);
   res.json({ success: true });
 });
 
@@ -619,12 +564,11 @@ app.post('/api/articles/batch-delete', (req, res) => {
   const { slugs } = req.body;
   if (!Array.isArray(slugs)) return res.status(400).json({ error: 'slugs 必须是数组' });
 
-  slugs.forEach(({ slug, category }) => {
+  slugs.forEach(({ slug }) => {
     const article = getArticle(slug);
     if (article && fs.existsSync(article.path)) {
       fs.unlinkSync(article.path);
     }
-    removeArticleIndex(slug, category || (article ? article.category : undefined));
   });
 
   try {
@@ -665,7 +609,6 @@ app.post('/api/articles/batch-move', (req, res) => {
       fs.writeFileSync(safeNewPath, frontmatter);
       fs.unlinkSync(oldPath);
     }
-    updateArticleIndex(slug, { category: targetCategory });
   });
 
   try {

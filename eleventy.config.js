@@ -7,8 +7,9 @@ import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const ROOT = path.join(__dirname, '..');
-const IMAGES_DIR = path.join(ROOT, 'content', 'images');
+const PROJECT_ROOT = path.resolve(__dirname);
+const CONTENT_DIR = path.join(PROJECT_ROOT, 'content');
+const IMAGES_DIR = path.join(CONTENT_DIR, 'images');
 
 const md = markdownIt();
 
@@ -35,23 +36,74 @@ export default function(eleventyConfig) {
     return md.render(content);
   });
 
-  eleventyConfig.addCollection('articles', () => {
-    const articlesFile = path.join(process.cwd(), 'src', 'articles', '_data', 'articles.json');
-    if (fs.existsSync(articlesFile)) {
-      const data = JSON.parse(fs.readFileSync(articlesFile, 'utf-8'));
-      return data;
+  // 文章列表（直接扫描 Markdown 文件，不依赖 articles.json）
+  function parseTags(tags) {
+    if (!tags) return [];
+    if (Array.isArray(tags)) return tags;
+    if (typeof tags === 'string') {
+      return tags.split(',').map(t => t.trim()).filter(Boolean);
     }
     return [];
+  }
+
+  eleventyConfig.addCollection('articles', () => {
+    const articlesDir = path.join(CONTENT_DIR, 'articles');
+    const results = [];
+    for (const cat of ['tutorials', 'blog', 'projects', 'essays']) {
+      const catDir = path.join(articlesDir, cat);
+      if (!fs.existsSync(catDir)) continue;
+      for (const file of fs.readdirSync(catDir)) {
+        if (!file.endsWith('.md')) continue;
+        const filePath = path.join(catDir, file);
+        const raw = fs.readFileSync(filePath, 'utf-8');
+        const { data, content } = matter(raw);
+        const slug = file.replace(/\.md$/, '');
+        results.push({
+          slug,
+          filename: slug + '.md',
+          category: cat,
+          title: data.title || slug,
+          tags: parseTags(data.tags),
+          excerpt: data.excerpt || '',
+          readingTime: data.readingTime || '1 min',
+          order: data.order || 0,
+          draft: data.draft || false,
+          date: data.date || new Date().toISOString(),
+        });
+      }
+    }
+    return results.sort((a, b) => new Date(b.date) - new Date(a.date));
   });
 
-  // 已发布文章（排除草稿），用于前台展示
+  // 已发布文章（排除草稿）
   eleventyConfig.addCollection('published', () => {
-    const articlesFile = path.join(process.cwd(), 'src', 'articles', '_data', 'articles.json');
-    if (fs.existsSync(articlesFile)) {
-      const data = JSON.parse(fs.readFileSync(articlesFile, 'utf-8'));
-      return data.filter(a => a.draft !== true);
+    const articlesDir = path.join(CONTENT_DIR, 'articles');
+    const results = [];
+    for (const cat of ['tutorials', 'blog', 'projects', 'essays']) {
+      const catDir = path.join(articlesDir, cat);
+      if (!fs.existsSync(catDir)) continue;
+      for (const file of fs.readdirSync(catDir)) {
+        if (!file.endsWith('.md')) continue;
+        const filePath = path.join(catDir, file);
+        const raw = fs.readFileSync(filePath, 'utf-8');
+        const { data, content } = matter(raw);
+        if (data.draft === true) continue;
+        const slug = file.replace(/\.md$/, '');
+        results.push({
+          slug,
+          filename: slug + '.md',
+          category: cat,
+          title: data.title || slug,
+          tags: parseTags(data.tags),
+          excerpt: data.excerpt || '',
+          readingTime: data.readingTime || '1 min',
+          order: data.order || 0,
+          draft: data.draft || false,
+          date: data.date || new Date().toISOString(),
+        });
+      }
     }
-    return [];
+    return results.sort((a, b) => new Date(b.date) - new Date(a.date));
   });
 
   // 解析图片路径：搜索 content/images/{year}/{slug}/ 目录
