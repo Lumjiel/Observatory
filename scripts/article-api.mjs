@@ -12,7 +12,8 @@ import rateLimit from 'express-rate-limit';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, '..');
-const ARTICLES_DIR = path.join(ROOT, 'src', 'articles');
+const CONTENT_DIR = path.join(ROOT, 'content');
+const ARTICLES_DIR = path.join(CONTENT_DIR, 'articles');
 const ARTICLES_JSON = path.join(ROOT, 'src', 'articles', '_data', 'articles.json');
 const SITE_DIR = path.join(ROOT, '_site');
 const PORT = process.env.PORT || 8080;
@@ -404,10 +405,10 @@ app.delete('/api/articles/:slug', async (req, res) => {
   res.json({ success: true });
 });
 
-// Markdown 预览
-app.get('/api/preview', (req, res) => {
+// Markdown 预览（支持 GET query 和 POST body）
+app.all('/api/preview', (req, res) => {
   if (!checkAuth(req)) return res.status(401).json({ error: 'Unauthorized' });
-  const { content } = req.query;
+  const content = req.body?.content || req.query?.content || '';
   res.json({ html: content ? marked.parse(content) : '' });
 });
 
