@@ -11,6 +11,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import readline from 'readline';
+import matter from 'gray-matter';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -44,18 +45,14 @@ function slugify(title) {
 
 // 生成 frontmatter
 function generateFrontmatter({ title, category, tags, date, readingTime }) {
-  const slug = slugify(title);
-  return `---
-title: '${title}'
-date: '${date}'
-category: ${category}
-tags:
-${tags.length > 0 ? tags.map(t => `  - ${t}`).join('\n') : '  -'}
-excerpt: ''
-readingTime: '${readingTime}'
----
-
-`;
+  return matter.stringify('', {
+    title,
+    date,
+    category,
+    tags: tags.length > 0 ? tags : [],
+    excerpt: '',
+    readingTime,
+  });
 }
 
 // 询问问题
@@ -151,8 +148,8 @@ function nonInteractiveMode(args) {
     process.exit(1);
   }
 
-  const category = args.category || 'tech';
-  if (!CATEGORIES.includes(category)) {
+  const category = args.category;
+  if (!category || !CATEGORIES.includes(category)) {
     console.log(`❌ 无效的分类: ${category}`);
     console.log(`   可选值: ${CATEGORIES.join(', ')}`);
     process.exit(1);

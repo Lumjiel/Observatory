@@ -8,6 +8,7 @@ import livereload from 'livereload';
 import matter from 'gray-matter';
 import { randomUUID } from 'crypto';
 import { marked } from 'marked';
+import sanitizeHtml from 'sanitize-html';
 import rateLimit from 'express-rate-limit';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -43,8 +44,12 @@ function checkAuth(req) {
 app.use((req, res, next) => {
   const cookies = {};
   req.headers.cookie && req.headers.cookie.split(';').forEach(c => {
-    const [k, v] = c.trim().split('=');
-    cookies[k] = v;
+    const eqIdx = c.indexOf('=');
+    if (eqIdx > 0) {
+      const k = c.slice(0, eqIdx).trim();
+      const v = c.slice(eqIdx + 1).trim();
+      cookies[k] = v;
+    }
   });
   req.cookies = cookies;
   next();
@@ -121,12 +126,20 @@ function runCommand(name, cmdArgs) {
 function readArticlesIndex() {
   try {
     return JSON.parse(fs.readFileSync(ARTICLES_JSON, 'utf8'));
-  } catch {
-    return [];
+  } catch (err) {
+    const backup = ARTICLES_JSON + '.bak';
+    try {
+      fs.copyFileSync(ARTICLES_JSON, backup);
+      console.error(`[观测站] articles.json 损坏，已备份到 ${backup}: ${err.message}`);
+    } catch {}
+    throw new Error(`articles.json 读取失败: ${err.message}`);
   }
 }
 
 function saveArticlesIndex(articles) {
+  if (!Array.isArray(articles) || articles.length === 0) {
+    throw new Error('拒绝写入空的 articles.json，索引可能已损坏');
+  }
   fs.writeFileSync(ARTICLES_JSON, JSON.stringify(articles, null, 2));
 }
 
@@ -331,6 +344,21 @@ app.post('/api/articles', async (req, res) => {
   res.json({ success: true, slug, path: filePath });
 });
 
+// 批量更新排序
+app.put('/api/articles/order', (req, res) => {
+  if (!checkAuth(req)) return res.status(401).json({ error: 'Unauthorized' });
+  const { orders } = req.body;
+  if (!Array.isArray(orders)) return res.status(400).json({ error: 'orders 必须是数组' });
+
+  const articles = readArticlesIndex();
+  orders.forEach(({ slug, order }) => {
+    const idx = articles.findIndex(a => a.slug === slug);
+    if (idx !== -1) articles[idx].order = order;
+  });
+  saveArticlesIndex(articles);
+  res.json({ success: true });
+});
+
 app.put('/api/articles/:slug', async (req, res) => {
   if (!checkAuth(req)) return res.status(401).json({ error: 'Unauthorized' });
   const { slug } = req.params;
@@ -409,7 +437,8 @@ app.delete('/api/articles/:slug', async (req, res) => {
 app.all('/api/preview', (req, res) => {
   if (!checkAuth(req)) return res.status(401).json({ error: 'Unauthorized' });
   const content = req.body?.content || req.query?.content || '';
-  res.json({ html: content ? marked.parse(content) : '' });
+  const html = content ? marked.parse(content) : '';
+  res.json({ html: sanitizeHtml(html, { allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'del', 'input', 'sup', 'sub', 'details', 'summary']) }) });
 });
 
 // 文章复制
@@ -453,21 +482,6 @@ app.post('/api/articles/:slug/duplicate', async (req, res) => {
   if (DEV && lrServer) lrServer.refresh('/');
 
   res.json({ success: true, slug: newSlug });
-});
-
-// 批量更新排序
-app.put('/api/articles/order', (req, res) => {
-  if (!checkAuth(req)) return res.status(401).json({ error: 'Unauthorized' });
-  const { orders } = req.body;
-  if (!Array.isArray(orders)) return res.status(400).json({ error: 'orders 必须是数组' });
-
-  const articles = readArticlesIndex();
-  orders.forEach(({ slug, order }) => {
-    const idx = articles.findIndex(a => a.slug === slug);
-    if (idx !== -1) articles[idx].order = order;
-  });
-  saveArticlesIndex(articles);
-  res.json({ success: true });
 });
 
 // 批量删除
@@ -623,6 +637,19 @@ app.get('/admin/settings', (req, res) => {
 app.get('/admin/article/:slug', (req, res) => {
   if (!checkAuth(req)) return res.redirect(ADMIN_PATH);
   res.send(renderAdminPage(listArticles(), 'editor'));
+});
+
+// ============================================================
+// 全局错误处理
+// ============================================================
+
+app.use((err, req, res, next) => {
+  console.error('[观测站] 未捕获错误:', err.message);
+  if (req.path.startsWith('/api/')) {
+    res.status(500).json({ error: err.message || '服务器内部错误' });
+  } else {
+    res.status(500).send('服务器内部错误');
+  }
 });
 
 // ============================================================
