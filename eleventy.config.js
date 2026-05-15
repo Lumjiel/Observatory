@@ -4,6 +4,8 @@ import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
 import { fileURLToPath } from 'url';
+import { CATEGORIES, CATEGORY_LABELS } from './scripts/utils/categories.mjs';
+import { slugify } from './scripts/utils/slug.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -12,13 +14,6 @@ const CONTENT_DIR = path.join(PROJECT_ROOT, 'content');
 const IMAGES_DIR = path.join(CONTENT_DIR, 'images');
 
 const md = markdownIt();
-
-const CATEGORY_LABELS = {
-    'tutorials': '教程',
-    'blog': '博客',
-    'projects': '项目',
-    'essays': '随笔'
-};
 
 export default function(eleventyConfig) {
   eleventyConfig.addPassthroughCopy("src/assets");
@@ -49,7 +44,7 @@ export default function(eleventyConfig) {
   eleventyConfig.addCollection('articles', () => {
     const articlesDir = path.join(CONTENT_DIR, 'articles');
     const results = [];
-    for (const cat of ['tutorials', 'blog', 'projects', 'essays']) {
+    for (const cat of CATEGORIES) {
       const catDir = path.join(articlesDir, cat);
       if (!fs.existsSync(catDir)) continue;
       for (const file of fs.readdirSync(catDir)) {
@@ -79,7 +74,7 @@ export default function(eleventyConfig) {
   eleventyConfig.addCollection('published', () => {
     const articlesDir = path.join(CONTENT_DIR, 'articles');
     const results = [];
-    for (const cat of ['tutorials', 'blog', 'projects', 'essays']) {
+    for (const cat of CATEGORIES) {
       const catDir = path.join(articlesDir, cat);
       if (!fs.existsSync(catDir)) continue;
       for (const file of fs.readdirSync(catDir)) {
@@ -129,10 +124,7 @@ export default function(eleventyConfig) {
       const raw = fs.readFileSync(filePath, 'utf-8');
       const { data, content } = matter(raw);
       // 从文件名推断 slug（与 API 保持一致）
-      const slug = (data.title || filename.replace(/\.md$/, ''))
-        .toLowerCase()
-        .replace(/[^a-z0-9一-龥]+/g, '-')
-        .replace(/^-|-$/g, '');
+      const slug = slugify(data.title || filename.replace(/\.md$/, ''));
       // 转换图片路径：Obsidian 语法 + 相对路径 → 绝对路径
       const processed = content.replace(
         /!\[\[(Pasted_image_.+?\.png)\]\]/g,

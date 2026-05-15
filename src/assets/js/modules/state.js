@@ -140,6 +140,16 @@ export function clearFilterCache() {
     state.filterCache.clear();
 }
 
+const FILTER_CACHE_MAX = 30;
+
+export function setFilterCache(key, value) {
+    if (state.filterCache.size >= FILTER_CACHE_MAX) {
+        const oldest = state.filterCache.keys().next().value;
+        state.filterCache.delete(oldest);
+    }
+    state.filterCache.set(key, value);
+}
+
 export function saveCommandHistory() {
     localStorage.setItem('cmdHistory', JSON.stringify(state.commandHistory));
 }

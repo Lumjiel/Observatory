@@ -1,5 +1,5 @@
 // 文章流渲染器
-import { state, setCurrentPage, setFilteredLogs, setActiveFilter, setActiveKeyword, getFilterCacheKey, clearFilterCache } from '../state.js';
+import { state, setCurrentPage, setFilteredLogs, setActiveFilter, setActiveKeyword, getFilterCacheKey, clearFilterCache, setFilterCache } from '../state.js';
 import { highlightText, formatTimestamp, getTypeClass, getCatLabel } from '../utils/text.js';
 import { showView } from '../router.js';
 import { toggleDetail, renderDetail } from '../components/detail.js';
@@ -113,7 +113,7 @@ export function renderLogStream(filterType = null, keyword = null, page = 1) {
                 l.typeLabel.toLowerCase().includes(kw)
             );
         }
-        state.filterCache.set(cacheKey, filteredLogs);
+        setFilterCache(cacheKey, filteredLogs);
     }
 
     setFilteredLogs(filteredLogs);

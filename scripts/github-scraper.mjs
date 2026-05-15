@@ -48,13 +48,35 @@ async function fetchWithRetry(url, retries = 3) {
 
 async function main() {
     try {
-        const reposUrl = `https://api.github.com/users/${username}/repos?sort=updated&per_page=10&type=public`;
+        // 获取所有仓库（分页）
+        const reposUrl = `https://api.github.com/users/${username}/repos?per_page=100&type=all`;
         console.log(`[github-scraper] 正在获取 ${username} 的仓库...`);
         const reposRes = await fetchWithRetry(reposUrl);
         if (!reposRes.ok) {
             throw new Error(`仓库获取失败: ${reposRes.status}`);
         }
-        const repos = await reposRes.json();
+        let repos = await reposRes.json();
+
+        // 过滤只保留公共仓库（type=all 可能包含 private）
+        repos = repos.filter(r => !r.private);
+
+        // 如果有更多页面，继续获取
+        const linkHeader = reposRes.headers.get('Link');
+        if (linkHeader && linkHeader.includes('rel="next"')) {
+            console.log(`[github-scraper] 检测到更多仓库，继续获取...`);
+            // GitHub API 分页获取所有仓库
+            let page = 2;
+            while (true) {
+                const nextRes = await fetchWithRetry(`https://api.github.com/users/${username}/repos?per_page=100&type=all&page=${page}`);
+                if (!nextRes.ok) break;
+                const nextRepos = await nextRes.json();
+                if (nextRepos.length === 0) break;
+                repos = repos.concat(nextRepos.filter(r => !r.private));
+                if (!nextRes.headers.get('Link')?.includes('rel="next"')) break;
+                page++;
+                await new Promise(r => setTimeout(r, 100)); // 避免限流
+            }
+        }
 
         const eventsUrl = `https://api.github.com/users/${username}/events?per_page=100`;
         console.log(`[github-scraper] 正在获取贡献热力图...`);

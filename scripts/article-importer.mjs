@@ -2,6 +2,8 @@ import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
 import { fileURLToPath } from 'url';
+import { CATEGORIES } from './utils/categories.mjs';
+import { slugify } from './utils/slug.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -9,7 +11,6 @@ const ROOT = path.resolve(__dirname, '..');
 
 const LOGS_FILE = path.join(ROOT, 'src', '_data', 'logs.json');
 const ARTICLES_DIR = path.join(ROOT, 'content', 'articles');
-const CATEGORIES = ['tutorials', 'blog', 'projects', 'essays'];
 
 function parseArgs() {
     const args = process.argv.slice(2);
@@ -42,10 +43,7 @@ function loadLogs() {
 }
 
 function generateSlug(title) {
-    return title.toLowerCase()
-        .replace(/[^a-z0-9一-龥]+/g, '-')
-        .replace(/^-|-$/g, '')
-        .slice(0, 60);
+    return slugify(title);
 }
 
 function typeToCategory(type) {

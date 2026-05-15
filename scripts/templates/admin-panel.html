@@ -22,6 +22,7 @@
   <!-- 左侧导航 -->
   <nav class="nav-sidebar" id="navSidebar">
     <a class="nav-item" data-panel="list" href="/admin">📄 文章</a>
+    <a class="nav-item" data-panel="drafts" href="/admin/drafts">📝 草稿箱</a>
     <a class="nav-item" data-panel="settings" href="/admin/settings">⚙ 设置</a>
   </nav>
 
@@ -138,11 +139,11 @@
         <div class="github-settings">
           <div class="settings-section-header">
             <span class="settings-section-title">📦 GitHub 仓库</span>
-            <button class="btn btn-ghost btn-sm" id="githubRefreshBtn" onclick="window.refreshGithub()">↻ 刷新数据</button>
+            <button class="btn btn-ghost btn-sm" id="githubRefreshBtn" onclick="window.refreshGithub()">↻ 刷新</button>
+            <button class="btn btn-primary btn-sm" id="githubSaveBtn" onclick="window.saveGithubReposNow()" disabled>💾 保存</button>
           </div>
-          <div class="settings-section-desc">勾选要在首页展示的仓库</div>
+          <div class="settings-section-desc">勾选要在首页展示的仓库，保存后自动重建站点</div>
           <div class="repo-list" id="repoList">
-            <div class="loading-text">加载中...</div>
           </div>
         </div>
       </div>
@@ -183,6 +184,7 @@
   var pageMode = document.body.classList.contains('mode-list') ? 'list'
     : document.body.classList.contains('mode-editor') ? 'editor'
     : document.body.classList.contains('mode-settings') ? 'settings'
+    : document.body.classList.contains('mode-drafts') ? 'drafts'
     : 'list';
 
   // 面板切换
@@ -193,6 +195,9 @@
     document.querySelectorAll('.nav-item').forEach(function(item) {
       item.classList.toggle('active', item.dataset.panel === name);
     });
+    if (name === 'settings' && window.loadGithubRepos) {
+      window.loadGithubRepos();
+    }
   }
   window.showPanel = showPanel;
 
@@ -203,6 +208,8 @@
       var panel = this.dataset.panel;
       if (panel === 'settings') {
         window.location.href = '/admin/settings';
+      } else if (panel === 'drafts') {
+        window.location.href = '/admin/drafts';
       } else {
         window.location.href = '/admin';
       }
@@ -252,42 +259,121 @@
   // GitHub 仓库
   window.loadGithubRepos = async function() {
     try {
-      var res = await fetch('/api/github');
-      if (!res.ok) return;
-      var data = await res.json();
       var el = document.getElementById('repoList');
       if (!el) return;
-      el.innerHTML = data.repos.map(function(r) {
+      el.innerHTML = '<div class="loading-text">加载中...</div>';
+
+      var res = await fetch('/api/github');
+      if (!res.ok) {
+        el.innerHTML = '<div class="error-text">加载失败，请稍后重试</div>';
+        var saveBtn = document.getElementById('githubSaveBtn');
+        if (saveBtn) saveBtn.disabled = false;
+        return;
+      }
+      var data = await res.json();
+      var shownRepos = data.repos || [];
+
+      var githubRes = await fetch('/api/github/repos');
+      if (!githubRes.ok) {
+        el.innerHTML = '<div class="error-text">仓库数据加载失败</div>';
+        return;
+      }
+      var githubData = await githubRes.json();
+
+      console.log('githubData:', githubData);
+      console.log('shownRepos:', shownRepos);
+
+      if (!githubData.repos || githubData.repos.length === 0) {
+        el.innerHTML = '<div class="error-text">仓库数据为空，请先点击刷新获取数据</div>';
+        return;
+      }
+
+      el.innerHTML = githubData.repos.map(function(r) {
+        var desc = r.description || '暂无描述';
+        var stars = r.stars || 0;
+        var forks = r.forks || 0;
+        var lang = r.language || '-';
+        var updatedAgo = r.updatedAgo || '';
         return '<label class="repo-item">' +
-          '<input type="checkbox" data-repo="' + r.name + '"' + (r.shown ? ' checked' : '') + '>' +
-          '<span class="repo-name">' + r.name + '</span>' +
-          '<span class="repo-lang">' + (r.language || '-') + '</span>' +
+          '<input type="checkbox" data-repo="' + (r.name || '') + '"' + (shownRepos.includes(r.name) ? ' checked' : '') + '>' +
+          '<div class="repo-info">' +
+            '<div class="repo-top">' +
+              '<span class="repo-name">' + (r.name || '未命名') + '</span>' +
+              '<span class="repo-stars">★ ' + stars + '</span>' +
+            '</div>' +
+            '<div class="repo-desc">' + desc + '</div>' +
+            '<div class="repo-meta">' +
+              '<span class="repo-lang">' + lang + '</span>' +
+              '<span>⎇ ' + forks + '</span>' +
+              '<span>更新于 ' + updatedAgo + '</span>' +
+            '</div>' +
+          '</div>' +
         '</label>';
       }).join('');
       el.querySelectorAll('input[type="checkbox"]').forEach(function(cb) {
-        cb.addEventListener('change', window.saveGithubRepos);
+        cb.addEventListener('change', window.onRepoChange);
       });
-    } catch (e) { console.error('加载仓库失败', e); }
+      window.lastCheckedRepos = shownRepos;
+      var saveBtn = document.getElementById('githubSaveBtn');
+      if (saveBtn) saveBtn.disabled = false;
+    } catch (e) {
+      console.error('加载仓库失败', e);
+      el.innerHTML = '<div class="error-text">加载失败: ' + e.message + '</div>';
+    }
   };
 
-  window.saveGithubRepos = async function() {
+  window.onRepoChange = function() {
+    var saveBtn = document.getElementById('githubSaveBtn');
+    if (saveBtn) {
+      var checked = Array.from(document.querySelectorAll('#repoList input:checked')).map(function(cb) { return cb.dataset.repo; });
+      saveBtn.disabled = false;
+      saveBtn.classList.toggle('has-changes', JSON.stringify(checked.sort()) !== JSON.stringify((window.lastCheckedRepos || []).sort()));
+    }
+  };
+
+  window.saveGithubReposNow = async function() {
+    var saveBtn = document.getElementById('githubSaveBtn');
     var checked = Array.from(document.querySelectorAll('#repoList input:checked')).map(function(cb) { return cb.dataset.repo; });
+    if (saveBtn) { saveBtn.disabled = true; saveBtn.textContent = '保存中...'; }
     try {
-      await fetch('/api/github/repos', {
+      var res = await fetch('/api/github/repos', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ shownRepos: checked })
       });
-    } catch (e) { console.error('保存仓库设置失败', e); }
+      if (!res.ok) {
+        var err = await res.json();
+        throw new Error(err.error || '保存失败');
+      }
+      window.lastCheckedRepos = checked;
+      if (saveBtn) { saveBtn.textContent = '✓ 已保存'; saveBtn.classList.remove('has-changes'); }
+      setTimeout(function() { if (saveBtn) saveBtn.textContent = '💾 保存'; }, 2000);
+    } catch (e) {
+      console.error('保存仓库设置失败', e);
+      if (saveBtn) { saveBtn.textContent = '保存失败'; saveBtn.disabled = false; }
+      var el = document.getElementById('repoList');
+      if (el) el.innerHTML = '<div class="error-text">保存失败: ' + e.message + '</div>';
+    }
   };
 
   window.refreshGithub = async function() {
     var btn = document.getElementById('githubRefreshBtn');
+    var el = document.getElementById('repoList');
     if (btn) { btn.disabled = true; btn.textContent = '刷新中...'; }
+    if (el) el.innerHTML = '<div class="loading-text">正在从 GitHub 获取数据...</div>';
     try {
-      await fetch('/api/github/refresh', { method: 'POST' });
-      await window.loadGithubRepos();
-    } catch (e) { console.error('刷新 GitHub 失败', e); }
+      var res = await fetch('/api/github/refresh', { method: 'POST' });
+      var data = await res.json();
+      if (data.refreshing) {
+        if (el) el.innerHTML = '<div class="loading-text">刷新中，请稍候...</div>';
+      }
+      setTimeout(async function() {
+        await window.loadGithubRepos();
+      }, 5000);
+    } catch (e) {
+      console.error('刷新 GitHub 失败', e);
+      if (el) el.innerHTML = '<div class="error-text">刷新失败: ' + e.message + '</div>';
+    }
     if (btn) { btn.disabled = false; btn.textContent = '↻ 刷新'; }
   };
 
@@ -298,6 +384,9 @@
   }
   if (pageMode === 'editor') {
     document.querySelector('.editor-content-area').classList.add('preview-open');
+  }
+  if (pageMode === 'drafts') {
+    // 草稿箱也显示预览按钮
   }
 })();
 </script>

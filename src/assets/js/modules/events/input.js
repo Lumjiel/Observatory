@@ -27,13 +27,13 @@ export function initCommandInput() {
             } else if (e.key === 'Tab') {
                 e.preventDefault();
                 const val = this.value.toLowerCase();
-                const cmds = ['/filter', '/grep', '/stats', '/issues', '/milestones', '/projects', '/skills', '/about', '/help', '/clear', '/theme', '/export'];
+                const cmds = ['/search', '/grep', '/filter', '/dashboard', '/stats', '/github', '/issues', '/list', '/articles', '/about', '/help', '/clear', '/theme', '/export'];
                 const allTags = Object.keys(tagCounts);
                 const parts = this.value.split(/\s+/);
                 if (parts.length === 1) {
                     const match = cmds.find(c => c.startsWith(val));
                     if (match) this.value = match + ' ';
-                } else if (parts[0] === '/filter') {
+                } else if (parts[0] === '/filter' || parts[0] === '/search' || parts[0] === '/grep') {
                     const cats = ['all', 'tutorials', 'blog', 'essays', 'projects'];
                     const match = cats.find(c => c.startsWith(parts[1]?.toLowerCase()));
                     if (match) this.value = '/filter ' + match + ' ';
@@ -83,7 +83,7 @@ export function initCommandInput() {
         } else if (e.key === 'Tab') {
             e.preventDefault();
             const val = this.value.toLowerCase();
-            const cmds = ['/filter', '/grep', '/stats', '/issues', '/milestones', '/projects', '/skills', '/about', '/help', '/clear', '/theme', '/export'];
+            const cmds = ['/filter', '/grep', '/stats', '/dashboard', '/issues', '/errors', '/milestones', '/projects', '/skills', '/about', '/help', '/clear', '/theme', '/export'];
             const allTags = Object.keys(tagCounts);
             const parts = this.value.split(/\s+/);
             if (parts.length === 1) {

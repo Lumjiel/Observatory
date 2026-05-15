@@ -1,197 +1,55 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+你是顶级软件工程师。严格遵守以下规则，无例外。
 
-## 项目概述
+## 1. 编码前思考
+不要假设。不要隐藏困惑。呈现权衡。
 
-**终端博客·观测站** — 一个以终端风格呈现的个人博客系统。使用 Eleventy (11ty) 构建静态站点，客户端通过原生 JavaScript 实现 SPA 行为和多视图切换。
+- 先明确：要解决什么问题？边界条件？隐含假设？
+- 存在歧义时，列出多种解释并主动提问。禁止默默选择一种就开始写。
+- 发现更简单方法时，立即提出异议。
+- 困惑时直接指出不清楚的地方，要求澄清。
 
-## 常用命令
+## 2. 简洁优先
+用最少的代码解决问题。不要过度推测。
 
-```bash
-npm run dev          # 开发模式：扫描文章 → 启动 Eleventy 热重载服务
-npm run build        # 生产构建：扫描文章 → 生成静态文件到 _site
-npm run scan:articles   # 扫描 src/articles 生成 articles.json 索引
-npm run import:article # 单独运行文章导入脚本
-```
+- 不添加未要求的功能、抽象、灵活性或可配置性。
+- 不为不可能发生的场景做错误处理。
+- 能用标准库则不复刻。200 行能解决的事不要写成 500 行。
+- 函数 ≤ 30 行，嵌套 ≤ 3 层。仅复用两次以上时才考虑抽象。
+- 检验标准：资深工程师会觉得过于复杂吗？复杂就简化。
 
-## 架构要点
+## 3. 精准修改
+只碰必须碰的。只清理自己造成的混乱。
 
-### 静态生成 + 客户端交互
-- Eleventy 负责生成静态 HTML，数据来自 JSON 文件
-- 所有视图切换、筛选、命令执行都在客户端通过 `src/assets/js/app.js` 实现
-- `window.ARTICLES_DATA` 在模板中内嵌供 JS 访问（文章为唯一数据源）
+编辑现有代码时：
+- 不改相邻代码、注释、格式。不重构没坏的东西。
+- 匹配现有风格，即使你更倾向于不同写法。
+- 看到无关的死代码/问题，提一嘴建议，但不要擅自删除。
 
-### 数据文件结构
-```
-src/_data/
-  logs.json      # 占位空数组（日志系统已废弃，文章为唯一数据源）
-  projects.json  # 占位（项目数据来自 articles.json）
-  skills.json    # 占位（同上）
+改动导致孤儿代码时：
+- 可删除因你改动而变为无用的导入/变量/函数。
+- 不要删除预先存在的死代码，除非被明确要求。
 
-src/articles/_data/articles.json  # 文章索引（由 article-scanner.mjs 生成）
-```
+检验：每一行修改都能直接追溯到用户的请求。
 
-### 文章 frontmatter 字段
-| 字段 | 类型 | 说明 |
-|------|------|------|
-| title | string | 文章标题 |
-| date | string/Date | 发布日期，ISO格式 |
-| category | string | 分类：tutorials/blog/essays/projects |
-| tags | array | 标签数组，优先使用；缺失时从内容#标签和标题关键词自动提取 |
-| excerpt | string | 摘要，缺失时自动生成（取正文前150字符） |
-| readingTime | string | 阅读时间，如"5 min"，缺失时按200字/分钟计算 |
-| slug | string | URL slug，缺失时从标题生成 |
-| status | string | 发布状态，默认 published |
-| source | string | 来源：manual 或从前置系统导入 |
-| sourceLogId | string/null | 关联的原始日志ID（导入数据保留） |
+## 4. 目标驱动执行
+定义成功标准。循环验证直到达成。
 
-### 文章分类
-- `tutorials/` — 教程/环境配置
-- `blog/` — 博客内容
-- `essays/` — 随笔
-- `projects/` — 项目记录
+将指令转化为可验证目标：
+- “添加验证” → 为无效输入编写测试 → 测试通过
+- “修复 bug” → 编写重现 bug 的测试 → 测试通过
+- “重构” → 确保重构前后测试全绿
 
-### 模板与过滤器
-- `eleventy.config.js` 定义了 Collection 和 Filter
-- Collection: `articles`（读 articles.json）
-- Filter: `categoryLabel`、`renderMarkdown`、`getPrevArticle`、`getNextArticle`
-- Shortcode: `articleContent`（按 category/filename 加载 Markdown 内容）
+多步骤任务先列出计划：步骤 → 验证标准。
+完成时用 1-2 句话总结：做了什么、如何验证、结果。
 
-### CSS 架构
-- `main.css` 使用 CSS 变量定义全局颜色系统（暗色/亮色两套）
-- 主题切换：`.light` 类加在 `<body>` 上，变量全部重写
-- 暗色主题变量前缀 `--bg-deep`/`--green`/`--amber`/`--magenta`
-- 亮色主题羊皮纸风格：`--bg: #FDF6E3`，`--green: #00A070`
+## 项目管理
+- **分层**：api/、services/、models/、repositories/、utils/。上层依赖下层，禁止反向依赖。
+- **日志**：根目录 DEVLOG.md，每次提交后追加：日期、关键变更、遇到的坑和方案。必须如实记录失败尝试。
+- **提交**：功能片段通过测试即提交。格式 `feat:`/`fix:`/`refactor:`/`docs:`/`test:`，写明做什么和为什么。提交前自查：测试全过、无调试代码、无敏感信息。
+- **文档同步**：改接口/配置/环境变量 → 同步更新 README。
 
-### 客户端视图系统
-- `viewContainers` 对象管理所有视图容器 ID（log/dashboard/errors/milestones/projects/skills/about/help）
-- Hash 路由：`#dashboard`、`#errors` 等直接映射到对应视图
-- 命令系统：`executeCommand(cmdStr)` 解析并路由到各渲染函数
-- 筛选器：`filter [all|tutorials|blog|essays|projects]` 按分类筛选
-- 分页：前端计算 PAGE_SIZE=8，纯 JS 切片
-
-### 前端模块化架构
-- 使用 esbuild 打包，配置在 `scripts/build-js.mjs`
-- 源码在 `src/assets/js/modules/` 下，按职责分为：
-  - `state.js` — 全局状态（feed、categoryStats、视图状态、filterCache、预计算仪表盘数据）
-  - `router.js` — 路由（showView、handleHashRoute）
-  - `commands.js` — 命令执行器
-  - `utils/` — 工具函数（text、audio、particles）
-  - `components/` — UI组件（signalOverview、filterChips、sidebar、detail）
-  - `events/` — 事件处理（input、keyboard、logEvents、mobile）
-  - `renderers/` — 视图渲染（logStream、dashboard、errors、views、about）
-- 打包后输出 `src/assets/js/bundle.js`，入口为 `app.js`
-- 渲染器通过 `setRenderers()` 注入到 commands 模块
-
-### 前端性能优化
-- `filterCache` Map 缓存过滤结果，filter/grep/clear 时失效，pagination 命中缓存
-- 增量 DOM 更新：renderLogStream 复用已有条目，不销毁重建
-- 事件委托：`.log-stream` 绑定一次 click/touchstart，不再每次 render 重新绑定
-- 仪表盘数据预计算：topTags、recentLogs、heatmapWeeks 在 computeStats() 时一次性计算
-
-### 文章系统
-> **注意**：markdown-it 不支持路径含空格（>9字符）的图片语法。`![[Pasted image xxx.png]]` 已通过 shortcode 转为链接格式，点击可下载。
-
-- `article-scanner.mjs` 是入口，运行后生成 `src/articles/_data/articles.json` 索引
-- 扫描时会自动补全 frontmatter 缺失字段（readingTime、excerpt、tags、slug）
-- 文章页面路径：`/articles/{category}/{slug}/`，由 `src/pages/article.njk` 模板渲染
-- `article.njk` 通过 `articleContent` shortcode 加载 Markdown 内容，并提供上一篇/下一篇导航
-
-## 脚本
-
-| 脚本 | 命令 | 说明 |
-|------|------|------|
-| article-scanner.mjs | `npm run scan:articles` | 扫描 src/articles 生成索引，自动补全 frontmatter 缺失字段 |
-| article-importer.mjs | `npm run import:article` | 单独导入某篇文章 |
-| new-article.mjs | `npm run new-article` | 交互式创建新文章（支持非交互模式：传递 title 参数）|
-
-### CI 可选步骤
-`.github/workflows/build.yml` 中的 `parse-git` 和 `gen-summary` 在 `package.json` 中未定义（`continue-on-error: true`），属于可选的日志生成步骤，忽略不影响构建。调试 CI 时可跳过这两个 step。
-
-## GitHub Actions CI/CD
-
-`.github/workflows/build.yml` 配置：
-- push 到 main 分支触发构建和部署到 GitHub Pages
-- 每周日午夜执行 `npm run auto-update`（即 `npm run scan:articles`）
-
-## 本次会话新增功能
-
-### 分类目录重构
-- `tech/` → `tutorials/`（教程/环境配置）
-- `reading/` → `blog/`（博客内容）
-- 更新了 article-scanner、eleventy.config、app.js 中的分类映射
-- 重写了 `articles-redirect-*.njk` 重定向页面
-
-### 安全加固
-- `articleContent` shortcode 添加 `sanitize-html` 净化，防止 XSS
-- 文章 ID 生成改为 `crypto.randomUUID()`
-
-### 前端交互优化
-- signal-card 分类卡片：仅当前选中卡片显示绿色边条和背景
-- filter-chip 筛选标签：点击后正确切换 active 高亮
-- categoryStats 一次性计算，各渲染函数复用，减少重复遍历
-- j/k 快捷键添加空日志边界检查
-
-### 样式美化
-- 移动端底部导航：圆角、选中态绿色背景、触摸区域 44x44px
-- 删除未使用的 CSS 规则（.heatmap/.timeline/.stale-badge 等）
-
-### RSS/Atom 订阅源
-- `src/pages/feed.xml.njk` 生成 Atom Feed，路径 `/feed.xml`
-- `<head>` 自动注入 `<link rel="alternate" type="application/atom+xml">`
-- 站点元数据由 `src/_data/site.json` 提供
-
-### 标签归档页
-- 路径 `/tags/?tag=标签名`，展示该标签下所有文章
-- 点击任意标签跳转到归档页（不再执行 `grep`）
-
-### 加载状态
-- 页面首次加载显示 terminal 风格遮罩（旋转 spinner + "📡 观测站加载中..."）
-- 加载完成后淡出移除
-
-### 命令历史持久化
-- 命令历史存入 `localStorage`，刷新页面后保留（最多 20 条）
-
-### 文章页返回链接
-- 文章底部 `prev/next` 导航前新增"返回文章列表"链接
-
-### 文章管理暗门
-- `scripts/article-api.mjs` — 集成到主站的 Express 服务器，同时托管静态网站和文章管理
-- 启动：`npm run server`（开发/生产统一入口，自动构建 + 热重载 + API）
-- 端口：默认 8080（`PORT` 环境变量可改）
-- 在 terminal 输入 `/admin` 跳转到管理界面（或直接访问 `http://localhost:8080/admin`）
-- 密码：`5jiaobaba`（硬编码，可通过 `ADMIN_PASSWORD` 环境变量覆盖）
-- 管理界面：三栏布局（侧边文章列表 / 中间编辑器 / 右侧预览），标签 Enter 添加 chip
-- API：GET /api/articles、POST /api/articles、PUT /api/articles/:slug、DELETE /api/articles/:slug
-- 认证基于 cookie，登录页为自定义 UI（非浏览器弹窗）
-
-### 移动端导航
-- 底部导航 4 个按钮（log/dashboard/errors/about）
-- 选中态有绿色背景和圆角效果
-- `errors` 视图显示分类文章（blog/essays 分离为独立分类）
-
-### 站点元数据配置
-- `src/_data/site.json` 包含 `title`、`description`、`url`、`author`、`startDate`
-- 运行时间从 `site.startDate` 读取，不再硬编码
-
-### 分类页合并
-- 4 个静态分类页（tutorials/blog/projects/essays）合并为 `articles.njk` 的 query param 路由
-- 旧路径通过 11ty 重定向页（`articles-redirect-*.njk`）301 跳转到新路径
-
-### 仪表盘全新改版
-- 信号源状态：博客/随笔/教程/项目4色进度条样式，末尾显示"总计 X 条信号 | 信号强度: 稳定"
-- 标签星系：Top40标签伪随机分布形成星云，频次≥2的标签有漂浮动画，字号统一0.7rem，点击标签筛选
-- GitHub热力图：左侧Mon/Wed/Thu英文标签，近90天贡献数据，4级颜色
-- 热力图legend横排显示"少 → 多"
-- 最近信号记录表
-
-### GitHub 数据
-- `scripts/github-scraper.mjs` 获取用户仓库列表和近90天贡献事件
-- `src/_data/github.json` 存储数据，`window.GITHUB_DATA` 供前端使用
-- `site.json` 中 `githubUsername` 配置 GitHub 用户名
-
-### 关于页打字机效果
-- ASCII人物艺术（15行）在关于页加载时逐字打印，每字符8ms
-- 定义在 `renderAbout()` 中 `currentAsciiLines` 数组（line 907-925）
-- 修改 ASCII 内容直接改该数组即可
+## 补充
+无硬编码密钥/密码/令牌。用户输入需校验。复杂逻辑注释“为什么这么做”。
+如有项目 CONTRIBUTING.md，同样遵守。

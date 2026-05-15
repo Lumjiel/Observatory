@@ -4,17 +4,18 @@ import { renderLogStream } from './renderers/logStream.js';
 import { renderDashboard } from './renderers/dashboard.js';
 import { renderErrors } from './renderers/errors.js';
 import { renderMilestones } from './renderers/milestones.js';
-import { renderProjects } from './renderers/projects.js';
-import { renderSkillsView } from './renderers/skills.js';
 import { renderAbout } from './renderers/about.js';
 import { renderHelp } from './renderers/help.js';
 import { renderFilterChips } from './components/filterChips.js';
+import { renderSignalOverview } from './components/signalOverview.js';
 import { showView } from './router.js';
 
 const VALID_CATEGORIES = ['all', 'tutorials', 'blog', 'essays', 'projects'];
 
+const KNOWN_COMMANDS = ['/search', '/grep', '/filter', '/dashboard', '/stats', '/github', '/issues', '/list', '/articles', '/about', '/help', '/clear', '/theme', '/export', '/admin'];
+
 const commands = {
-    '/filter'(arg) {
+    filter(arg) {
         const cat = arg.toLowerCase();
         if (!VALID_CATEGORIES.includes(cat)) return;
         clearFilterCache();
@@ -22,10 +23,12 @@ const commands = {
         setActiveKeyword(null);
         renderLogStream(state.activeFilter);
         renderFilterChips();
-                showView('log');
+        renderSignalOverview();
+        showView('log');
     },
 
-    '/grep'(arg) {
+    // /search 和 /grep 都走这里
+    grep(arg) {
         if (!arg) return;
         clearFilterCache();
         setActiveKeyword(arg);
@@ -35,26 +38,33 @@ const commands = {
         showView('log');
     },
 
-    '/stats'() { renderDashboard(); },
-    '/issues'() { renderErrors(); },
-    '/milestones'() { renderMilestones(); },
-    '/projects'() { renderProjects(); },
+    search(arg) {
+        commands.grep(arg);
+    },
 
-    '/skills'() { renderSkillsView(); },
+    dashboard() { renderDashboard(); },
+    stats() { renderDashboard(); },
 
-    '/about'() { renderAbout(); },
-    '/help'() { renderHelp(); },
+    github() { renderErrors(); },
+    issues() { renderErrors(); },
 
-    '/clear'() {
+    list() { renderMilestones(); },
+    articles() { renderMilestones(); },
+
+    about() { renderAbout(); },
+    help() { renderHelp(); },
+
+    clear() {
         clearFilterCache();
         setActiveFilter(null);
         setActiveKeyword(null);
         renderLogStream();
         renderFilterChips();
-                showView('log');
+        renderSignalOverview();
+        showView('log');
     },
 
-    '/theme'(arg) {
+    theme(arg) {
         if (arg === 'dark') {
             document.body.classList.remove('light');
             localStorage.setItem('terminal-theme', 'dark');
@@ -64,7 +74,7 @@ const commands = {
         }
     },
 
-    '/export'(arg) {
+    export(arg) {
         const data = state.activeFilter
             ? state.feed.filter(l => l.typeLabel === state.activeFilter)
             : state.feed;
@@ -74,62 +84,55 @@ const commands = {
             a.href = URL.createObjectURL(blob);
             a.download = 'articles-export.json';
             a.click();
+            URL.revokeObjectURL(a.href);
         } else {
             const text = data.map(l => `[${l.typeLabel}] ${l.timestamp} ${l.description}`).join('\n');
+            const blob = new Blob([text], { type: 'text/plain' });
             const a = document.createElement('a');
-            a.href = URL.createObjectURL(new Blob([text], { type: 'text/plain' }));
+            a.href = URL.createObjectURL(blob);
             a.download = 'articles-export.txt';
             a.click();
+            URL.revokeObjectURL(a.href);
         }
     },
 
-    '/admin'() {
+    admin() {
         window.location.href = '/admin';
     }
 };
 
+function showCommandError(cmd) {
+    const el = document.getElementById('cmdError');
+    if (!el) return;
+    const suggestions = KNOWN_COMMANDS.filter(c => c.startsWith('/' + cmd[0]) || c.includes(cmd));
+    let msg = `未知命令 "${cmd}"`;
+    if (suggestions.length) {
+        msg += `。试试: ${suggestions.slice(0, 3).join(', ')}`;
+    }
+    el.textContent = '⚠ ' + msg;
+    el.classList.add('show');
+    clearTimeout(el._hideTimer);
+    el._hideTimer = setTimeout(() => el.classList.remove('show'), 3000);
+}
+
 export function executeCommand(cmdStr) {
     playClickSound();
+    // 清除上次的错误提示
+    const errEl = document.getElementById('cmdError');
+    if (errEl) errEl.classList.remove('show');
+
     const parts = cmdStr.trim().split(/\s+/);
-    const cmd = parts[0].toLowerCase();
+    let cmd = parts[0].toLowerCase();
     const arg = parts.slice(1).join(' ');
+
+    if (cmd.startsWith('/')) cmd = cmd.slice(1);
 
     const handler = commands[cmd];
     if (handler) {
         handler(arg);
-    } else if (cmdStr.trim()) {
-        const suggestion = findSimilar(cmd);
-        showError('Error: ' + cmd + ' not found.', suggestion);
+    } else {
+        showCommandError(parts[0].toLowerCase() || cmd);
     }
-}
-
-function showError(msg, suggestion) {
-    // 移除之前的错误输出
-    const prev = document.querySelector('.cmd-error-output');
-    if (prev) prev.remove();
-
-    const errorEl = document.createElement('div');
-    errorEl.className = 'cmd-error-output';
-    errorEl.style.cssText = 'margin-top:0.5rem;padding:0.4rem 0.6rem;background:rgba(255,60,60,0.08);border-left:2px solid #FF4444;color:#FF4444;font-family:var(--font-mono);font-size:0.8rem;line-height:1.4;';
-    errorEl.innerHTML = msg + (suggestion ? `<br><span style="color:#00E5A0;cursor:pointer;" onclick="executeCommand('${suggestion}');this.closest('.cmd-error-output').remove();">→ Did you mean: ${suggestion}?</span>` : '');
-
-    const cmdArea = document.querySelector('.command-area') || document.querySelector('.mobile-cmd-area');
-    if (cmdArea) {
-        cmdArea.style.marginBottom = '0';
-        cmdArea.insertAdjacentElement('afterend', errorEl);
-    }
-
-    setTimeout(() => errorEl.remove(), 3000);
-}
-
-function findSimilar(cmd) {
-    const cmds = Object.keys(commands);
-    for (const c of cmds) {
-        if (c.slice(1).startsWith(cmd.slice(1)) || cmd.slice(1).startsWith(c.slice(1))) {
-            return c;
-        }
-    }
-    return null;
 }
 
 window.executeCommand = executeCommand;

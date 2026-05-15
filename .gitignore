@@ -4,7 +4,6 @@ _site/
 *.log
 *.map
 logs/
-src/assets/js/bundle.js
 
 # IDE
 .vscode/
@@ -18,6 +17,20 @@ src/assets/js/bundle.js
 .trae/
 设计文档.md
 
-# 文章内容和图片（本地私有，不上传 GitHub）
+# 环境变量（含管理员密码）
+.env
+
+# 构建产物
+src/assets/js/bundle.js
+src/assets/js/bundle.js.map
+src/assets/js/admin-panel.bundle.js
+src/assets/js/admin-panel.bundle.js.map
+
+# 文章内容（独立于代码管理）
 content/
+
+# 临时数据
+temp_repos.json
+
+# 文章索引（由 scanner 自动生成）
 src/articles/_data/

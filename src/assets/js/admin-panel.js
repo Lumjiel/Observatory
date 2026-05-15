@@ -3,15 +3,15 @@ import { EditorView, keymap, placeholder } from '@codemirror/view';
 import { defaultKeymap, history, historyKeymap } from '@codemirror/commands';
 import { markdown, markdownLanguage } from '@codemirror/lang-markdown';
 import { languages } from '@codemirror/language-data';
+import { CATEGORIES, CATEGORY_LABELS } from './shared/constants.js';
 
 const API_BASE = '/api';
-const CATEGORIES = ['tutorials', 'blog', 'projects', 'essays'];
-const CATEGORY_LABELS = { tutorials: '教程', blog: '博客', essays: '随笔', projects: '项目' };
 
 let editor = null;
 let currentSlug = null;
 let currentTags = [];
 let isPreviewOpen = false;
+let currentDraftState = false; // true = 草稿, false = 已发布
 
 // ============ Auth ============
 async function api(path, options = {}) {
@@ -144,6 +144,7 @@ window.removeTag = function(index) {
 window.newArticle = function() {
   currentSlug = null;
   currentTags = [];
+  currentDraftState = false;
   document.getElementById('editorTitle').textContent = '新建文章';
   document.getElementById('articleTitle').value = '';
   document.getElementById('articleExcerpt').value = '';
@@ -165,6 +166,7 @@ window.loadArticle = async function(slug) {
 
   currentSlug = article.slug;
   currentTags = article.tags || [];
+  currentDraftState = !!article.draft;
 
   document.getElementById('editorTitle').textContent = '编辑文章';
   document.getElementById('articleTitle').value = article.title || '';
@@ -172,14 +174,17 @@ window.loadArticle = async function(slug) {
   document.getElementById('articleCategory').value = article.category || 'blog';
   document.getElementById('deleteBtn').style.display = '';
   document.getElementById('draftToggleBtn').style.display = '';
-  document.getElementById('draftLabel').textContent = article.draft ? '重新发布' : '转为草稿';
+  document.getElementById('draftLabel').textContent = article.draft ? '转为草稿' : '重新发布';
   document.getElementById('tagInput').value = '';
   renderTags();
+
+  // 立即清空预览，防止切换时残留旧内容
+  document.getElementById('previewContent').innerHTML = '';
   initEditor(article.content || '');
 
   // Auto-open preview in editor mode
   document.querySelector('.editor-content-area').classList.add('preview-open');
-  updatePreview();
+  schedulePreview();
 };
 
 window.saveArticle = async function() {
@@ -187,12 +192,11 @@ window.saveArticle = async function() {
   const category = document.getElementById('articleCategory').value;
   const excerpt = document.getElementById('articleExcerpt').value.trim();
   const content = getEditorContent();
-  const isDraft = document.getElementById('draftLabel').textContent === '转为草稿';
 
   if (!title) { showToast('请输入标题', 'error'); return; }
   if (!content) { showToast('请输入内容', 'error'); return; }
 
-  const body = { title, category, content, tags: currentTags, excerpt, draft: isDraft };
+  const body = { title, category, content, tags: currentTags, excerpt, draft: currentDraftState };
 
   try {
     let res;
@@ -229,9 +233,11 @@ window.deleteCurrentArticle = async function() {
 };
 
 window.toggleDraft = function() {
-  const btn = document.getElementById('draftToggleBtn');
+  // 切换状态：草稿 → 发布，或 发布 → 草稿
+  currentDraftState = !currentDraftState;
   const label = document.getElementById('draftLabel');
-  label.textContent = label.textContent === '转为草稿' ? '重新发布' : '转为草稿';
+  label.textContent = currentDraftState ? '重新发布' : '转为草稿';
+  saveArticle();
 };
 
 // ============ Toolbar Actions ============
@@ -385,10 +391,14 @@ export function init() {
   // Check page mode
   const body = document.body;
   const isList = body.classList.contains('mode-list');
+  const isDrafts = body.classList.contains('mode-drafts');
   const isEditor = body.classList.contains('mode-editor');
   const isSettings = body.classList.contains('mode-settings');
 
   if (isList) {
+    loadArticles();
+    setupSearch();
+  } else if (isDrafts) {
     loadArticles();
     setupSearch();
   } else if (isEditor) {
@@ -445,8 +455,17 @@ async function loadGithubRepos() {
   el.innerHTML = data.repos.map(r => `
     <label class="repo-item">
       <input type="checkbox" data-repo="${r.name}"${r.shown ? ' checked' : ''}>
-      <span class="repo-name">${r.name}</span>
-      <span class="repo-lang">${r.language || '-'}</span>
+      <div class="repo-info">
+        <div class="repo-top">
+          <span class="repo-name">${r.name}</span>
+          <span class="repo-stars">★ ${r.stars || 0}</span>
+        </div>
+        <div class="repo-desc">${r.description || '暂无描述'}</div>
+        <div class="repo-meta">
+          <span class="repo-lang">${r.language || '-'}</span>
+          <span class="repo-updated">${r.updatedAgo || ''}</span>
+        </div>
+      </div>
     </label>
   `).join('');
 

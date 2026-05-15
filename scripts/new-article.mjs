@@ -12,18 +12,12 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import readline from 'readline';
 import matter from 'gray-matter';
+import { CATEGORIES, CATEGORY_LABELS } from './utils/categories.mjs';
+import { slugify } from './utils/slug.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const ROOT = path.join(__dirname, '..');
-
-const CATEGORIES = ['tutorials', 'blog', 'projects', 'essays'];
-const CATEGORY_LABELS = {
-  tutorials: '教程',
-  blog: '博客',
-  projects: '项目',
-  essays: '随笔'
-};
 
 // 计算预估阅读时间
 function estimateReadingTime(title) {
@@ -34,14 +28,6 @@ function estimateReadingTime(title) {
   return `${minutes} min`;
 }
 
-// 生成 slug
-function slugify(title) {
-  return title
-    .toLowerCase()
-    .replace(/[^a-z0-9一-龥]/g, '-')
-    .replace(/-+/g, '-')
-    .replace(/^-|-$/g, '');
-}
 
 // 生成 frontmatter
 function generateFrontmatter({ title, category, tags, date, readingTime }) {

@@ -26,20 +26,14 @@
         </div>
     </header>
 
-    <div class="mobile-cmd-area" id="mobileCmd">
-        <div class="command-area">
-            <span class="prompt">$</span>
-            <input type="text" class="cmd-input mobile-cmd-input" id="mobileCmdInput" placeholder="/help /stats ...">
-            <span class="cmd-hint">Tab 补全 | Enter 执行</span>
-        </div>
-    </div>
-
     <div class="main-container" id="mainContainer">
         <div class="command-area" id="desktopCmd">
             <span class="prompt">$</span>
-            <input type="text" class="cmd-input" id="cmdInput" placeholder="/help /stats ..." autofocus>
+            <input type="text" class="cmd-input" id="cmdInput" placeholder="输入命令... (help 查看全部)" autofocus>
             <span class="cmd-hint">↑↓ 历史 | Tab 补全 | Enter 执行</span>
-        </div>
+            <div class="cmd-error" id="cmdError"></div>
+
+        <div class="signal-overview" id="signalOverview"></div>
 
         <div class="content-layout">
             <div class="main-content">
@@ -62,6 +56,7 @@
             </aside>
         </div>
     </div>
+
 
     <script>
         window.ARTICLES_DATA = {{ collections.articles | jsonify | safe }};

@@ -3,12 +3,14 @@ import path from 'path';
 import matter from 'gray-matter';
 import { fileURLToPath } from 'url';
 import { randomUUID } from 'crypto';
+import { CATEGORIES } from './utils/categories.mjs';
+import { slugify } from './utils/slug.mjs';
+import { calculateReadingTime } from './utils/reading-time.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const ROOT = path.resolve(__dirname, '..');
 
-const CATEGORIES = ['tutorials', 'blog', 'projects', 'essays'];
 const CONTENT_DIR = path.join(ROOT, 'content');
 const CONTENT_ARTICLES_DIR = path.join(CONTENT_DIR, 'articles');
 const OUTPUT_FILE = path.join(ROOT, 'src', 'articles', '_data', 'articles.json');
@@ -31,23 +33,9 @@ function extractTags(frontmatter, content, title) {
     return words;
 }
 
-function calculateReadingTime(content) {
-    const wordsPerMinute = 200;
-    const chineseChars = (content.match(/[一-龥]/g) || []).length;
-    const englishWords = (content.match(/[a-zA-Z]+/g) || []).length;
-    const totalWords = chineseChars + englishWords;
-    const minutes = Math.ceil(totalWords / wordsPerMinute);
-    return minutes < 1 ? '1 min' : `${minutes} min`;
-}
-
 function generateExcerpt(content, maxLength = 150) {
     const cleaned = content.replace(/---[\s\S]*?---/, '').replace(/#+\s/g, '').trim();
     return cleaned.length > maxLength ? cleaned.slice(0, maxLength) + '...' : cleaned;
-}
-
-function generateSlug(title, filename) {
-    const base = filename.replace(/\.md$/, '');
-    return base.toLowerCase().replace(/[^a-z0-9一-龥]+/g, '-').replace(/^-|-$/g, '');
 }
 
 function loadExistingIndex() {
@@ -99,7 +87,7 @@ function scanCategory(category, existingMap) {
             continue;
         }
 
-        const slug = frontmatter.slug || generateSlug(frontmatter.title || file, file);
+        const slug = frontmatter.slug || slugify(file.replace(/\.md$/, ''));
         const title = frontmatter.title || file.replace(/\.md$/, '');
         const date = frontmatter.date
             ? (frontmatter.date instanceof Date

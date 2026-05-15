@@ -21,13 +21,6 @@
   },
   "dependencies": {
     "@11ty/eleventy": "^3.0.0",
-    "@codemirror/lang-markdown": "^6.5.0",
-    "@codemirror/language-data": "^6.5.2",
-    "@codemirror/state": "^6.6.0",
-    "@codemirror/theme-one-dark": "^6.1.3",
-    "@codemirror/view": "^6.42.1",
-    "codemirror": "^6.0.2",
-    "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "express-rate-limit": "^8.5.1",
     "gray-matter": "^4.0.3",

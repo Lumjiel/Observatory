@@ -1,24 +1,26 @@
-# 终端观测站 · Observatory
+# Terminal Observatory
 
-我把每天的编码、阅读、调试和思考都当作信号记录下来。这里是公开的日志，也是一场持续的自我实验。
+一个终端风格的 CS 学习数据监控中心。以 Markdown 文章为数据源，通过终端日志流界面展示学习轨迹。
 
-## 特性
+## 功能
 
-- **终端风格界面** — 伪终端操作体验，命令驱动
-- **多视图切换** — 日志流、仪表盘、GitHub 活动、关于页等
-- **文章管理** — 支持 Markdown，标签分类，全文搜索
-- **响应式设计** — 适配桌面和移动端
-- **暗色/亮色主题** — 一键切换
+- **终端日志流** — 命令行风格的文章流，支持分类筛选、关键词搜索、分页
+- **GitHub 面板** — 显示个人 GitHub 仓库列表与贡献热力图
+- **统计仪表盘** — 分类统计、标签云、近期更新、月度热力图
+- **管理后台** — 基于 CodeMirror + Markdown 预览的在线文章编辑系统
+- **暗色/亮色主题** — 支持切换，跟随系统偏好
+- **导出功能** — 支持 JSON / TXT 格式导出文章数据
+- **键盘快捷键** — `j/k` 移动、命令式操作
 
 ## 技术栈
 
-| 类别 | 技术 |
-|------|------|
-| 静态站点 | Eleventy (11ty) |
-| 前端 | 原生 JavaScript (ES Modules) |
-| 打包 | esbuild |
-| 样式 | CSS Variables + Grid/Flexbox |
-| 图床 | GitHub 仓库 |
+| 层 | 技术 |
+|-----|--------|
+| 前端 | 原生 JS (ES Module)、esbuild 打包 |
+| 后端 | Express 5 + Marked + gray-matter |
+| 静态站点 | Eleventy (11ty) 3.x |
+| 进程管理 | PM2 |
+| 编辑器 | CodeMirror 6 |
 
 ## 快速开始
 
@@ -26,93 +28,84 @@
 # 安装依赖
 npm install
 
-# 开发模式
+# 开发模式（构建 + 扫描 + 启动开发服务器）
 npm run dev
 
-# 生产构建
-npm run build
-
-# 启动文章管理后台
-ADMIN_PASSWORD=xxx npm run server
-# 访问 http://localhost:8080/admin
+# 部署模式（API 服务器）
+ADMIN_PASSWORD=yourpassword npm run server
 ```
 
-## 文章管理
+访问 `http://localhost:8080` 查看前端，`http://localhost:8080/admin` 进入管理后台。
 
-### 创建文章
+## 可用命令
 
-在 `src/articles/{category}/` 下创建 `.md` 文件：
+| 命令 | 功能 |
+|------|--------|
+| `/search [关键词]` | 搜索文章标题和描述 |
+| `/filter [category]` | 筛选分类：all/tutorials/blog/essays/projects |
+| `/dashboard` | 统计仪表盘 |
+| `/github` | GitHub 仓库与贡献热力图 |
+| `/list` | 全部文章列表 |
+| `/about` | 关于系统 |
+| `/help` | 显示帮助 |
+| `/clear` | 清除筛选条件 |
+| `/theme [dark\|light]` | 切换主题 |
+| `/export [txt\|json]` | 导出文章数据 |
+| `/admin` | 进入管理后台 |
 
-```yaml
----
-title: 文章标题
-date: 2026-05-08
-category: tutorials  # tutorials | blog | essays | projects
----
-```
-
-### 运行扫描
-
-```bash
-npm run scan:articles
-```
-
-文章页面路径：`/articles/{category}/{slug}/`
-
-### 插图
-
-两种语法都会被转为绝对路径 `/img/xxx.png`：
-
-```markdown
-<!-- Obsidian 风格（推荐） -->
-![[Pasted_image_xxx.png]]
-
-<!-- 标准 Markdown -->
-![](img/xxx.png)
-```
-
-## 命令
-
-| 命令 | 说明 |
-|------|------|
-| `filter [all\|tutorials\|blog\|essays\|projects]` | 按分类筛选 |
-| `grep [关键词]` | 全文搜索 |
-| `status` / `dashboard` | 打开仪表盘 |
-| `errors` | GitHub 仓库报告 |
-| `milestones` | 全部文章 |
-| `skills` | 分类统计 |
-| `about` | 关于页 |
-| `help` | 帮助 |
-| `clear` | 清除筛选 |
-| `theme dark\|light` | 切换主题 |
-
-快捷键：`j/k` 移动，`Esc` 关闭，`/` 聚焦搜索
+快捷键：`j/k` 移动焦点，`Esc` 关闭详情，`Tab` 补全命令，`↑/↓` 历史命令
 
 ## 项目结构
 
 ```
-.
+terminal-observatory/
+├── scripts/                    # 后端脚本
+│   ├── article-api.mjs         # Express API 服务器（主进程）
+│   ├── article-scanner.mjs     # 扫描 Markdown 生成文章索引
+│   ├── build-js.mjs            # esbuild 前端打包
+│   ├── github-scraper.mjs      # 拉取 GitHub 数据
+│   ├── new-article.mjs         # 交互式创建文章
+│   ├── frontmatter-fixer.mjs   # 修复 Markdown frontmatter
+│   └── utils/                  # 共享工具函数
 ├── src/
-│   ├── articles/          # 文章源文件
-│   │   ├── tutorials/
-│   │   ├── blog/
-│   │   ├── essays/
-│   │   └── projects/
-│   └── assets/js/         # 前端源码
-│       └── modules/       # 模块化 JS
-├── scripts/              # 构建脚本
-│   ├── article-api.mjs    # 文章管理 API
-│   └── article-scanner.mjs # 文章索引扫描
-├── _site/                 # 构建输出
-└── .github/workflows/    # CI/CD
+│   ├── assets/
+│   │   ├── css/main.css        # 主样式
+│   │   ├── css/admin.css       # 管理后台样式
+│   │   └── js/                 # 前端 JS
+│   │       ├── app.js          # 入口
+│   │       ├── admin-panel.js  # 管理面板
+│   │       └── modules/
+│   │           ├── commands.js     # 命令处理器
+│   │           ├── router.js       # 视图路由
+│   │           ├── state.js        # 全局状态
+│   │           ├── events/         # 键盘、输入事件
+│   │           ├── renderers/      # 各视图渲染
+│   │           ├── components/     # UI 组件
+│   │           └── utils/         # 工具函数
+│   ├── layouts/base.njk        # 页面模板
+│   ├── pages/                  # Eleventy 页面
+│   └── _data/                  # 站点数据
+├── ecosystem.config.cjs        # PM2 配置
+├── eleventy.config.js          # 11ty 配置
+└── package.json
 ```
 
-## CI/CD
+## 数据流
 
-GitHub Actions 自动构建部署：
-- push 到 main 分支触发构建
-- 每周日午夜自动更新文章索引
+```
+Markdown 文件 (content/articles/)
+    ↓ article-scanner.mjs
+文章索引 (src/articles/_data/articles.json)
+    ↓ Eleventy build
+静态站点 (_site/)
+    ↓ Express serve
+浏览器访问
+```
 
-## 关于
+## 部署
 
-一个用爱发电的个人学习记录项目。
+详见 [DEPLOY_SERVER.md](DEPLOY_SERVER.md)。
+
+## 许可
+
+MIT

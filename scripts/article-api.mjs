@@ -10,6 +10,8 @@ import { randomUUID } from 'crypto';
 import { marked } from 'marked';
 import sanitizeHtml from 'sanitize-html';
 import rateLimit from 'express-rate-limit';
+import { CATEGORIES } from './utils/categories.mjs';
+import { slugify } from './utils/slug.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, '..');
@@ -71,7 +73,9 @@ const loginLimiter = rateLimit({
 // 安全工具函数
 // ============================================================
 
-const VALID_CATEGORIES = ['tutorials', 'blog', 'essays', 'projects'];
+function validateCategory(category) {
+  return CATEGORIES.includes(category);
+}
 
 function escapeHtml(str) {
   if (typeof str !== 'string') return str;
@@ -81,10 +85,6 @@ function escapeHtml(str) {
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#x27;');
-}
-
-function validateCategory(category) {
-  return VALID_CATEGORIES.includes(category);
 }
 
 function safePath(baseDir, userPath) {
@@ -101,6 +101,8 @@ function safePath(baseDir, userPath) {
 // ============================================================
 
 let buildQueue = Promise.resolve();
+const childProcesses = new Set();
+let articlesCache = null;
 
 function enqueueBuild() {
   buildQueue = buildQueue.then(() => runCommand('eleventy', ['npx', 'eleventy'])).catch(err => {
@@ -113,11 +115,16 @@ function runCommand(name, cmdArgs) {
   return new Promise((resolve, reject) => {
     const [cmd, ...args] = cmdArgs;
     const child = spawn(cmd, args, { cwd: ROOT, stdio: 'inherit', shell: true });
+    childProcesses.add(child);
     child.on('close', (code) => {
+      childProcesses.delete(child);
       if (code === 0) resolve();
       else reject(new Error(`${name} exited with code ${code}`));
     });
-    child.on('error', reject);
+    child.on('error', (err) => {
+      childProcesses.delete(child);
+      reject(err);
+    });
   });
 }
 
@@ -126,8 +133,10 @@ function runCommand(name, cmdArgs) {
 // ============================================================
 
 function readArticlesIndex() {
+  if (articlesCache) return articlesCache;
   try {
-    return JSON.parse(fs.readFileSync(ARTICLES_JSON, 'utf8'));
+    articlesCache = JSON.parse(fs.readFileSync(ARTICLES_JSON, 'utf8'));
+    return articlesCache;
   } catch (err) {
     const backup = ARTICLES_JSON + '.bak';
     try {
@@ -143,6 +152,7 @@ function saveArticlesIndex(articles) {
     throw new Error('拒绝写入空的 articles.json，索引可能已损坏');
   }
   fs.writeFileSync(ARTICLES_JSON, JSON.stringify(articles, null, 2));
+  articlesCache = articles;
 }
 
 function getArticlePath(entry) {
@@ -317,7 +327,7 @@ app.post('/api/articles', async (req, res) => {
     return res.status(400).json({ error: '无效的分类' });
   }
 
-  const slug = title.toLowerCase().replace(/[^a-z0-9一-龥]+/g, '-').replace(/^-|-$/g, '');
+  const slug = slugify(title);
   const filename = `${slug}.md`;
   const filePath = safePath(ARTICLES_DIR, path.join(category, filename));
   if (!filePath) return res.status(400).json({ error: '无效的路径' });
@@ -452,7 +462,7 @@ app.post('/api/articles/:slug/duplicate', async (req, res) => {
   if (!article) return res.status(404).json({ error: '文章不存在' });
 
   const newTitle = '副本-' + article.title;
-  const newSlug = newTitle.toLowerCase().replace(/[^a-z0-9一-龥]+/g, '-').replace(/^-|-$/g, '');
+  const newSlug = slugify(newTitle);
   const filename = `${newSlug}.md`;
   const filePath = path.join(ARTICLES_DIR, article.category, filename);
 
@@ -601,8 +611,13 @@ app.post('/api/github/refresh', async (req, res) => {
   if (!checkAuth(req)) return res.status(401).json({ error: 'Unauthorized' });
   // 异步执行，不阻塞
   const child = spawn('node', ['scripts/github-scraper.mjs'], { cwd: ROOT, stdio: 'inherit' });
+  childProcesses.add(child);
   child.on('close', () => {
+    childProcesses.delete(child);
     if (DEV && lrServer) lrServer.refresh('/');
+  });
+  child.on('error', () => {
+    childProcesses.delete(child);
   });
   res.json({ success: true, refreshing: true });
 });
@@ -674,6 +689,7 @@ if (fs.existsSync(SITE_DIR)) {
 // ============================================================
 
 let lrServer = null;
+let srcWatcher = null;
 
 async function startDevServer() {
   console.log('[观测站] 正在构建...');
@@ -696,12 +712,15 @@ async function startDevServer() {
   });
   lrServer.watch(SITE_DIR);
 
-  const srcWatcher = chokidar.watch(path.join(ROOT, 'src'), {
+  srcWatcher = chokidar.watch(path.join(ROOT, 'src'), {
     ignoreInitial: true,
     persistent: true,
     ignored: [
+      /(^|[/\\])_data[/\\]/,
       path.join(ROOT, 'src', 'assets', 'js', 'bundle.js'),
       path.join(ROOT, 'src', 'assets', 'js', 'bundle.js.map'),
+      path.join(ROOT, 'src', 'assets', 'js', 'admin-panel.bundle.js'),
+      path.join(ROOT, 'src', 'assets', 'js', 'admin-panel.bundle.js.map'),
     ],
   });
 
@@ -712,7 +731,7 @@ async function startDevServer() {
     rebuildTimer = setTimeout(async () => {
       console.log('[观测站] 正在重建...');
       try {
-        await runCommand('build', ['npm', 'run', 'build']);
+        await runCommand('build', ['node', 'scripts/build-js.mjs', '&&', 'npx', 'eleventy']);
         lrServer.refresh('/');
         console.log('[观测站] 重建完成');
       } catch (e) {
@@ -743,6 +762,13 @@ function shutdown(signal) {
   if (lrServer) {
     try { lrServer.close(); } catch (e) {}
   }
+  if (srcWatcher) {
+    try { srcWatcher.close(); } catch (e) {}
+  }
+  for (const child of childProcesses) {
+    try { child.kill(); } catch (e) {}
+  }
+  childProcesses.clear();
   server.close(() => {
     console.log('[观测站] 已关闭，再见！');
     process.exit(0);
