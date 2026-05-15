@@ -27,11 +27,14 @@
     </header>
 
     <div class="main-container" id="mainContainer">
-        <div class="command-area" id="desktopCmd">
-            <span class="prompt">$</span>
-            <input type="text" class="cmd-input" id="cmdInput" placeholder="输入命令... (help 查看全部)" autofocus>
-            <span class="cmd-hint">↑↓ 历史 | Tab 补全 | Enter 执行</span>
+        <div class="cmd-card">
+            <div class="cmd-card-row">
+                <span class="prompt">$</span>
+                <input type="text" class="cmd-input" id="cmdInput" placeholder="输入命令... (help 查看全部)" autofocus>
+                <span class="cmd-hint">↑↓ 历史 | Tab 补全 | Enter 执行</span>
+            </div>
             <div class="cmd-error" id="cmdError"></div>
+        </div>
 
         <div class="signal-overview" id="signalOverview"></div>
 

@@ -59,7 +59,6 @@ export const state = {
     // DOM 引用
     dom: {
         cmdInput: null,
-        mobileCmdInput: null,
         viewContainers: {},
         themeToggle: null,
     }
@@ -69,7 +68,6 @@ export const state = {
 export function initDOM() {
     state.dom = {
         cmdInput: document.getElementById('cmdInput'),
-        mobileCmdInput: document.getElementById('mobileCmdInput'),
         viewContainers: {
             log: document.getElementById('view-log'),
             dashboard: document.getElementById('view-dashboard'),

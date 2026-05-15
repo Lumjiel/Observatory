@@ -284,16 +284,18 @@ body.light .status-bar {
 }
 
 
-.command-area {
+.cmd-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.7rem 1rem;
+    margin-bottom: 1.5rem;
+}
+.cmd-card-row {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    margin-bottom: 1.5rem;
     flex-wrap: wrap;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 0.8rem 1rem;
 }
 .prompt {
     white-space: nowrap;
@@ -629,8 +631,7 @@ body.light .legend-cell.level3 { background: #00A060; }
         padding: 0.5rem 0.8rem;
         font-size: 0.7rem;
     }
-    .command-area {
-        display: flex;
+    .cmd-card {
         position: sticky;
         top: 0;
         z-index: 40;
@@ -638,7 +639,7 @@ body.light .legend-cell.level3 { background: #00A060; }
         backdrop-filter: blur(20px);
         -webkit-backdrop-filter: blur(20px);
     }
-    body.light .command-area {
+    body.light .cmd-card {
         background: rgba(255, 255, 255, 0.85);
     }
     .signal-overview {
