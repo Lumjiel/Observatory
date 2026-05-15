@@ -15,15 +15,18 @@ if (!username) {
 }
 
 async function fetchWithRetry(url, retries = 3) {
+    const token = process.env.GITHUB_TOKEN;
     for (let i = 0; i < retries; i++) {
         const controller = new AbortController();
         const timeout = setTimeout(() => controller.abort(), 10000);
         try {
+            const headers = {
+                'Accept': 'application/vnd.github.v3+json',
+                'User-Agent': 'terminal-observatory/1.0'
+            };
+            if (token) headers['Authorization'] = `Bearer ${token}`;
             const res = await fetch(url, {
-                headers: {
-                    'Accept': 'application/vnd.github.v3+json',
-                    'User-Agent': 'terminal-observatory/1.0'
-                },
+                headers,
                 signal: controller.signal
             });
             clearTimeout(timeout);
