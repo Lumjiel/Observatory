@@ -97,7 +97,7 @@ const commands = {
     },
 
     admin() {
-        window.location.href = '/admin';
+        window.location.href = (window.BASE_PATH || '') + '/admin';
     }
 };
 

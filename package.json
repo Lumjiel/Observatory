@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "node scripts/build-js.mjs && node scripts/article-scanner.mjs && node scripts/github-scraper.mjs && eleventy --serve",
     "build": "node scripts/build-js.mjs && node scripts/article-scanner.mjs && node scripts/github-scraper.mjs && eleventy",
+    "build:prod": "BASE_PATH=/observatory node scripts/build-js.mjs && BASE_PATH=/observatory node scripts/article-scanner.mjs && BASE_PATH=/observatory node scripts/github-scraper.mjs && BASE_PATH=/observatory eleventy",
     "build:js": "node scripts/build-js.mjs",
     "fetch-github": "node scripts/github-scraper.mjs",
     "scan:articles": "node scripts/article-scanner.mjs",
@@ -17,10 +18,16 @@
     "pm2:stop": "pm2 stop observatory",
     "pm2:restart": "pm2 restart observatory",
     "pm2:logs": "pm2 logs observatory",
-    "pm2:status": "pm2 status"
+    "pm2:status": "pm2 status",
+    "deploy": "bash \"C:/Users/JIE/Desktop/claudecode/云服务器/scripts/deploy-observatory.sh\""
   },
   "dependencies": {
     "@11ty/eleventy": "^3.0.0",
+    "@codemirror/commands": "^6.10.3",
+    "@codemirror/lang-markdown": "^6.5.0",
+    "@codemirror/language-data": "^6.5.2",
+    "@codemirror/state": "^6.6.0",
+    "@codemirror/view": "^6.43.0",
     "express": "^5.2.1",
     "express-rate-limit": "^8.5.1",
     "gray-matter": "^4.0.3",

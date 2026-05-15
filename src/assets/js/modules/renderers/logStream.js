@@ -66,7 +66,7 @@ function attachStreamEvents() {
 
         if (e.target.closest('.tag-hover')) {
             const tag = e.target.dataset.tag;
-            window.location.href = '/tags/?tag=' + encodeURIComponent(tag);
+            window.location.href = (window.BASE_PATH || '') + '/tags/?tag=' + encodeURIComponent(tag);
             return;
         }
         if (e.target.closest('.log-time')) return;

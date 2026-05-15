@@ -2,6 +2,8 @@
 const rawArticles = window.ARTICLES_DATA || [];
 const CATEGORY_TYPE_MAP = { tutorials: 'INFO', blog: 'READ', essays: 'READ', projects: 'BUILD' };
 
+const BASE = window.BASE_PATH || '';
+
 export const state = {
     feed: rawArticles.map(a => ({
         id: a.id,
@@ -13,7 +15,7 @@ export const state = {
         tags: a.tags || [],
         detail: a.excerpt || '',
         status: 'done',
-        href: `/articles/${a.category}/${a.slug}/`,
+        href: `${BASE}/articles/${a.category}/${a.slug}/`,
         isArticle: true,
     })),
 

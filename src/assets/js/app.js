@@ -20,10 +20,8 @@ function initTheme() {
     } else if (saved === 'dark') {
         document.body.classList.remove('light');
         if (themeToggle) themeToggle.textContent = '🌙';
-    } else if (window.matchMedia('(prefers-color-scheme: light)').matches) {
-        document.body.classList.add('light');
-        if (themeToggle) themeToggle.textContent = '☀️';
     }
+    // else: 默认暗色，什么都不加
 }
 
 function updateStatusBar() {

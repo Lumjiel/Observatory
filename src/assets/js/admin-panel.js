@@ -5,7 +5,7 @@ import { markdown, markdownLanguage } from '@codemirror/lang-markdown';
 import { languages } from '@codemirror/language-data';
 import { CATEGORIES, CATEGORY_LABELS } from './shared/constants.js';
 
-const API_BASE = '/api';
+const API_BASE = (window.BASE_PATH || '') + '/api';
 
 let editor = null;
 let currentSlug = null;
@@ -19,7 +19,7 @@ async function api(path, options = {}) {
     ...options,
     headers: { 'Content-Type': 'application/json', ...options.headers }
   });
-  if (res.status === 401) { window.location.href = '/admin'; return null; }
+  if (res.status === 401) { window.location.href = (window.BASE_PATH || '') + '/admin'; return null; }
   return res.json();
 }
 
@@ -51,7 +51,7 @@ function renderArticleList(articles) {
     item.addEventListener('click', (e) => {
       if (e.target.closest('.article-select')) return;
       const slug = item.dataset.slug;
-      window.location.href = `/admin/article/${encodeURIComponent(slug)}`;
+      window.location.href = `${window.BASE_PATH || ''}/admin/article/${encodeURIComponent(slug)}`;
     });
   });
 }
@@ -105,7 +105,9 @@ async function updatePreview() {
   });
 
   if (data && data.html) {
-    previewEl.innerHTML = data.html;
+    // 云端预览时修正图片/链接路径
+    const base = window.BASE_PATH || '';
+    previewEl.innerHTML = base ? data.html.replace(/(src|href)="\//g, `$1="${base}/`) : data.html;
     statusEl.textContent = '就绪';
   } else {
     statusEl.textContent = '渲染失败';
@@ -209,7 +211,7 @@ window.saveArticle = async function() {
     if (res && res.success) {
       showToast('保存成功', 'success');
       if (!currentSlug && res.slug) {
-        window.location.href = `/admin/article/${encodeURIComponent(res.slug)}`;
+        window.location.href = `${window.BASE_PATH || ''}/admin/article/${encodeURIComponent(res.slug)}`;
       }
     } else {
       showToast(res?.error || '保存失败', 'error');
@@ -226,7 +228,7 @@ window.deleteCurrentArticle = async function() {
   const res = await api(`/articles/${currentSlug}`, { method: 'DELETE' });
   if (res && res.success) {
     showToast('已删除', 'success');
-    window.location.href = '/admin';
+    window.location.href = (window.BASE_PATH || '') + '/admin';
   } else {
     showToast(res?.error || '删除失败', 'error');
   }
@@ -408,7 +410,9 @@ export function init() {
 
     // Load article from URL
     const path = window.location.pathname;
-    const match = path.match(/^\/admin\/article\/(.+)/);
+    const base = window.BASE_PATH || '';
+    const stripped = base && path.startsWith(base) ? path.slice(base.length) : path;
+    const match = stripped.match(/^\/admin\/article\/(.+)/);
     if (match) {
       const slugOrNew = decodeURIComponent(match[1]);
       if (slugOrNew === 'new') {

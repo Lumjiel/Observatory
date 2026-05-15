@@ -2,10 +2,10 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>{{ title or "观测站 · 一个CS学生的实时学习宇宙" }}</title>
-    <link rel="stylesheet" href="/assets/css/main.css">
-    <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml">
+    <link rel="stylesheet" href="{{ env.BASE_PATH }}/assets/css/main.css">
+    <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="{{ env.BASE_PATH }}/feed.xml">
 </head>
 <body>
     <div class="particle-layer" id="particleLayer"></div>
@@ -62,10 +62,11 @@
 
 
     <script>
+        window.BASE_PATH = '{{ env.BASE_PATH }}';
         window.ARTICLES_DATA = {{ collections.articles | jsonify | safe }};
         window.SITE_DATA = {{ site | jsonify | safe }};
         window.GITHUB_DATA = {{ github | jsonify | safe }};
     </script>
-    <script src="/assets/js/bundle.js" defer></script>
+    <script src="{{ env.BASE_PATH }}/assets/js/bundle.js" defer></script>
 </body>
 </html>

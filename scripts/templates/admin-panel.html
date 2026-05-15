@@ -13,8 +13,8 @@
     <span class="topbar-stats" id="articleCount">%%ARTICLE_COUNT%% 篇文章</span>
   </div>
   <div class="topbar-right">
-    <a href="/" id="navBack">← 前台</a>
-    <a href="/logout" class="btn-logout">退出</a>
+    <a href="javascript:void(0)" onclick="window.location.href=(window.BASE_PATH||'')+'/'" id="navBack">← 前台</a>
+    <a href="javascript:void(0)" onclick="window.location.href=(window.BASE_PATH||'')+'/logout'" class="btn-logout">退出</a>
   </div>
 </div>
 
@@ -38,7 +38,7 @@
             <span>含草稿</span>
           </label>
         </div>
-        <button class="btn-new" onclick="window.location.href='/admin/article/new'"><span>+</span> 新建</button>
+        <button class="btn-new" onclick="window.location.href=(window.BASE_PATH||'')+'/admin/article/new'"><span>+</span> 新建</button>
       </div>
       <div class="article-list" id="articleList">
         %%ARTICLE_LIST%%
@@ -50,7 +50,7 @@
     <div class="content-panel" id="editorPanel">
       <div class="editor-header">
         <div class="editor-header-left">
-          <a href="/admin" class="btn btn-ghost" style="font-size:0.8rem;">← 返回</a>
+          <a href="javascript:void(0)" onclick="window.location.href=(window.BASE_PATH||'')+'/admin'" class="btn btn-ghost" style="font-size:0.8rem;">← 返回</a>
           <span class="editor-title-label" id="editorTitle">新建文章</span>
         </div>
         <div class="editor-actions">
@@ -207,11 +207,11 @@
       e.preventDefault();
       var panel = this.dataset.panel;
       if (panel === 'settings') {
-        window.location.href = '/admin/settings';
+        window.location.href = (window.BASE_PATH || '') + '/admin/settings';
       } else if (panel === 'drafts') {
-        window.location.href = '/admin/drafts';
+        window.location.href = (window.BASE_PATH || '') + '/admin/drafts';
       } else {
-        window.location.href = '/admin';
+        window.location.href = (window.BASE_PATH || '') + '/admin';
       }
     });
   });
@@ -263,7 +263,7 @@
       if (!el) return;
       el.innerHTML = '<div class="loading-text">加载中...</div>';
 
-      var res = await fetch('/api/github');
+      var res = await fetch(window.API_BASE + '/github');
       if (!res.ok) {
         el.innerHTML = '<div class="error-text">加载失败，请稍后重试</div>';
         var saveBtn = document.getElementById('githubSaveBtn');
@@ -273,7 +273,7 @@
       var data = await res.json();
       var shownRepos = data.repos || [];
 
-      var githubRes = await fetch('/api/github/repos');
+      var githubRes = await fetch(window.API_BASE + '/github/repos');
       if (!githubRes.ok) {
         el.innerHTML = '<div class="error-text">仓库数据加载失败</div>';
         return;
@@ -336,7 +336,7 @@
     var checked = Array.from(document.querySelectorAll('#repoList input:checked')).map(function(cb) { return cb.dataset.repo; });
     if (saveBtn) { saveBtn.disabled = true; saveBtn.textContent = '保存中...'; }
     try {
-      var res = await fetch('/api/github/repos', {
+      var res = await fetch(window.API_BASE + '/github/repos', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ shownRepos: checked })
@@ -362,7 +362,7 @@
     if (btn) { btn.disabled = true; btn.textContent = '刷新中...'; }
     if (el) el.innerHTML = '<div class="loading-text">正在从 GitHub 获取数据...</div>';
     try {
-      var res = await fetch('/api/github/refresh', { method: 'POST' });
+      var res = await fetch(window.API_BASE + '/github/refresh', { method: 'POST' });
       var data = await res.json();
       if (data.refreshing) {
         if (el) el.innerHTML = '<div class="loading-text">刷新中，请稍候...</div>';
@@ -398,7 +398,7 @@
   var layout = document.querySelector('.admin-layout');
 
   window.handleItemClick = function(slug, event) {
-    window.location.href = '/admin/article/' + encodeURIComponent(slug);
+    window.location.href = (window.BASE_PATH || '') + '/admin/article/' + encodeURIComponent(slug);
   };
 
   // 移动端：编辑器视图切换
@@ -421,7 +421,8 @@
 
   // 编辑器页面自动加载文章
   if (document.body.classList.contains('mode-editor')) {
-    var slug = window.location.pathname.replace(/^\/admin\/article\//, '');
+    var base = window.BASE_PATH || '';
+    var slug = window.location.pathname.replace(new RegExp('^' + base.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '/admin/article/'), '');
     if (slug && slug !== 'new') {
       window.loadArticle(decodeURIComponent(slug));
     }

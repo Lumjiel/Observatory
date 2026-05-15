@@ -26,8 +26,20 @@ if (!PASSWORD) {
   process.exit(1);
 }
 
+const BASE_PATH = process.env.BASE_PATH || '';
+
 const app = express();
 app.use(express.json({ limit: '10mb' }));
+
+// 去掉 base path 再路由（保持原有路由逻辑不变）
+if (BASE_PATH) {
+  app.use((req, res, next) => {
+    if (req.path.startsWith(BASE_PATH)) {
+      req.url = req.url.slice(BASE_PATH.length);
+    }
+    next();
+  });
+}
 
 // ============================================================
 // Cookie 解析
@@ -120,7 +132,9 @@ function readTemplate(filePath) {
 }
 
 function renderLoginPage() {
-  return readTemplate(LOGIN_TPL);
+  const apiBase = (BASE_PATH || '') + '/api';
+  return readTemplate(LOGIN_TPL)
+    .replace('</head>', `<script>window.BASE_PATH='${BASE_PATH}';window.API_BASE='${apiBase}';</script></head>`);
 }
 
 function escapeHtml(str) {
@@ -158,7 +172,8 @@ function renderAdminPage(articles, pageMode = 'list') {
     .replace('%%ARTICLE_LIST%%', articleList)
     .replace('%%EMPTY_STATE%%', emptyState)
     .replace('%%CATEGORY_OPTIONS%%', categoryOptions)
-    .replace('%%PAGE_MODE%%', pageMode);
+    .replace('%%PAGE_MODE%%', pageMode)
+    .replace('</head>', `<script>window.BASE_PATH='${BASE_PATH}';window.API_BASE='${BASE_PATH}/api';</script></head>`);
 }
 
 // ============================================================
@@ -172,7 +187,7 @@ app.post('/api/login', loginLimiter, (req, res) => {
       httpOnly: true,
       sameSite: 'strict',
       maxAge: 86400000,
-      secure: process.env.NODE_ENV === 'production',
+      secure: false,  // 暂时关闭（HTTP 也需要cookie）
     });
     res.json({ success: true });
   } else {
@@ -459,6 +474,39 @@ app.use((err, req, res, next) => {
   } else {
     res.status(500).send('服务器内部错误');
   }
+});
+
+// ============================================================
+// HTML 运行时注入（BASE_PATH + SITE_DATA 热替换，无需重建）
+// ============================================================
+
+app.use((req, res, next) => {
+  const _send = res.send.bind(res);
+  res.send = function(body) {
+    if (body && res.get('content-type')?.includes('text/html')) {
+      let str = Buffer.isBuffer(body) ? body.toString('utf-8') : body;
+      if (typeof str === 'string') {
+        let modified = false;
+        // 注入 BASE_PATH（兜底 Eleventy 静态页面）
+        if (BASE_PATH && str.includes("window.BASE_PATH = ''")) {
+          str = str.replace("window.BASE_PATH = ''", `window.BASE_PATH = '${BASE_PATH}'`);
+          modified = true;
+        }
+        // 注入最新的 SITE_DATA，使管理后台修改 GitHub 展示列表后实时生效
+        try {
+          const siteData = loadSiteData();
+          str = str.replace(/window\.SITE_DATA\s*=\s*[^;]+;/, `window.SITE_DATA = ${JSON.stringify(siteData)};`);
+          modified = true;
+        } catch {}
+        if (modified) {
+          res.set('content-length', Buffer.byteLength(str));
+          return _send(str);
+        }
+      }
+    }
+    return _send(body);
+  };
+  next();
 });
 
 // ============================================================

@@ -13,9 +13,9 @@ layout: base.njk
 
     <nav class="article-breadcrumb">
         <span class="prompt-icon">$</span>
-        <a href="/">cd ~</a>
+        <a href="{{ env.BASE_PATH }}/">cd ~</a>
         <span class="separator">/</span>
-        <a href="/articles/?category={{ article.category }}" class="breadcrumb-category" data-category="{{ article.category }}">{{ article.category }}</a>
+        <a href="{{ env.BASE_PATH }}/articles/?category={{ article.category }}" class="breadcrumb-category" data-category="{{ article.category }}">{{ article.category }}</a>
         <span class="separator">/</span>
         <span class="current">{{ article.slug }}</span>
     </nav>
@@ -35,7 +35,7 @@ layout: base.njk
                     <span class="meta-icon">⏱</span>
                     <span class="meta-value">{{ article.readingTime }}</span>
                 </span>
-                <a href="/articles/{{ article.category }}/" class="meta-item meta-category">
+                <a href="{{ env.BASE_PATH }}/articles/{{ article.category }}/" class="meta-item meta-category">
                     <span class="meta-icon">📁</span>
                     <span class="meta-value">{{ article.category | categoryLabel }}</span>
                 </a>
@@ -63,7 +63,7 @@ layout: base.njk
             {% endif %}
 
             <div class="back-to-list">
-                <a href="/articles/" class="back-link">
+                <a href="{{ env.BASE_PATH }}/articles/" class="back-link">
                     <span class="back-arrow">←</span>
                     <span>返回文章列表</span>
                 </a>
@@ -71,14 +71,14 @@ layout: base.njk
 
             <div class="article-nav">
                 {% if prevArticle %}
-                <a href="/articles/{{ prevArticle.category }}/{{ prevArticle.slug }}/" class="nav-link prev">
+                <a href="{{ env.BASE_PATH }}/articles/{{ prevArticle.category }}/{{ prevArticle.slug }}/" class="nav-link prev">
                     <span class="nav-arrow">←</span>
                     <span class="nav-label">prev</span>
                     <span class="nav-title">{{ prevArticle.title }}</span>
                 </a>
                 {% endif %}
                 {% if nextArticle %}
-                <a href="/articles/{{ nextArticle.category }}/{{ nextArticle.slug }}/" class="nav-link next">
+                <a href="{{ env.BASE_PATH }}/articles/{{ nextArticle.category }}/{{ nextArticle.slug }}/" class="nav-link next">
                     <span class="nav-label">next</span>
                     <span class="nav-arrow">→</span>
                     <span class="nav-title">{{ nextArticle.title }}</span>
@@ -581,6 +581,10 @@ layout: base.njk
         box-sizing: border-box;
     }
     .article-page::-webkit-scrollbar {
+        display: none;
+    }
+
+    .status-bar, .cmd-card {
         display: none;
     }
 

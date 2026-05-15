@@ -2,92 +2,59 @@
   "username": "Lumjiel",
   "repos": [
     {
-      "name": "Observatory",
-      "fullName": "Lumjiel/Observatory",
-      "description": "我把每天的编码、阅读、调试和思考都当作信号记录下来。这里是公开的日志，也是一场持续的自我实验。",
-      "language": "JavaScript",
-      "stars": 0,
-      "forks": 0,
-      "url": "https://github.com/Lumjiel/Observatory",
-      "updatedAt": "2026-05-12T07:38:46Z",
-      "updatedAgo": "1天前"
-    },
-    {
-      "name": "jie-open-skills",
-      "fullName": "Lumjiel/jie-open-skills",
-      "description": "暂无描述",
-      "language": "HTML",
-      "stars": 0,
-      "forks": 0,
-      "url": "https://github.com/Lumjiel/jie-open-skills",
-      "updatedAt": "2026-05-12T06:44:10Z",
-      "updatedAgo": "1天前"
-    },
-    {
-      "name": "Horizon",
-      "fullName": "Lumjiel/Horizon",
-      "description": "📡 Your own AI-powered news radar. Generates daily briefings in English & Chinese. | 用 AI 构建你专属的新闻雷达",
-      "language": "Python",
-      "stars": 0,
-      "forks": 0,
-      "url": "https://github.com/Lumjiel/Horizon",
-      "updatedAt": "2026-05-07T09:59:59Z",
-      "updatedAgo": "6天前"
-    },
-    {
-      "name": "nanobot",
-      "fullName": "Lumjiel/nanobot",
-      "description": "\"🐈 nanobot: The Ultra-Lightweight OpenClaw\"",
-      "language": "Python",
-      "stars": 0,
-      "forks": 0,
-      "url": "https://github.com/Lumjiel/nanobot",
-      "updatedAt": "2026-05-07T05:04:13Z",
-      "updatedAgo": "6天前"
-    },
-    {
       "name": "BugPet",
       "fullName": "Lumjiel/BugPet",
-      "description": "暂无描述",
+      "description": "🐛 一只会陪你写代码的 Windows 桌面宠物。Tauri + Vue 3 + Rust 重构版。",
       "language": "Vue",
       "stars": 1,
       "forks": 0,
       "url": "https://github.com/Lumjiel/BugPet",
-      "updatedAt": "2026-05-04T05:13:26Z",
-      "updatedAgo": "9天前"
+      "updatedAt": "2026-05-14T08:05:40Z",
+      "updatedAgo": "1天前"
     },
     {
-      "name": "PBTI",
-      "fullName": "Lumjiel/PBTI",
-      "description": "基于乒乒球运动的人格测评",
-      "language": "TypeScript",
+      "name": "chaoxing-helper",
+      "fullName": "Lumjiel/chaoxing-helper",
+      "description": "🛠️ 超星学习通助手 - 代码粘贴增强 + 自动发帖，拯救你的讨论区任务",
+      "language": "JavaScript",
       "stars": 0,
       "forks": 0,
-      "url": "https://github.com/Lumjiel/PBTI",
-      "updatedAt": "2026-04-29T14:27:39Z",
-      "updatedAgo": "14天前"
+      "url": "https://github.com/Lumjiel/chaoxing-helper",
+      "updatedAt": "2026-05-14T09:50:57Z",
+      "updatedAgo": "1天前"
     },
     {
-      "name": "Genesis-Engine",
-      "fullName": "Lumjiel/Genesis-Engine",
-      "description": "基于多智能体协同的真实感虚构世界构建与推演系统",
-      "language": "Python",
+      "name": "Dxkyglxt",
+      "fullName": "Lumjiel/Dxkyglxt",
+      "description": "校级·院级·教师三级权限的科研管理平台。RBAC + Activiti 7 工作流，科研成果全流程管理。",
+      "language": "Java",
       "stars": 0,
       "forks": 0,
-      "url": "https://github.com/Lumjiel/Genesis-Engine",
-      "updatedAt": "2026-04-29T06:03:13Z",
-      "updatedAgo": "14天前"
+      "url": "https://github.com/Lumjiel/Dxkyglxt",
+      "updatedAt": "2026-05-14T08:08:15Z",
+      "updatedAgo": "1天前"
     },
     {
-      "name": "Lumjiel.github.io",
-      "fullName": "Lumjiel/Lumjiel.github.io",
-      "description": "My personal blog",
+      "name": "epic-awesome-gamer",
+      "fullName": "Lumjiel/epic-awesome-gamer",
+      "description": "🍷 优雅地自动领取 Epic Store 每周免费游戏。",
+      "language": null,
+      "stars": 0,
+      "forks": 0,
+      "url": "https://github.com/Lumjiel/epic-awesome-gamer",
+      "updatedAt": "2026-02-02T06:35:47Z",
+      "updatedAgo": "3个月前"
+    },
+    {
+      "name": "jie-open-skills",
+      "fullName": "Lumjiel/jie-open-skills",
+      "description": "杰哥的 AI Skill 公开合集。📦 把有效的方法、流程和工具沉淀为可复用、可维护、可评估的 AI 资产。",
       "language": "HTML",
       "stars": 0,
       "forks": 0,
-      "url": "https://github.com/Lumjiel/Lumjiel.github.io",
-      "updatedAt": "2026-04-19T07:59:40Z",
-      "updatedAgo": "24天前"
+      "url": "https://github.com/Lumjiel/jie-open-skills",
+      "updatedAt": "2026-05-14T07:58:06Z",
+      "updatedAgo": "1天前"
     },
     {
       "name": "langchain4j",
@@ -98,7 +65,29 @@
       "forks": 0,
       "url": "https://github.com/Lumjiel/langchain4j",
       "updatedAt": "2026-04-18T14:11:45Z",
-      "updatedAgo": "25天前"
+      "updatedAgo": "27天前"
+    },
+    {
+      "name": "nanobot",
+      "fullName": "Lumjiel/nanobot",
+      "description": "\"🐈 nanobot: The Ultra-Lightweight OpenClaw\"",
+      "language": "Python",
+      "stars": 0,
+      "forks": 0,
+      "url": "https://github.com/Lumjiel/nanobot",
+      "updatedAt": "2026-05-07T05:04:13Z",
+      "updatedAgo": "8天前"
+    },
+    {
+      "name": "Observatory",
+      "fullName": "Lumjiel/Observatory",
+      "description": "我把每天的编码、阅读、调试和思考都当作信号记录下来。这里是公开的日志，也是一场持续的自我实验。",
+      "language": "JavaScript",
+      "stars": 0,
+      "forks": 0,
+      "url": "https://github.com/Lumjiel/Observatory",
+      "updatedAt": "2026-05-15T08:44:48Z",
+      "updatedAgo": "6小时前"
     },
     {
       "name": "openclaw",
@@ -109,25 +98,75 @@
       "forks": 0,
       "url": "https://github.com/Lumjiel/openclaw",
       "updatedAt": "2026-04-18T02:14:26Z",
-      "updatedAgo": "25天前"
+      "updatedAgo": "27天前"
+    },
+    {
+      "name": "PBTI",
+      "fullName": "Lumjiel/PBTI",
+      "description": "🏓 基于乒乓球运动的人格测评。30 道题、26 种人格、雷达图与海报分享。",
+      "language": "TypeScript",
+      "stars": 0,
+      "forks": 0,
+      "url": "https://github.com/Lumjiel/PBTI",
+      "updatedAt": "2026-05-14T07:59:33Z",
+      "updatedAgo": "1天前"
+    },
+    {
+      "name": "ragent",
+      "fullName": "Lumjiel/ragent",
+      "description": "企业级 Agentic RAG 智能体 - 全链路覆盖文档解析、多路检索、意图识别、问题重写、会话记忆、MCP 工具调用与深度思考。面向真实业务场景，从 0 到 1 完整工程实现。",
+      "language": null,
+      "stars": 0,
+      "forks": 0,
+      "url": "https://github.com/Lumjiel/ragent",
+      "updatedAt": "2026-03-21T03:09:35Z",
+      "updatedAgo": "1个月前"
+    },
+    {
+      "name": "spring-ai",
+      "fullName": "Lumjiel/spring-ai",
+      "description": "An Application Framework for AI Engineering",
+      "language": "Java",
+      "stars": 0,
+      "forks": 0,
+      "url": "https://github.com/Lumjiel/spring-ai",
+      "updatedAt": "2026-04-17T13:18:42Z",
+      "updatedAgo": "28天前"
+    },
+    {
+      "name": "Todolist",
+      "fullName": "Lumjiel/Todolist",
+      "description": "你是不是也这样： • 列了一堆 Todo，从来执行不下去 • flag 倒了又立，立了又倒 • 想要改变，却三分钟热度  那这个 App 可能也不适合你。 但万一呢？",
+      "language": "Vue",
+      "stars": 0,
+      "forks": 0,
+      "url": "https://github.com/Lumjiel/Todolist",
+      "updatedAt": "2026-05-14T09:12:27Z",
+      "updatedAgo": "1天前"
+    },
+    {
+      "name": "YiBan_AutoSgin",
+      "fullName": "Lumjiel/YiBan_AutoSgin",
+      "description": "易班校本化晚点签到",
+      "language": "Python",
+      "stars": 0,
+      "forks": 0,
+      "url": "https://github.com/Lumjiel/YiBan_AutoSgin",
+      "updatedAt": "2026-02-08T23:41:28Z",
+      "updatedAgo": "3个月前"
+    },
+    {
+      "name": "zxtx",
+      "fullName": "Lumjiel/zxtx",
+      "description": "大学生智能旅游服务平台。AI 规划路线、攻略分享、社交组队、门票秒杀。Spring Boot + LangChain4j。",
+      "language": "Java",
+      "stars": 0,
+      "forks": 0,
+      "url": "https://github.com/Lumjiel/zxtx",
+      "updatedAt": "2026-05-14T08:09:30Z",
+      "updatedAgo": "1天前"
     }
   ],
-  "contributions": {
-    "2026-05-12": 6,
-    "2026-05-10": 7,
-    "2026-05-09": 11,
-    "2026-05-08": 1,
-    "2026-05-07": 28,
-    "2026-05-06": 3,
-    "2026-05-04": 10,
-    "2026-04-29": 6,
-    "2026-04-18": 3,
-    "2026-04-27": 1,
-    "2026-04-23": 10,
-    "2026-04-22": 4,
-    "2026-04-21": 2,
-    "2026-04-20": 3,
-    "2026-04-19": 4
-  },
-  "lastFetched": "2026-05-13T15:13:56.236Z"
+  "contributions": {},
+  "lastFetched": "2026-05-15T15:03:42.460Z"
 }

@@ -11,7 +11,8 @@ module.exports = {
       env: {
         NODE_ENV: 'production',
         PORT: 8080,
-        ADMIN_PASSWORD: process.env.ADMIN_PASSWORD || ''
+        ADMIN_PASSWORD: process.env.ADMIN_PASSWORD || '',
+        BASE_PATH: '/observatory'
       },
       error_file: './logs/observatory-error.log',
       out_file: './logs/observatory-out.log',
