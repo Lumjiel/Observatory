@@ -61,12 +61,16 @@ ADMIN_PASSWORD=yourpassword npm run server
 terminal-observatory/
 ├── scripts/                    # 后端脚本
 │   ├── article-api.mjs         # Express API 服务器（主进程）
-│   ├── article-scanner.mjs     # 扫描 Markdown 生成文章索引
+│   ├── article-scanner.mjs     # CLI 入口：扫描 Markdown 生成索引
 │   ├── build-js.mjs            # esbuild 前端打包
 │   ├── github-scraper.mjs      # 拉取 GitHub 数据
 │   ├── new-article.mjs         # 交互式创建文章
 │   ├── frontmatter-fixer.mjs   # 修复 Markdown frontmatter
 │   └── utils/                  # 共享工具函数
+│       ├── article-service.mjs # 统一文章数据服务层（API + Eleventy 共用）
+│       ├── categories.mjs      # 文章分类常量
+│       ├── slug.mjs            # 标题转 slug
+│       └── reading-time.mjs    # 阅读时间计算
 ├── src/
 │   ├── assets/
 │   │   ├── css/main.css        # 主样式
@@ -90,17 +94,33 @@ terminal-observatory/
 └── package.json
 ```
 
-## 数据流
+## 架构说明
+
+### 文章管理
+
+所有文章以 Markdown 文件存储在 `content/articles/{category}/` 目录，frontmatter 包含元数据。**`scripts/utils/article-service.mjs`** 是统一数据服务层，Express API 和 Eleventy 构建都通过它读写文章：
 
 ```
-Markdown 文件 (content/articles/)
-    ↓ article-scanner.mjs
-文章索引 (src/articles/_data/articles.json)
-    ↓ Eleventy build
-静态站点 (_site/)
-    ↓ Express serve
-浏览器访问
+                    ┌─────────────────────────┐
+                    │  Markdown 文件            │
+                    │  content/articles/       │
+                    └──────────┬──────────────┘
+                               │
+                    ┌──────────▼──────────────┐
+                    │  article-service.mjs     │   ← 唯一入口
+                    │  (扫描 / CRUD / 索引)     │
+                    └──────┬──────────┬───────┘
+                           │          │
+              ┌────────────▼──┐  ┌───▼───────────┐
+              │ Express API   │  │ Eleventy 构建   │
+              │ (admin CRUD)  │  │ (静态站点生成)   │
+              └───────────────┘  └───────────────┘
 ```
+
+- **CRUD 操作**：API 写入 `.md` 文件 + 更新 `articles.json` 索引，异步触发站点重建
+- **批量操作**：合并构建触发，2 秒内多次写入只执行一次 `eleventy` 构建
+- **数据一致性**：API 和 Eleventy 共用同一套 frontmatter 解析逻辑，消除双管道 bug
+- **路径安全**：所有文件路径通过 `safePath` 校验，防止路径穿越
 
 ## 部署
 

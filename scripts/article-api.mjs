@@ -5,19 +5,16 @@ import { fileURLToPath } from 'url';
 import { spawn } from 'child_process';
 import chokidar from 'chokidar';
 import livereload from 'livereload';
-import matter from 'gray-matter';
 import { randomUUID } from 'crypto';
 import { marked } from 'marked';
 import sanitizeHtml from 'sanitize-html';
 import rateLimit from 'express-rate-limit';
-import { CATEGORIES } from './utils/categories.mjs';
-import { slugify } from './utils/slug.mjs';
+import * as articleService from './utils/article-service.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, '..');
 const CONTENT_DIR = path.join(ROOT, 'content');
-const ARTICLES_DIR = path.join(CONTENT_DIR, 'articles');
-const ARTICLES_JSON = path.join(ROOT, 'src', 'articles', '_data', 'articles.json');
+const IMAGES_DIR = path.join(CONTENT_DIR, 'images');
 const SITE_DIR = path.join(ROOT, '_site');
 const PORT = process.env.PORT || 8080;
 const ADMIN_PATH = process.env.ADMIN_PATH || '/admin';
@@ -30,7 +27,7 @@ if (!PASSWORD) {
 }
 
 const app = express();
-app.use(express.json());
+app.use(express.json({ limit: '10mb' }));
 
 // ============================================================
 // Cookie 解析
@@ -70,56 +67,20 @@ const loginLimiter = rateLimit({
 });
 
 // ============================================================
-// 安全工具函数
+// 异步构建（debounced，不阻塞 API 响应）
 // ============================================================
 
-function validateCategory(category) {
-  return CATEGORIES.includes(category);
-}
-
-function escapeHtml(str) {
-  if (typeof str !== 'string') return str;
-  return str
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#x27;');
-}
-
-function safePath(baseDir, userPath) {
-  const normalized = path.normalize(userPath);
-  const resolved = path.resolve(baseDir, normalized);
-  if (!resolved.startsWith(baseDir)) {
-    return null; // 路径穿越尝试
-  }
-  return resolved;
-}
-
-// ============================================================
-// 异步构建队列（防止 execSync 阻塞事件循环）
-// ============================================================
-
-let buildQueue = Promise.resolve();
+let buildTimer = null;
 const childProcesses = new Set();
-let articlesCache = null;
 
-function enqueueBuild() {
-  buildQueue = buildQueue.then(() => runCommand('eleventy', ['npx', 'eleventy'])).catch(err => {
-    console.error('[观测站] 构建失败:', err.message);
-  });
-  return buildQueue;
-}
-
-function runCommand(name, cmdArgs) {
+function runEleventy() {
   return new Promise((resolve, reject) => {
-    const [cmd, ...args] = cmdArgs;
-    const child = spawn(cmd, args, { cwd: ROOT, stdio: 'inherit', shell: true });
+    const child = spawn('npx', ['eleventy'], { cwd: ROOT, stdio: 'inherit', shell: true });
     childProcesses.add(child);
     child.on('close', (code) => {
       childProcesses.delete(child);
       if (code === 0) resolve();
-      else reject(new Error(`${name} exited with code ${code}`));
+      else reject(new Error(`eleventy exited with code ${code}`));
     });
     child.on('error', (err) => {
       childProcesses.delete(child);
@@ -128,110 +89,23 @@ function runCommand(name, cmdArgs) {
   });
 }
 
-// ============================================================
-// 文章数据读写（基于 articles.json 增量更新）
-// ============================================================
-
-function readArticlesIndex() {
-  if (articlesCache) return articlesCache;
-  try {
-    articlesCache = JSON.parse(fs.readFileSync(ARTICLES_JSON, 'utf8'));
-    return articlesCache;
-  } catch (err) {
-    const backup = ARTICLES_JSON + '.bak';
+// 合并相邻构建：2s 内多次触发只执行一次
+function scheduleBuild() {
+  if (buildTimer) clearTimeout(buildTimer);
+  buildTimer = setTimeout(async () => {
+    buildTimer = null;
     try {
-      fs.copyFileSync(ARTICLES_JSON, backup);
-      console.error(`[观测站] articles.json 损坏，已备份到 ${backup}: ${err.message}`);
-    } catch {}
-    throw new Error(`articles.json 读取失败: ${err.message}`);
-  }
+      await runEleventy();
+      if (DEV && lrServer) lrServer.refresh('/');
+    } catch (e) {
+      console.error('[观测站] 构建失败:', e.message);
+    }
+  }, 2000);
 }
 
-function saveArticlesIndex(articles) {
-  if (!Array.isArray(articles) || articles.length === 0) {
-    throw new Error('拒绝写入空的 articles.json，索引可能已损坏');
-  }
-  fs.writeFileSync(ARTICLES_JSON, JSON.stringify(articles, null, 2));
-  articlesCache = articles;
-}
-
-function getArticlePath(entry) {
-  return path.join(ARTICLES_DIR, entry.category, entry.filename);
-}
-
-// 从 articles.json 读取列表（不含 content）
-function listArticles() {
-  return readArticlesIndex().map(a => ({
-    slug: a.slug,
-    category: a.category,
-    title: a.title,
-    tags: a.tags || [],
-    excerpt: a.excerpt || '',
-    order: a.order !== undefined ? a.order : 0,
-    path: getArticlePath(a),
-  }));
-}
-
-// 读取单篇（含 content）
-function getArticle(slug) {
-  const index = readArticlesIndex();
-  const entry = index.find(a => a.slug === slug);
-  if (!entry) return null;
-
-  const filePath = getArticlePath(entry);
-  if (!fs.existsSync(filePath)) return null;
-
-  const raw = fs.readFileSync(filePath, 'utf-8');
-  const { data, content } = matter(raw);
-
-  return {
-    slug: entry.slug,
-    category: entry.category,
-    title: entry.title || data.title || entry.slug,
-    tags: entry.tags || data.tags || [],
-    excerpt: entry.excerpt || data.excerpt || '',
-    readingTime: entry.readingTime || data.readingTime || '1 min',
-    order: entry.order !== undefined ? entry.order : 0,
-    path: filePath,
-    content,
-  };
-}
-
-// 增量更新 articles.json 中单篇文章的元数据
-function updateArticleIndex(slug, updates) {
-  const articles = readArticlesIndex();
-  const idx = articles.findIndex(a => a.slug === slug);
-  const now = new Date().toISOString().split('T')[0];
-
-  if (idx !== -1) {
-    articles[idx] = { ...articles[idx], ...updates, date: now };
-  } else {
-    articles.push({
-      id: `article_${randomUUID()}`,
-      slug,
-      title: updates.title || slug,
-      category: updates.category,
-      tags: updates.tags || [],
-      excerpt: updates.excerpt || '',
-      readingTime: updates.readingTime || '1 min',
-      date: now,
-      filename: `${slug}.md`,
-      source: 'manual',
-      sourceLogId: null,
-      status: 'published',
-    });
-  }
-
-  saveArticlesIndex(articles);
-}
-
-// 从 articles.json 中删除一篇文章
-function removeArticleIndex(slug, category) {
-  const articles = readArticlesIndex();
-  const filtered = articles.filter(
-    a => !(a.slug === slug && a.category === category)
-  );
-  saveArticlesIndex(filtered);
+// 立即构建（用于初始构建）
+function runBuildImmediate() {
+  return runEleventy();
 }
 
 // ============================================================
@@ -247,6 +121,16 @@ function readTemplate(filePath) {
 
 function renderLoginPage() {
   return readTemplate(LOGIN_TPL);
+}
+
+function escapeHtml(str) {
+  if (typeof str !== 'string') return str;
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x27;');
 }
 
 function renderAdminPage(articles, pageMode = 'list') {
@@ -307,67 +191,58 @@ app.post('/api/logout', (req, res) => {
 
 app.get('/api/articles', (req, res) => {
   if (!checkAuth(req)) return res.status(401).json({ error: 'Unauthorized' });
-  res.json(listArticles());
+  const articles = articleService.readArticleIndex().map(a => ({
+    slug: a.slug,
+    category: a.category,
+    title: a.title,
+    tags: a.tags || [],
+    excerpt: a.excerpt || '',
+    order: a.order !== undefined ? a.order : 0,
+  }));
+  res.json(articles);
 });
 
 app.get('/api/articles/:slug', (req, res) => {
   if (!checkAuth(req)) return res.status(401).json({ error: 'Unauthorized' });
-  const article = getArticle(req.params.slug);
+  const article = articleService.getArticle(req.params.slug);
   if (!article) return res.status(404).json({ error: '文章不存在' });
-  res.json(article);
+  res.json({
+    slug: article.slug,
+    category: article.category,
+    title: article.title,
+    tags: article.tags,
+    excerpt: article.excerpt,
+    readingTime: article.readingTime,
+    order: article.order,
+    content: article.content,
+  });
 });
 
 app.post('/api/articles', async (req, res) => {
   if (!checkAuth(req)) return res.status(401).json({ error: 'Unauthorized' });
   const { title, category, content, tags, excerpt, readingTime, order } = req.body;
-  if (!title || !category || !content) {
-    return res.status(400).json({ error: '缺少必填字段' });
+
+  try {
+    const result = articleService.createArticle({ title, category, content, tags, excerpt, readingTime, order });
+    scheduleBuild();
+    res.json({ success: true, slug: result.slug, path: result.path });
+  } catch (e) {
+    if (e.message === '文章已存在') return res.status(409).json({ error: e.message });
+    res.status(400).json({ error: e.message });
   }
-  if (!validateCategory(category)) {
-    return res.status(400).json({ error: '无效的分类' });
-  }
-
-  const slug = slugify(title);
-  const filename = `${slug}.md`;
-  const filePath = safePath(ARTICLES_DIR, path.join(category, filename));
-  if (!filePath) return res.status(400).json({ error: '无效的路径' });
-
-  if (fs.existsSync(filePath)) {
-    return res.status(409).json({ error: '文章已存在' });
-  }
-
-  const frontmatter = matter.stringify(content, {
-    title,
-    date: new Date().toISOString(),
-    category,
-    tags: tags || [],
-    excerpt: excerpt || '',
-    readingTime: readingTime || '1 min',
-    order: order || 0,
-  });
-
-  fs.writeFileSync(filePath, frontmatter);
-  updateArticleIndex(slug, { title, category, tags, excerpt, readingTime, order });
-
-  await enqueueBuild().catch(e => console.error('[观测站] 重建失败:', e.message));
-
-  if (DEV && lrServer) lrServer.refresh('/');
-
-  res.json({ success: true, slug, path: filePath });
 });
 
-// 批量更新排序
 app.put('/api/articles/order', (req, res) => {
   if (!checkAuth(req)) return res.status(401).json({ error: 'Unauthorized' });
   const { orders } = req.body;
   if (!Array.isArray(orders)) return res.status(400).json({ error: 'orders 必须是数组' });
 
-  const articles = readArticlesIndex();
+  const articles = articleService.readArticleIndex();
   orders.forEach(({ slug, order }) => {
     const idx = articles.findIndex(a => a.slug === slug);
     if (idx !== -1) articles[idx].order = order;
   });
-  saveArticlesIndex(articles);
+  articleService.saveArticleIndex(articles);
   res.json({ success: true });
 });
 
@@ -376,77 +251,27 @@ app.put('/api/articles/:slug', async (req, res) => {
   const { slug } = req.params;
   const { title, content, category, tags, excerpt, readingTime, order } = req.body;
 
-  const article = getArticle(slug);
-  if (!article) return res.status(404).json({ error: '文章不存在' });
-
-  const newCategory = category || article.category;
-  const newPath = path.join(ARTICLES_DIR, newCategory, `${slug}.md`);
-  const oldPath = article.path;
-
-  if (category && category !== article.category) {
-    fs.mkdirSync(path.join(ARTICLES_DIR, newCategory), { recursive: true });
-  }
-
-  const newContent = content !== undefined ? content : article.content;
-  const frontmatter = matter.stringify(newContent, {
-    title: title || article.title,
-    date: new Date().toISOString(),
-    category: newCategory,
-    tags: tags !== undefined ? tags : article.tags,
-    excerpt: excerpt !== undefined ? excerpt : article.excerpt,
-    readingTime: readingTime !== undefined ? readingTime : article.readingTime,
-    order: order !== undefined ? order : article.order,
-  });
-
   try {
-    fs.writeFileSync(newPath, frontmatter);
+    const result = articleService.updateArticle(slug, { title, content, category, tags, excerpt, readingTime, order });
+    if (!result) return res.status(404).json({ error: '文章不存在' });
+    scheduleBuild();
+    res.json({ success: true });
   } catch (e) {
-    return res.status(500).json({ error: '写入文件失败: ' + e.message });
+    res.status(500).json({ error: e.message });
   }
-
-  // 如果路径变了（旧分类变到新分类，或者同分类但路径不同），删旧文件
-  if (newPath !== oldPath && fs.existsSync(oldPath)) {
-    fs.unlinkSync(oldPath);
-  }
-
-  // 增量更新索引：只更新已有条目，不新建
-  updateArticleIndex(slug, {
-    title: title || article.title,
-    category: newCategory,
-    tags: tags !== undefined ? tags : article.tags,
-    excerpt: excerpt !== undefined ? excerpt : article.excerpt,
-    readingTime: readingTime !== undefined ? readingTime : article.readingTime,
-    order: order !== undefined ? order : article.order,
-    filename: `${slug}.md`,
-  });
-
-  await enqueueBuild().catch(e => console.error('[观测站] 重建失败:', e.message));
-
-  if (DEV && lrServer) lrServer.refresh('/');
-
-  res.json({ success: true });
 });
 
 app.delete('/api/articles/:slug', async (req, res) => {
   if (!checkAuth(req)) return res.status(401).json({ error: 'Unauthorized' });
   const { slug } = req.params;
 
-  const article = getArticle(slug);
-  if (!article) return res.status(404).json({ error: '文章不存在' });
-
-  fs.unlinkSync(article.path);
-  removeArticleIndex(slug, article.category);
-
-  await enqueueBuild().catch(e => {
-    console.error('[观测站] 重建失败:', e.message);
-  });
-
-  if (DEV && lrServer) lrServer.refresh('/');
-
+  const result = articleService.deleteArticle(slug);
+  if (!result) return res.status(404).json({ error: '文章不存在' });
+  scheduleBuild();
   res.json({ success: true });
 });
 
-// Markdown 预览（支持 GET query 和 POST body）
+// Markdown 预览
 app.all('/api/preview', (req, res) => {
   if (!checkAuth(req)) return res.status(401).json({ error: 'Unauthorized' });
   const content = req.body?.content || req.query?.content || '';
@@ -458,43 +283,16 @@ app.all('/api/preview', (req, res) => {
 app.post('/api/articles/:slug/duplicate', async (req, res) => {
   if (!checkAuth(req)) return res.status(401).json({ error: 'Unauthorized' });
   const { slug } = req.params;
-  const article = getArticle(slug);
-  if (!article) return res.status(404).json({ error: '文章不存在' });
 
-  const newTitle = '副本-' + article.title;
-  const newSlug = slugify(newTitle);
-  const filename = `${newSlug}.md`;
-  const filePath = path.join(ARTICLES_DIR, article.category, filename);
-
-  if (fs.existsSync(filePath)) {
-    return res.status(409).json({ error: '文章已存在' });
+  try {
+    const result = articleService.duplicateArticle(slug);
+    if (!result) return res.status(404).json({ error: '文章不存在' });
+    scheduleBuild();
+    res.json({ success: true, slug: result.slug });
+  } catch (e) {
+    if (e.message === '文章已存在') return res.status(409).json({ error: e.message });
+    res.status(500).json({ error: e.message });
   }
-
-  const frontmatter = matter.stringify(article.content, {
-    title: newTitle,
-    date: new Date().toISOString(),
-    category: article.category,
-    tags: article.tags,
-    excerpt: article.excerpt,
-    readingTime: article.readingTime,
-    order: 0,
-  });
-
-  fs.writeFileSync(filePath, frontmatter);
-  updateArticleIndex(newSlug, {
-    title: newTitle,
-    category: article.category,
-    tags: article.tags,
-    excerpt: article.excerpt,
-    readingTime: article.readingTime,
-    order: 0,
-  });
-
-  await enqueueBuild().catch(e => console.error('[观测站] 重建失败:', e.message));
-
-  if (DEV && lrServer) lrServer.refresh('/');
-
-  res.json({ success: true, slug: newSlug });
 });
 
 // 批量删除
@@ -503,18 +301,8 @@ app.post('/api/articles/batch-delete', async (req, res) => {
   const { slugs } = req.body;
   if (!Array.isArray(slugs)) return res.status(400).json({ error: 'slugs 必须是数组' });
 
-  slugs.forEach(({ slug, category }) => {
-    const article = getArticle(slug);
-    if (article && fs.existsSync(article.path)) {
-      fs.unlinkSync(article.path);
-    }
-    removeArticleIndex(slug, category);
-  });
-
-  await enqueueBuild().catch(e => console.error('[观测站] 重建失败:', e.message));
-
-  if (DEV && lrServer) lrServer.refresh('/');
-
+  articleService.batchDelete(slugs);
+  scheduleBuild();
   res.json({ success: true });
 });
 
@@ -522,37 +310,40 @@ app.post('/api/articles/batch-delete', async (req, res) => {
 app.post('/api/articles/batch-move', async (req, res) => {
   if (!checkAuth(req)) return res.status(401).json({ error: 'Unauthorized' });
   const { slugs, targetCategory } = req.body;
-  if (!Array.isArray(slugs) || !targetCategory) {
-    return res.status(400).json({ error: '需要 slugs 数组和 targetCategory' });
+
+  try {
+    articleService.batchMove(slugs, targetCategory);
+    scheduleBuild();
+    res.json({ success: true });
+  } catch (e) {
+    res.status(400).json({ error: e.message });
   }
-  if (!validateCategory(targetCategory)) {
-    return res.status(400).json({ error: '无效的分类' });
+});
+
+// 图片上传
+app.post('/api/upload-image', (req, res) => {
+  if (!checkAuth(req)) return res.status(401).json({ error: 'Unauthorized' });
+  const { image, slug } = req.body;
+  if (!image) return res.status(400).json({ error: '缺少图片数据' });
+
+  try {
+    const matches = image.match(/^data:image\/(\w+);base64,(.+)$/);
+    if (!matches) return res.status(400).json({ error: '无效的图片格式' });
+
+    const ext = matches[1] === 'jpeg' ? 'jpg' : matches[1];
+    const buffer = Buffer.from(matches[2], 'base64');
+    const year = new Date().getFullYear().toString();
+    const imageDir = path.join(IMAGES_DIR, year, slug || 'misc');
+    const imageName = `${randomUUID()}.${ext}`;
+
+    fs.mkdirSync(imageDir, { recursive: true });
+    fs.writeFileSync(path.join(imageDir, imageName), buffer);
+
+    const publicPath = `/img/${year}/${slug || 'misc'}/${imageName}`;
+    res.json({ path: publicPath });
+  } catch (e) {
+    res.status(500).json({ error: '图片上传失败: ' + e.message });
   }
-
-  slugs.forEach(({ slug }) => {
-    const article = getArticle(slug);
-    if (!article) return;
-    const safeNewPath = safePath(ARTICLES_DIR, path.join(targetCategory, `${slug}.md`));
-    if (!safeNewPath) return; // 路径穿越被阻止
-    const oldPath = article.path;
-    if (targetCategory !== article.category) {
-      fs.mkdirSync(path.join(ARTICLES_DIR, targetCategory), { recursive: true });
-    }
-    if (fs.existsSync(oldPath)) {
-      const raw = fs.readFileSync(oldPath, 'utf-8');
-      const { data, content } = matter(raw);
-      const frontmatter = matter.stringify(content, { ...data, category: targetCategory });
-      fs.writeFileSync(safeNewPath, frontmatter);
-      fs.unlinkSync(oldPath);
-    }
-    updateArticleIndex(slug, { category: targetCategory });
-  });
-
-  await enqueueBuild().catch(e => console.error('[观测站] 重建失败:', e.message));
-
-  if (DEV && lrServer) lrServer.refresh('/');
-
-  res.json({ success: true });
 });
 
 // ============================================================
@@ -573,27 +364,23 @@ function saveSiteData(data) {
   fs.writeFileSync(SITE_JSON_PATH, JSON.stringify(data, null, 2));
 }
 
-// 获取 shownRepos
 app.get('/api/github', (req, res) => {
   if (!checkAuth(req)) return res.status(401).json({ error: 'Unauthorized' });
   const siteData = loadSiteData();
   res.json({ repos: siteData.shownRepos || [] });
 });
 
-// 获取完整 GitHub 仓库列表
 app.get('/api/github/repos', (req, res) => {
   if (!checkAuth(req)) return res.status(401).json({ error: 'Unauthorized' });
   const githubJsonPath = path.join(ROOT, 'src', '_data', 'github.json');
   try {
     const data = fs.readFileSync(githubJsonPath, 'utf-8');
-    const githubData = JSON.parse(data);
-    res.json(githubData);
+    res.json(JSON.parse(data));
   } catch (e) {
     res.status(500).json({ error: '无法读取仓库数据' });
   }
 });
 
-// 保存 shownRepos
 app.put('/api/github/repos', (req, res) => {
   if (!checkAuth(req)) return res.status(401).json({ error: 'Unauthorized' });
   const { shownRepos } = req.body;
@@ -601,24 +388,19 @@ app.put('/api/github/repos', (req, res) => {
   const siteData = loadSiteData();
   siteData.shownRepos = shownRepos;
   saveSiteData(siteData);
-  // 触发热更新：重新构建站点
   if (DEV && lrServer) lrServer.refresh('/');
   res.json({ success: true });
 });
 
-// 刷新 GitHub 数据
 app.post('/api/github/refresh', async (req, res) => {
   if (!checkAuth(req)) return res.status(401).json({ error: 'Unauthorized' });
-  // 异步执行，不阻塞
   const child = spawn('node', ['scripts/github-scraper.mjs'], { cwd: ROOT, stdio: 'inherit' });
   childProcesses.add(child);
   child.on('close', () => {
     childProcesses.delete(child);
     if (DEV && lrServer) lrServer.refresh('/');
   });
-  child.on('error', () => {
-    childProcesses.delete(child);
-  });
+  child.on('error', () => childProcesses.delete(child));
   res.json({ success: true, refreshing: true });
 });
 
@@ -628,7 +410,10 @@ app.post('/api/github/refresh', async (req, res) => {
 
 app.get(ADMIN_PATH, (req, res) => {
   if (checkAuth(req)) {
-    res.send(renderAdminPage(listArticles(), 'list'));
+    const articles = articleService.readArticleIndex().map(a => ({
+      slug: a.slug, category: a.category, title: a.title, tags: a.tags || [], excerpt: a.excerpt || '',
+    }));
+    res.send(renderAdminPage(articles, 'list'));
   } else {
     res.send(renderLoginPage());
   }
@@ -639,22 +424,28 @@ app.get('/logout', (req, res) => {
   res.redirect(ADMIN_PATH);
 });
 
-// /admin/drafts → 草稿箱
 app.get('/admin/drafts', (req, res) => {
   if (!checkAuth(req)) return res.redirect(ADMIN_PATH);
-  res.send(renderAdminPage(listArticles(), 'drafts'));
+  const articles = articleService.readArticleIndex().map(a => ({
+    slug: a.slug, category: a.category, title: a.title, tags: a.tags || [], excerpt: a.excerpt || '',
+  }));
+  res.send(renderAdminPage(articles, 'drafts'));
 });
 
-// /admin/settings → 设置页
 app.get('/admin/settings', (req, res) => {
   if (!checkAuth(req)) return res.redirect(ADMIN_PATH);
-  res.send(renderAdminPage(listArticles(), 'settings'));
+  const articles = articleService.readArticleIndex().map(a => ({
+    slug: a.slug, category: a.category, title: a.title, tags: a.tags || [], excerpt: a.excerpt || '',
+  }));
+  res.send(renderAdminPage(articles, 'settings'));
 });
 
-// /admin/article/:slug → 文章编辑
 app.get('/admin/article/:slug', (req, res) => {
   if (!checkAuth(req)) return res.redirect(ADMIN_PATH);
-  res.send(renderAdminPage(listArticles(), 'editor'));
+  const articles = articleService.readArticleIndex().map(a => ({
+    slug: a.slug, category: a.category, title: a.title, tags: a.tags || [], excerpt: a.excerpt || '',
+  }));
+  res.send(renderAdminPage(articles, 'editor'));
 });
 
 // ============================================================
@@ -731,7 +522,7 @@ async function startDevServer() {
     rebuildTimer = setTimeout(async () => {
       console.log('[观测站] 正在重建...');
       try {
-        await runCommand('build', ['node', 'scripts/build-js.mjs', '&&', 'npx', 'eleventy']);
+        await runEleventy();
         lrServer.refresh('/');
         console.log('[观测站] 重建完成');
       } catch (e) {
@@ -756,15 +547,12 @@ const server = app.listen(PORT, () => {
   console.log(`[观测站] 管理界面 http://localhost:${PORT}${ADMIN_PATH}`);
 });
 
-// Graceful Shutdown（PM2 / Docker / kill 信号优雅关闭）
+// Graceful Shutdown
 function shutdown(signal) {
   console.log(`\n[观测站] 收到 ${signal}，正在关闭...`);
-  if (lrServer) {
-    try { lrServer.close(); } catch (e) {}
-  }
-  if (srcWatcher) {
-    try { srcWatcher.close(); } catch (e) {}
-  }
+  if (buildTimer) clearTimeout(buildTimer);
+  if (lrServer) { try { lrServer.close(); } catch (e) {} }
+  if (srcWatcher) { try { srcWatcher.close(); } catch (e) {} }
   for (const child of childProcesses) {
     try { child.kill(); } catch (e) {}
   }
