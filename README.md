@@ -22,6 +22,7 @@
 | 静态站点 | Eleventy (11ty) 3.x |
 | 进程管理 | PM2 |
 | 编辑器 | CodeMirror 6 |
+| CI/CD | GitHub Actions |
 
 ## 快速开始
 
@@ -43,14 +44,21 @@ ADMIN_PASSWORD=yourpassword npm run server
 | 命令 | 功能 |
 |------|------|
 | `npm run dev` | 开发模式：构建 + 扫描 + Eleventy 服务器，自动监听 JS/CSS 热更新 |
-| `npm run build` | 完整构建（JS + CSS + 文章扫描 + GitHub 数据 + 静态站点） |
-| `npm run build:prod` | 生产构建（含 CSS 压缩，`BASE_PATH=/observatory`） |
-| `npm run build:js` | 仅打包 JS |
+| `npm run build` | 完整构建（JS 打包 + CSS 处理 + 文章扫描 + GitHub 数据 + 静态站点） |
+| `npm run build:prod` | 生产构建（含 JS/CSS 压缩，`BASE_PATH=/observatory`） |
+| `npm run build:js` | 仅打包 JS（esbuild） |
 | `npm run build:css` | 仅处理 CSS（autoprefixer） |
 | `npm run optimize-images` | 压缩 `src/img/` 下的 PNG/JPEG 图片 |
 | `npm run server` | 启动 Express API 服务器（需 `ADMIN_PASSWORD`） |
 | `npm run scan:articles` | 扫描文章目录更新索引 |
-| `npm run fetch-github` | 拉取 GitHub 仓库数据 |
+| `npm run fetch-github` | 拉取 GitHub 仓库与贡献数据 |
+| `npm run import:article` | 从 Markdown 文件导入文章 |
+| `npm run new-article` | 交互式创建新文章 |
+| `npm run pm2:start` | PM2 启动 API 服务 |
+| `npm run pm2:stop` | PM2 停止服务 |
+| `npm run pm2:restart` | PM2 重启服务 |
+| `npm run pm2:logs` | 查看 PM2 日志 |
+| `npm run pm2:status` | 查看 PM2 状态 |
 
 ## 可用命令
 
@@ -74,41 +82,54 @@ ADMIN_PASSWORD=yourpassword npm run server
 
 ```
 terminal-observatory/
-├── scripts/                    # 后端脚本
-│   ├── article-api.mjs         # Express API 服务器（主进程）
-│   ├── article-scanner.mjs     # CLI 入口：扫描 Markdown 生成索引
-│   ├── build-js.mjs            # esbuild 前端打包
-│   ├── build-css.mjs           # PostCSS 样式处理（autoprefixer + 压缩）
-│   ├── dev.mjs                 # 开发模式：初始构建 + 文件监听热更新
-│   ├── optimize-images.mjs     # PNG/JPEG 图片压缩
-│   ├── github-scraper.mjs      # 拉取 GitHub 数据
-│   ├── new-article.mjs         # 交互式创建文章
-│   ├── frontmatter-fixer.mjs   # 修复 Markdown frontmatter
-│   └── utils/                  # 共享工具函数
-│       ├── article-service.mjs # 统一文章数据服务层（API + Eleventy 共用）
-│       ├── categories.mjs      # 文章分类常量
-│       ├── slug.mjs            # 标题转 slug
-│       └── reading-time.mjs    # 阅读时间计算
+├── scripts/                        # 后端脚本
+│   ├── article-api.mjs             # Express API 服务器（主进程）
+│   ├── article-importer.mjs        # 从 Markdown 文件导入文章
+│   ├── article-scanner.mjs         # CLI 入口：扫描 Markdown 生成索引
+│   ├── build-js.mjs                # esbuild 前端打包
+│   ├── build-css.mjs               # PostCSS 样式处理（autoprefixer + 压缩）
+│   ├── dev.mjs                     # 开发模式：初始构建 + 文件监听热更新
+│   ├── github-scraper.mjs          # 拉取 GitHub 仓库与贡献数据
+│   ├── new-article.mjs             # 交互式创建文章
+│   ├── optimize-images.mjs         # PNG/JPEG 图片压缩
+│   ├── update-about-ops.mjs        # 更新关于页面的运维数据
+│   └── utils/                      # 共享工具函数
+│       ├── article-service.mjs     # 统一文章数据服务层（API + Eleventy 共用）
+│       ├── categories.mjs          # 文章分类常量
+│       ├── paths.mjs               # 路径配置
+│       ├── reading-time.mjs        # 阅读时间计算
+│       └── slug.mjs                # 标题转 slug
 ├── src/
+│   ├── articles/                   # Markdown 文章源文件
+│   │   ├── blog/                   # 博客类文章
+│   │   ├── essays/                 # 随笔类文章
+│   │   ├── projects/               # 项目类文章
+│   │   └── tutorials/              # 教程类文章
 │   ├── assets/
-│   │   ├── css/main.css        # 主样式
-│   │   ├── css/admin.css       # 管理后台样式
-│   │   └── js/                 # 前端 JS
-│   │       ├── app.js          # 入口
-│   │       ├── admin-panel.js  # 管理面板
+│   │   ├── css/
+│   │   │   ├── main.css            # 主样式
+│   │   │   └── admin.css           # 管理后台样式
+│   │   └── js/
+│   │       ├── app.js              # 前端入口
+│   │       ├── admin-panel.js      # 管理面板
 │   │       └── modules/
 │   │           ├── commands.js     # 命令处理器
 │   │           ├── router.js       # 视图路由
 │   │           ├── state.js        # 全局状态
+│   │           ├── components/     # UI 组件（文章详情、筛选标签、侧边栏等）
 │   │           ├── events/         # 键盘、输入事件
-│   │           ├── renderers/      # 各视图渲染
-│   │           ├── components/     # UI 组件
-│   │           └── utils/         # 工具函数
-│   ├── layouts/base.njk        # 页面模板
-│   ├── pages/                  # Eleventy 页面
-│   └── _data/                  # 站点数据
-├── ecosystem.config.cjs        # PM2 配置
-├── eleventy.config.js          # 11ty 配置
+│   │           ├── renderers/      # 各视图渲染（仪表盘、日志流、帮助等）
+│   │           └── utils/          # 前端工具函数（音频、粒子动画、文本处理）
+│   ├── img/                        # 图片资源
+│   ├── layouts/
+│   │   └── base.njk                # 页面模板
+│   ├── pages/                      # Eleventy 页面模板
+│   └── _data/                      # 站点数据（site.json、github.json 等）
+├── .github/workflows/
+│   └── build.yml                   # GitHub Actions CI/CD
+├── ecosystem.config.cjs            # PM2 配置
+├── eleventy.config.js              # 11ty 配置
+├── postcss.config.js               # PostCSS 配置
 └── package.json
 ```
 
@@ -116,12 +137,12 @@ terminal-observatory/
 
 ### 文章管理
 
-所有文章以 Markdown 文件存储在 `content/articles/{category}/` 目录，frontmatter 包含元数据。**`scripts/utils/article-service.mjs`** 是统一数据服务层，Express API 和 Eleventy 构建都通过它读写文章：
+所有文章以 Markdown 文件存储在 `src/articles/{category}/` 目录，frontmatter 包含元数据。**`scripts/utils/article-service.mjs`** 是统一数据服务层，Express API 和 Eleventy 构建都通过它读写文章：
 
 ```
                     ┌─────────────────────────┐
                     │  Markdown 文件            │
-                    │  content/articles/       │
+                    │  src/articles/{cat}/     │
                     └──────────┬──────────────┘
                                │
                     ┌──────────▼──────────────┐
@@ -140,9 +161,58 @@ terminal-observatory/
 - **数据一致性**：API 和 Eleventy 共用同一套 frontmatter 解析逻辑，消除双管道 bug
 - **路径安全**：所有文件路径通过 `safePath` 校验，防止路径穿越
 
+### 构建流程
+
+```
+                    ┌──────────────┐
+                    │  build-js    │  esbuild 打包 JS → bundle.js
+                    └──────┬───────┘
+                           │
+                    ┌──────▼───────┐
+                    │  build-css   │  PostCSS 处理（autoprefixer + 压缩）
+                    └──────┬───────┘
+                           │
+                    ┌──────▼──────────┐
+                    │ article-scanner │  扫描文章 → 更新 articles.json
+                    └──────┬──────────┘
+                           │
+                    ┌──────▼──────────┐
+                    │ github-scraper  │  拉取 GitHub 数据 → github.json
+                    └──────┬──────────┘
+                           │
+                    ┌──────▼──────┐
+                    │  eleventy   │  生成静态站点 → _site/
+                    └─────────────┘
+```
+
 ## 部署
 
+### 当前：服务器部署（PM2 + Express）
+
+```bash
+# 生产构建
+NODE_ENV=production npm run build:prod
+
+# 启动 API 服务
+ADMIN_PASSWORD=yourpassword pm2 start ecosystem.config.cjs
+```
+
 详见 [DEPLOY_SERVER.md](DEPLOY_SERVER.md)。
+
+### 未来：GitHub Pages
+
+项目已配置 GitHub Actions 工作流，支持一键部署到 GitHub Pages：
+
+1. GitHub 仓库 → Settings → Pages → Source 选择 **GitHub Actions**
+2. 前往 Actions 页面，手动运行 **Build and Deploy** workflow
+3. 勾选 **"部署到 GitHub Pages"**，等待部署完成
+
+工作流行为：
+- **push 到 main**：仅执行构建验证，不部署
+- **手动触发（勾选部署）**：构建 + 部署到 GitHub Pages
+- **每周定时**：仅构建验证
+
+如需改为 push 自动部署，修改 `.github/workflows/build.yml` 中 deploy job 的 `if` 条件为 `github.ref == 'refs/heads/main'` 即可。
 
 ## 许可
 

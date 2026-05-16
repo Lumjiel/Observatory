@@ -1,7 +1,7 @@
-export const ARTICLES_DIR = 'content/articles';
-export const ARTICLES_JSON = 'src/articles/_data/articles.json';
-export const CONTENT_DIR = 'content';
-export const IMAGES_DIR = 'content/images';
+export const ARTICLES_DIR = 'src/articles';
+export const ARTICLES_JSON = 'src/_data/articles.json';
+export const CONTENT_DIR = 'src';
+export const IMAGES_DIR = 'src/img';
 export const SITE_DIR = '_site';
 export const SITE_DATA_PATH = 'src/_data/site.json';
 export const GITHUB_DATA_PATH = 'src/_data/github.json';

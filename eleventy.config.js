@@ -15,7 +15,7 @@ const _allArticles = scanAllArticles();
 
 export default function(eleventyConfig) {
   eleventyConfig.addPassthroughCopy("src/assets");
-  eleventyConfig.addPassthroughCopy({ "content/images": "img" });
+  eleventyConfig.addPassthroughCopy({ "src/img": "img" });
 
   eleventyConfig.addFilter("jsonify", (data) => JSON.stringify(data));
 

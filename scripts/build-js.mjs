@@ -1,30 +1,23 @@
 import * as esbuild from 'esbuild';
+import { readFile } from 'node:fs/promises';
 
-const minify = process.env.NODE_ENV === 'production';
-const sourcemap = process.env.NODE_ENV !== 'production';
+const isProd = process.env.NODE_ENV === 'production';
 
-async function build() {
-    await esbuild.build({
-        entryPoints: ['src/assets/js/app.js'],
-        bundle: true,
-        outfile: 'src/assets/js/bundle.js',
-        format: 'iife',
-        minify,
-        sourcemap,
-        target: ['es2020'],
-        logLevel: 'info',
-    });
+const entries = [
+  { in: 'src/assets/js/app.js', out: 'bundle' },
+  { in: 'src/assets/js/admin-panel.js', out: 'admin-panel.bundle' },
+];
 
-    await esbuild.build({
-        entryPoints: ['src/assets/js/admin-panel.js'],
-        bundle: true,
-        outfile: 'src/assets/js/admin-panel.bundle.js',
-        format: 'iife',
-        minify,
-        sourcemap,
-        target: ['es2020'],
-        logLevel: 'info',
-    });
+for (const entry of entries) {
+  await esbuild.build({
+    entryPoints: [entry.in],
+    outfile: `src/assets/js/${entry.out}.js`,
+    bundle: true,
+    minify: isProd,
+    sourcemap: !isProd,
+    format: 'esm',
+    target: 'es2020',
+    logLevel: 'warning',
+  });
+  console.log(`  ✓ ${entry.out}.js${isProd ? ' (minified)' : ''}`);
 }
-
-await build();
