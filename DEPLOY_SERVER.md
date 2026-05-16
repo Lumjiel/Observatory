@@ -43,6 +43,14 @@ echo 'ADMIN_PASSWORD=your_secure_password' > .env
 npm run build
 ```
 
+构建流程：JS 打包（esbuild）→ CSS 处理（PostCSS: autoprefixer）→ 文章扫描 → GitHub 数据拉取 → 静态站点生成（Eleventy）。
+
+生产环境（带 CSS 压缩 + 自定义 BASE_PATH）：
+
+```bash
+npm run build:prod
+```
+
 ### 5. PM2 启动
 
 ```bash
@@ -111,7 +119,14 @@ pm2 restart observatory
 ├── _site/                  # 构建产物（静态文件）
 ├── content/articles/       # Markdown 文章
 ├── scripts/                # 后端脚本
+│   ├── article-api.mjs     # Express API 服务器
+│   ├── build-js.mjs        # esbuild 前端打包
+│   ├── build-css.mjs       # PostCSS 样式处理
+│   ├── dev.mjs             # 开发模式（热更新）
+│   ├── optimize-images.mjs # 图片压缩
+│   └── ...
 ├── src/                    # 源代码
+├── postcss.config.js       # PostCSS 配置
 ├── ecosystem.config.cjs    # PM2 配置
 ├── .env                    # 环境变量（含密码，勿提交）
 └── package.json
