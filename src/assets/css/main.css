@@ -22,24 +22,38 @@
 }
 
 body.light {
-    --bg-deep: #F5F7FA;
+    --bg-deep: #F0F2F5;
     --bg: #FFFFFF;
-    --surface: #F0F4F8;
-    --border: #D0D8E0;
-    --border-active: #B0BCC8;
-    --green: #00A070;
-    --green-dim: #008060;
-    --amber: #CC8800;
-    --amber-dim: #996600;
-    --magenta: #CC4477;
-    --magenta-dim: #993355;
-    --blue: #3399DD;
-    --blue-dim: #2277AA;
-    --gray: #667788;
-    --gray-dim: #99AABB;
-    --text: #2A3440;
-    --text-dim: #667788;
+    --surface: #E8ECF0;
+    --border: #C8D0D8;
+    --border-active: #A0B0C0;
+    --green: #008F5C;
+    --green-dim: #006B44;
+    --amber: #B8860B;
+    --amber-dim: #8B6508;
+    --magenta: #C73E6B;
+    --magenta-dim: #9A2D52;
+    --blue: #1A8CDB;
+    --blue-dim: #1569A0;
+    --gray: #5A6B7A;
+    --gray-dim: #8A9AA8;
+    --text: #1A2330;
+    --text-dim: #5A6B7A;
 }
+body.light .particle-layer { opacity: 0.12; }
+body.light .filter-chip:hover,
+body.light .filter-chip.active { background: rgba(0, 143, 92, 0.06); }
+body.light .log-tag.INFO { background: rgba(0, 143, 92, 0.08); }
+body.light .log-tag.READ { background: rgba(26, 140, 219, 0.08); }
+body.light .log-tag.BUILD { background: rgba(184, 134, 11, 0.08); }
+body.light .log-tag.ERROR { background: rgba(184, 134, 11, 0.12); }
+body.light .log-tag.MILESTONE { background: rgba(199, 62, 107, 0.08); }
+body.light .log-tag.THINK { background: rgba(90, 107, 122, 0.08); }
+body.light .cmd-error { background: rgba(184, 134, 11, 0.06); border-color: rgba(184, 134, 11, 0.2); }
+body.light .table-row:hover { background: rgba(0, 0, 0, 0.03); }
+body.light .recent-item:hover { background: rgba(0, 0, 0, 0.03); }
+body.light .context-menu { box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); }
+body.light .detail-panel { box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08); }
 
 * {
     margin: 0;
@@ -316,6 +330,10 @@ body.light .status-bar {
     outline: none;
     min-width: 160px;
     caret-color: var(--green);
+}
+.cmd-input::-moz-placeholder {
+    color: var(--text-dim);
+    opacity: 0.5;
 }
 .cmd-input::placeholder {
     color: var(--text-dim);
@@ -1056,6 +1074,7 @@ body.light .legend-cell.level3 { background: #00A060; }
 .heatmap-months {
     display: flex;
     gap: 0.6rem;
+    min-width: -moz-min-content;
     min-width: min-content;
 }
 .heatmap-month {

@@ -201,6 +201,7 @@ app.post('/api/logout', (req, res) => {
 
 app.get('/api/articles', (req, res) => {
   if (!checkAuth(req)) return res.status(401).json({ error: 'Unauthorized' });
+  res.set('Cache-Control', 'private, max-age=60');
   const articles = articleService.readArticleIndex().map(a => ({
     slug: a.slug,
     category: a.category,
@@ -214,6 +215,7 @@ app.get('/api/articles', (req, res) => {
 
 app.get('/api/articles/:slug', (req, res) => {
   if (!checkAuth(req)) return res.status(401).json({ error: 'Unauthorized' });
+  res.set('Cache-Control', 'private, max-age=300');
   const article = articleService.getArticle(req.params.slug);
   if (!article) return res.status(404).json({ error: '文章不存在' });
   res.json({
@@ -376,12 +378,14 @@ function saveSiteData(data) {
 
 app.get('/api/github', (req, res) => {
   if (!checkAuth(req)) return res.status(401).json({ error: 'Unauthorized' });
+  res.set('Cache-Control', 'private, max-age=600');
   const siteData = loadSiteData();
   res.json({ repos: siteData.shownRepos || [] });
 });
 
 app.get('/api/github/repos', (req, res) => {
   if (!checkAuth(req)) return res.status(401).json({ error: 'Unauthorized' });
+  res.set('Cache-Control', 'private, max-age=600');
   const githubJsonPath = GITHUB_DATA_PATH;
   try {
     const data = fs.readFileSync(githubJsonPath, 'utf-8');
@@ -509,7 +513,15 @@ app.use((req, res, next) => {
 // ============================================================
 
 if (fs.existsSync(SITE_DIR)) {
-  app.use(express.static(SITE_DIR, { index: ['index.html', 'index.htm'] }));
+  app.use(express.static(SITE_DIR, {
+    index: ['index.html', 'index.htm'],
+    maxAge: DEV ? 0 : '1h',
+    setHeaders: (res, filePath) => {
+      if (filePath.endsWith('.html')) {
+        res.set('Cache-Control', 'no-cache');
+      }
+    },
+  }));
   app.use((req, res, next) => {
     if (res.headersSent) return next();
     res.sendFile(path.join(SITE_DIR, 'index.html'));

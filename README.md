@@ -17,6 +17,7 @@
 | 层 | 技术 |
 |-----|--------|
 | 前端 | 原生 JS (ES Module)、esbuild 打包 |
+| 样式 | PostCSS (autoprefixer + cssnano) |
 | 后端 | Express 5 + Marked + gray-matter |
 | 静态站点 | Eleventy (11ty) 3.x |
 | 进程管理 | PM2 |
@@ -28,7 +29,7 @@
 # 安装依赖
 npm install
 
-# 开发模式（构建 + 扫描 + 启动开发服务器）
+# 开发模式（构建 + 扫描 + 启动开发服务器，自动监听 JS/CSS 变化热更新）
 npm run dev
 
 # 部署模式（API 服务器）
@@ -36,6 +37,20 @@ ADMIN_PASSWORD=yourpassword npm run server
 ```
 
 访问 `http://localhost:8080` 查看前端，`http://localhost:8080/admin` 进入管理后台。
+
+## NPM 脚本
+
+| 命令 | 功能 |
+|------|------|
+| `npm run dev` | 开发模式：构建 + 扫描 + Eleventy 服务器，自动监听 JS/CSS 热更新 |
+| `npm run build` | 完整构建（JS + CSS + 文章扫描 + GitHub 数据 + 静态站点） |
+| `npm run build:prod` | 生产构建（含 CSS 压缩，`BASE_PATH=/observatory`） |
+| `npm run build:js` | 仅打包 JS |
+| `npm run build:css` | 仅处理 CSS（autoprefixer） |
+| `npm run optimize-images` | 压缩 `src/img/` 下的 PNG/JPEG 图片 |
+| `npm run server` | 启动 Express API 服务器（需 `ADMIN_PASSWORD`） |
+| `npm run scan:articles` | 扫描文章目录更新索引 |
+| `npm run fetch-github` | 拉取 GitHub 仓库数据 |
 
 ## 可用命令
 
@@ -63,6 +78,9 @@ terminal-observatory/
 │   ├── article-api.mjs         # Express API 服务器（主进程）
 │   ├── article-scanner.mjs     # CLI 入口：扫描 Markdown 生成索引
 │   ├── build-js.mjs            # esbuild 前端打包
+│   ├── build-css.mjs           # PostCSS 样式处理（autoprefixer + 压缩）
+│   ├── dev.mjs                 # 开发模式：初始构建 + 文件监听热更新
+│   ├── optimize-images.mjs     # PNG/JPEG 图片压缩
 │   ├── github-scraper.mjs      # 拉取 GitHub 数据
 │   ├── new-article.mjs         # 交互式创建文章
 │   ├── frontmatter-fixer.mjs   # 修复 Markdown frontmatter
