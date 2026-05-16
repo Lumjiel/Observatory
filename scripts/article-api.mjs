@@ -24,6 +24,7 @@ if (!PASSWORD) {
 const BASE_PATH = process.env.BASE_PATH || '';
 
 const app = express();
+app.set('trust proxy', 1);
 app.use(express.json({ limit: '10mb' }));
 
 // 去掉 base path 再路由（保持原有路由逻辑不变）
@@ -153,6 +154,7 @@ function renderAdminPage(articles, pageMode = 'list') {
       <div class="article-item-title">${escapeHtml(a.title || '')}</div>
       <div class="article-item-meta">
         <span class="cat-tag cat-${escapeHtml(a.category || '')}">${escapeHtml(categoryLabels[a.category] || a.category || '')}</span>
+        <span class="article-date">${escapeHtml(a.date || '')}</span>
         <span>${escapeHtml(a.tags.slice(0, 2).join(', '))}${a.tags.length > 2 ? '...' : ''}</span>
       </div>
     </div>
@@ -168,6 +170,7 @@ function renderAdminPage(articles, pageMode = 'list') {
     .replace('%%EMPTY_STATE%%', emptyState)
     .replace('%%CATEGORY_OPTIONS%%', categoryOptions)
     .replace('%%PAGE_MODE%%', pageMode)
+    .replace(/__BASE_PATH__/g, BASE_PATH || '')
     .replace('</head>', `<script>window.BASE_PATH='${BASE_PATH}';window.API_BASE='${BASE_PATH}/api';</script></head>`);
 }
 
@@ -202,14 +205,22 @@ app.post('/api/logout', (req, res) => {
 app.get('/api/articles', (req, res) => {
   if (!checkAuth(req)) return res.status(401).json({ error: 'Unauthorized' });
   res.set('Cache-Control', 'private, max-age=60');
-  const articles = articleService.readArticleIndex().map(a => ({
-    slug: a.slug,
-    category: a.category,
-    title: a.title,
-    tags: a.tags || [],
-    excerpt: a.excerpt || '',
-    order: a.order !== undefined ? a.order : 0,
-  }));
+  const articles = articleService.readArticleIndex()
+    .map(a => ({
+      slug: a.slug,
+      category: a.category,
+      title: a.title,
+      tags: a.tags || [],
+      excerpt: a.excerpt || '',
+      date: a.date || '',
+      order: a.order !== undefined ? a.order : 0,
+      draft: a.draft || false,
+    }))
+    .sort((a, b) => {
+      if (!a.date) return 1;
+      if (!b.date) return -1;
+      return new Date(b.date) - new Date(a.date);
+    });
   res.json(articles);
 });
 
@@ -227,15 +238,16 @@ app.get('/api/articles/:slug', (req, res) => {
     readingTime: article.readingTime,
     order: article.order,
     content: article.content,
+    draft: article.draft,
   });
 });
 
 app.post('/api/articles', async (req, res) => {
   if (!checkAuth(req)) return res.status(401).json({ error: 'Unauthorized' });
-  const { title, category, content, tags, excerpt, readingTime, order } = req.body;
+  const { title, category, content, tags, excerpt, readingTime, order, draft } = req.body;
 
   try {
-    const result = articleService.createArticle({ title, category, content, tags, excerpt, readingTime, order });
+    const result = articleService.createArticle({ title, category, content, tags, excerpt, readingTime, order, draft });
     scheduleBuild();
     res.json({ success: true, slug: result.slug, path: result.path });
   } catch (e) {
@@ -261,10 +273,10 @@ app.put('/api/articles/order', (req, res) => {
 app.put('/api/articles/:slug', async (req, res) => {
   if (!checkAuth(req)) return res.status(401).json({ error: 'Unauthorized' });
   const { slug } = req.params;
-  const { title, content, category, tags, excerpt, readingTime, order } = req.body;
+  const { title, content, category, tags, excerpt, readingTime, order, draft } = req.body;
 
   try {
-    const result = articleService.updateArticle(slug, { title, content, category, tags, excerpt, readingTime, order });
+    const result = articleService.updateArticle(slug, { title, content, category, tags, excerpt, readingTime, order, draft });
     if (!result) return res.status(404).json({ error: '文章不存在' });
     scheduleBuild();
     res.json({ success: true });
@@ -402,6 +414,7 @@ app.put('/api/github/repos', (req, res) => {
   const siteData = loadSiteData();
   siteData.shownRepos = shownRepos;
   saveSiteData(siteData);
+  scheduleBuild();
   if (DEV && lrServer) lrServer.refresh('/');
   res.json({ success: true });
 });
@@ -424,9 +437,9 @@ app.post('/api/github/refresh', async (req, res) => {
 
 app.get(ADMIN_PATH, (req, res) => {
   if (checkAuth(req)) {
-    const articles = articleService.readArticleIndex().map(a => ({
-      slug: a.slug, category: a.category, title: a.title, tags: a.tags || [], excerpt: a.excerpt || '',
-    }));
+    const articles = articleService.readArticleIndex()
+      .map(a => ({ slug: a.slug, category: a.category, title: a.title, tags: a.tags || [], excerpt: a.excerpt || '', date: a.date || '' }))
+      .sort((a, b) => { if (!a.date) return 1; if (!b.date) return -1; return new Date(b.date) - new Date(a.date); });
     res.send(renderAdminPage(articles, 'list'));
   } else {
     res.send(renderLoginPage());
@@ -440,25 +453,25 @@ app.get('/logout', (req, res) => {
 
 app.get('/admin/drafts', (req, res) => {
   if (!checkAuth(req)) return res.redirect(ADMIN_PATH);
-  const articles = articleService.readArticleIndex().map(a => ({
-    slug: a.slug, category: a.category, title: a.title, tags: a.tags || [], excerpt: a.excerpt || '',
-  }));
+  const articles = articleService.readArticleIndex()
+    .map(a => ({ slug: a.slug, category: a.category, title: a.title, tags: a.tags || [], excerpt: a.excerpt || '', date: a.date || '' }))
+    .sort((a, b) => { if (!a.date) return 1; if (!b.date) return -1; return new Date(b.date) - new Date(a.date); });
   res.send(renderAdminPage(articles, 'drafts'));
 });
 
 app.get('/admin/settings', (req, res) => {
   if (!checkAuth(req)) return res.redirect(ADMIN_PATH);
-  const articles = articleService.readArticleIndex().map(a => ({
-    slug: a.slug, category: a.category, title: a.title, tags: a.tags || [], excerpt: a.excerpt || '',
-  }));
+  const articles = articleService.readArticleIndex()
+    .map(a => ({ slug: a.slug, category: a.category, title: a.title, tags: a.tags || [], excerpt: a.excerpt || '', date: a.date || '' }))
+    .sort((a, b) => { if (!a.date) return 1; if (!b.date) return -1; return new Date(b.date) - new Date(a.date); });
   res.send(renderAdminPage(articles, 'settings'));
 });
 
 app.get('/admin/article/:slug', (req, res) => {
   if (!checkAuth(req)) return res.redirect(ADMIN_PATH);
-  const articles = articleService.readArticleIndex().map(a => ({
-    slug: a.slug, category: a.category, title: a.title, tags: a.tags || [], excerpt: a.excerpt || '',
-  }));
+  const articles = articleService.readArticleIndex()
+    .map(a => ({ slug: a.slug, category: a.category, title: a.title, tags: a.tags || [], excerpt: a.excerpt || '', date: a.date || '' }))
+    .sort((a, b) => { if (!a.date) return 1; if (!b.date) return -1; return new Date(b.date) - new Date(a.date); });
   res.send(renderAdminPage(articles, 'editor'));
 });
 

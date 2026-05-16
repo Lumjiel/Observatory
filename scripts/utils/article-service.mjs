@@ -227,7 +227,7 @@ export function getArticle(slug) {
 // CRUD
 // ============================================================
 
-export function createArticle({ title, category, content, tags, excerpt, readingTime, order }) {
+export function createArticle({ title, category, content, tags, excerpt, readingTime, order, draft }) {
   if (!title || !category || !content) {
     throw new Error('缺少必填字段');
   }
@@ -252,6 +252,7 @@ export function createArticle({ title, category, content, tags, excerpt, reading
     excerpt: excerpt || '',
     readingTime: readingTimeStr,
     order: order || 0,
+    draft: draft || false,
   });
 
   fs.mkdirSync(path.dirname(filePath), { recursive: true });
@@ -265,12 +266,13 @@ export function createArticle({ title, category, content, tags, excerpt, reading
     readingTime: readingTimeStr,
     order: order || 0,
     date: dateStr,
+    draft: draft || false,
   });
 
   return { slug, path: filePath };
 }
 
-export function updateArticle(slug, { title, content, category, tags, excerpt, readingTime, order }) {
+export function updateArticle(slug, { title, content, category, tags, excerpt, readingTime, order, draft }) {
   const article = getArticle(slug);
   if (!article) return null;
 
@@ -296,6 +298,7 @@ export function updateArticle(slug, { title, content, category, tags, excerpt, r
     excerpt: excerpt !== undefined ? excerpt : article.excerpt,
     readingTime: readingTimeStr,
     order: order !== undefined ? order : article.order,
+    draft: draft !== undefined ? draft : article.draft,
   });
 
   fs.writeFileSync(newPath, frontmatter);
@@ -312,6 +315,7 @@ export function updateArticle(slug, { title, content, category, tags, excerpt, r
     readingTime: readingTimeStr,
     order: order !== undefined ? order : article.order,
     date: dateStr,
+    draft: draft !== undefined ? draft : article.draft,
   });
 
   return { slug };

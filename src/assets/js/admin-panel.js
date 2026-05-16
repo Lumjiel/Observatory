@@ -37,11 +37,17 @@ function renderArticleList(articles) {
     list.innerHTML = '<div class="empty-state"><p>暂无文章</p></div>';
     return;
   }
-  list.innerHTML = articles.map(a => `
+  const sorted = [...articles].sort((a, b) => {
+    if (!a.date) return 1;
+    if (!b.date) return -1;
+    return new Date(b.date) - new Date(a.date);
+  });
+  list.innerHTML = sorted.map(a => `
     <div class="article-item${a.draft ? ' article-draft' : ''}" data-slug="${a.slug}" data-category="${a.category}">
       <div class="article-item-title">${a.title}</div>
       <div class="article-item-meta">
         <span class="cat-tag cat-${a.category}">${CATEGORY_LABELS[a.category] || a.category}</span>
+        <span class="article-date">${a.date || ''}</span>
         <span>${(a.tags || []).slice(0, 2).join(', ')}</span>
       </div>
     </div>
@@ -81,6 +87,7 @@ function initEditor(content = '') {
   });
 
   editor = new EditorView({ state, parent: document.getElementById('editor-container') });
+  editor.dom.addEventListener('input', schedulePreview);
 }
 
 function getEditorContent() {
@@ -367,6 +374,15 @@ async function uploadImage(file) {
 }
 
 // ============ Batch Operations ============
+window.getSelectedArticles = function() {
+  return [];
+};
+
+window.hideMoveDialog = function() {
+  const dialog = document.getElementById('moveDialog');
+  if (dialog) dialog.classList.remove('active');
+};
+
 window.batchDelete = async function(slugs) {
   if (!confirm(`确定删除 ${slugs.length} 篇文章？`)) return;
   const res = await api('/articles/batch-delete', { method: 'POST', body: JSON.stringify({ slugs }) });
@@ -406,9 +422,8 @@ export function init() {
   } else if (isEditor) {
     setupImageUpload();
     setupTagInput();
-    editor?.then?.(() => {}); // editor already initialized
 
-    // Load article from URL
+    // Only handle "new" article here; existing articles are loaded by inline script
     const path = window.location.pathname;
     const base = window.BASE_PATH || '';
     const stripped = base && path.startsWith(base) ? path.slice(base.length) : path;
@@ -417,17 +432,10 @@ export function init() {
       const slugOrNew = decodeURIComponent(match[1]);
       if (slugOrNew === 'new') {
         window.newArticle();
-      } else {
-        window.loadArticle(slugOrNew);
       }
     }
   } else if (isSettings) {
-    loadGithubRepos();
-  }
-
-  // Editor content changes trigger preview
-  if (editor) {
-    editor.dom.addEventListener('input', schedulePreview);
+    // GitHub repos are loaded by inline script in admin-panel.html
   }
 }
 
@@ -451,45 +459,6 @@ function setupTagInput() {
     }
   });
 }
-
-async function loadGithubRepos() {
-  const data = await api('/github');
-  if (!data) return;
-  const el = document.getElementById('repoList');
-  el.innerHTML = data.repos.map(r => `
-    <label class="repo-item">
-      <input type="checkbox" data-repo="${r.name}"${r.shown ? ' checked' : ''}>
-      <div class="repo-info">
-        <div class="repo-top">
-          <span class="repo-name">${r.name}</span>
-          <span class="repo-stars">★ ${r.stars || 0}</span>
-        </div>
-        <div class="repo-desc">${r.description || '暂无描述'}</div>
-        <div class="repo-meta">
-          <span class="repo-lang">${r.language || '-'}</span>
-          <span class="repo-updated">${r.updatedAgo || ''}</span>
-        </div>
-      </div>
-    </label>
-  `).join('');
-
-  el.querySelectorAll('input').forEach(cb => cb.addEventListener('change', saveGithubRepos));
-}
-
-async function saveGithubRepos() {
-  const checked = [...document.querySelectorAll('#repoList input:checked')].map(cb => cb.dataset.repo);
-  await api('/github/repos', { method: 'PUT', body: JSON.stringify({ shownRepos: checked }) });
-}
-
-window.refreshGithub = async function() {
-  const btn = document.getElementById('githubRefreshBtn');
-  btn.disabled = true;
-  btn.textContent = '刷新中...';
-  await api('/github/refresh', { method: 'POST' });
-  await loadGithubRepos();
-  btn.disabled = false;
-  btn.textContent = '↻ 刷新';
-};
 
 // Auto-init when DOM ready
 if (document.readyState === 'loading') {

@@ -4,8 +4,8 @@ import { readFile } from 'node:fs/promises';
 const isProd = process.env.NODE_ENV === 'production';
 
 const entries = [
-  { in: 'src/assets/js/app.js', out: 'bundle' },
-  { in: 'src/assets/js/admin-panel.js', out: 'admin-panel.bundle' },
+  { in: 'src/assets/js/app.js', out: 'bundle', format: 'esm' },
+  { in: 'src/assets/js/admin-panel.js', out: 'admin-panel.bundle', format: 'iife' },
 ];
 
 for (const entry of entries) {
@@ -15,7 +15,7 @@ for (const entry of entries) {
     bundle: true,
     minify: isProd,
     sourcemap: !isProd,
-    format: 'esm',
+    format: entry.format,
     target: 'es2020',
     logLevel: 'warning',
   });
