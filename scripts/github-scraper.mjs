@@ -1,12 +1,8 @@
 import { readFileSync, writeFileSync } from 'fs';
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
+import { join } from 'path';
+import { SITE_DATA_PATH, GITHUB_DATA_PATH } from './utils/paths.mjs';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const siteDataPath = join(__dirname, '../src/_data/site.json');
-const outputPath = join(__dirname, '../src/_data/github.json');
-
-const siteData = JSON.parse(readFileSync(siteDataPath, 'utf-8'));
+const siteData = JSON.parse(readFileSync(SITE_DATA_PATH, 'utf-8'));
 const username = siteData.githubUsername;
 
 if (!username) {
@@ -114,7 +110,7 @@ async function main() {
             lastFetched: new Date().toISOString()
         };
 
-        writeFileSync(outputPath, JSON.stringify(data, null, 2));
+        writeFileSync(GITHUB_DATA_PATH, JSON.stringify(data, null, 2));
         console.log(`[github-scraper] 已获取 ${data.repos.length} 个仓库，${Object.keys(contributionData).length} 天有贡献记录`);
     } catch (err) {
         console.error(`[github-scraper] 失败，保留旧数据: ${err.message}`);

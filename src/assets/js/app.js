@@ -45,18 +45,6 @@ document.querySelectorAll('.breadcrumb-category').forEach(function(link) {
     });
 });
 
-const themeToggle = state.dom.themeToggle;
-if (themeToggle) {
-    themeToggle.addEventListener('click', function() {
-        document.body.classList.toggle('light');
-        const isLight = document.body.classList.contains('light');
-        this.textContent = isLight ? '☀️' : '🌙';
-        localStorage.setItem('terminal-theme', isLight ? 'light' : 'dark');
-    });
-}
-
-window.addEventListener('hashchange', handleHashRoute);
-
 try {
     initDOM();
     initTheme();
@@ -72,8 +60,20 @@ try {
         clearInterval(_statusBarInterval);
     };
 
+    const themeToggle = state.dom.themeToggle;
+    if (themeToggle) {
+        themeToggle.addEventListener('click', function() {
+            document.body.classList.toggle('light');
+            const isLight = document.body.classList.contains('light');
+            this.textContent = isLight ? '☀️' : '🌙';
+            localStorage.setItem('terminal-theme', isLight ? 'light' : 'dark');
+        });
+    }
+
     initCommandInput();
     initKeyboard();
+
+    window.addEventListener('hashchange', handleHashRoute);
 
     // 恢复 hash 路由，或默认显示 log
     const hash = window.location.hash.slice(1);

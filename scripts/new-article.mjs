@@ -9,15 +9,11 @@
 
 import fs from 'fs';
 import path from 'path';
-import { fileURLToPath } from 'url';
 import readline from 'readline';
 import matter from 'gray-matter';
 import { CATEGORIES, CATEGORY_LABELS } from './utils/categories.mjs';
 import { slugify } from './utils/slug.mjs';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const ROOT = path.join(__dirname, '..');
+import { ARTICLES_DIR } from './utils/paths.mjs';
 
 // 计算预估阅读时间
 function estimateReadingTime(title) {
@@ -171,7 +167,7 @@ async function main(argv) {
   const frontmatter = generateFrontmatter({ title, category, tags, date, readingTime });
 
   const slug = slugify(title);
-  const filePath = path.join(ROOT, 'content', 'articles', category, `${slug}.md`);
+  const filePath = path.join(ARTICLES_DIR, category, `${slug}.md`);
 
   // 检查是否已存在
   if (fs.existsSync(filePath)) {
@@ -190,7 +186,7 @@ async function main(argv) {
   const { execSync } = await import('child_process');
   try {
     execSync('node scripts/article-scanner.mjs', {
-      cwd: ROOT,
+      cwd: process.cwd(),
       stdio: 'inherit'
     });
     console.log('✅ 索引已更新');

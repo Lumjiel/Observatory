@@ -2,23 +2,17 @@
 import { execSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
-import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const ROOT = path.resolve(__dirname, '..');
+import { ABOUT_JS_PATH } from './utils/paths.mjs';
 
 try {
   const gitLog = execSync(
     'git log --oneline --format="[%ad] %s" --date=short -20',
-    { cwd: ROOT, encoding: 'utf-8' }
+    { cwd: process.cwd(), encoding: 'utf-8' }
   ).trim();
 
   const operations = gitLog.split('\n').filter(line => line.trim());
 
-  // 写入 about.js 的 OPERATIONS 数组
-  const aboutJsPath = path.join(ROOT, 'src', 'assets', 'js', 'modules', 'renderers', 'about.js');
-  let content = fs.readFileSync(aboutJsPath, 'utf-8');
+  let content = fs.readFileSync(ABOUT_JS_PATH, 'utf-8');
 
   const opsString = operations
     .map(op => `  '${op}'`)

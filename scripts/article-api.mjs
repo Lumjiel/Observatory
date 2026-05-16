@@ -1,7 +1,6 @@
 import express from 'express';
 import fs from 'fs';
 import path from 'path';
-import { fileURLToPath } from 'url';
 import { spawn } from 'child_process';
 import chokidar from 'chokidar';
 import livereload from 'livereload';
@@ -10,12 +9,8 @@ import { marked } from 'marked';
 import sanitizeHtml from 'sanitize-html';
 import rateLimit from 'express-rate-limit';
 import * as articleService from './utils/article-service.mjs';
+import { CONTENT_DIR, IMAGES_DIR, SITE_DIR, SITE_DATA_PATH, GITHUB_DATA_PATH, TEMPLATES_DIR } from './utils/paths.mjs';
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const ROOT = path.join(__dirname, '..');
-const CONTENT_DIR = path.join(ROOT, 'content');
-const IMAGES_DIR = path.join(CONTENT_DIR, 'images');
-const SITE_DIR = path.join(ROOT, '_site');
 const PORT = process.env.PORT || 8080;
 const ADMIN_PATH = process.env.ADMIN_PATH || '/admin';
 const DEV = process.env.NODE_ENV !== 'production';
@@ -87,7 +82,7 @@ const childProcesses = new Set();
 
 function runEleventy() {
   return new Promise((resolve, reject) => {
-    const child = spawn('npx', ['eleventy'], { cwd: ROOT, stdio: 'inherit', shell: true });
+    const child = spawn('npx', ['eleventy'], { cwd: process.cwd(), stdio: 'inherit', shell: true });
     childProcesses.add(child);
     child.on('close', (code) => {
       childProcesses.delete(child);
@@ -124,8 +119,8 @@ function runBuildImmediate() {
 // 模板渲染
 // ============================================================
 
-const LOGIN_TPL = path.join(__dirname, 'templates', 'admin-login.html');
-const PANEL_TPL = path.join(__dirname, 'templates', 'admin-panel.html');
+const LOGIN_TPL = path.join(TEMPLATES_DIR, 'admin-login.html');
+const PANEL_TPL = path.join(TEMPLATES_DIR, 'admin-panel.html');
 
 function readTemplate(filePath) {
   return fs.readFileSync(filePath, 'utf-8');
@@ -365,7 +360,7 @@ app.post('/api/upload-image', (req, res) => {
 // GitHub 仓库 API
 // ============================================================
 
-const SITE_JSON_PATH = path.join(ROOT, 'src', '_data', 'site.json');
+const SITE_JSON_PATH = SITE_DATA_PATH;
 
 function loadSiteData() {
   try {
@@ -387,7 +382,7 @@ app.get('/api/github', (req, res) => {
 
 app.get('/api/github/repos', (req, res) => {
   if (!checkAuth(req)) return res.status(401).json({ error: 'Unauthorized' });
-  const githubJsonPath = path.join(ROOT, 'src', '_data', 'github.json');
+  const githubJsonPath = GITHUB_DATA_PATH;
   try {
     const data = fs.readFileSync(githubJsonPath, 'utf-8');
     res.json(JSON.parse(data));
@@ -409,7 +404,7 @@ app.put('/api/github/repos', (req, res) => {
 
 app.post('/api/github/refresh', async (req, res) => {
   if (!checkAuth(req)) return res.status(401).json({ error: 'Unauthorized' });
-  const child = spawn('node', ['scripts/github-scraper.mjs'], { cwd: ROOT, stdio: 'inherit' });
+  const child = spawn('node', ['scripts/github-scraper.mjs'], { cwd: process.cwd(), stdio: 'inherit' });
   childProcesses.add(child);
   child.on('close', () => {
     childProcesses.delete(child);
@@ -535,7 +530,7 @@ async function startDevServer() {
   try {
     await new Promise((resolve, reject) => {
       const child = spawn('node scripts/build-js.mjs && node scripts/article-scanner.mjs && npx eleventy', [], {
-        cwd: ROOT, stdio: 'inherit', shell: true,
+        cwd: process.cwd(), stdio: 'inherit', shell: true,
       });
       child.on('close', (code) => code === 0 ? resolve() : reject(new Error(`initial-build exited with code ${code}`)));
       child.on('error', reject);
@@ -551,21 +546,21 @@ async function startDevServer() {
   });
   lrServer.watch(SITE_DIR);
 
-  srcWatcher = chokidar.watch(path.join(ROOT, 'src'), {
+  srcWatcher = chokidar.watch('src', {
     ignoreInitial: true,
     persistent: true,
     ignored: [
       /(^|[/\\])_data[/\\]/,
-      path.join(ROOT, 'src', 'assets', 'js', 'bundle.js'),
-      path.join(ROOT, 'src', 'assets', 'js', 'bundle.js.map'),
-      path.join(ROOT, 'src', 'assets', 'js', 'admin-panel.bundle.js'),
-      path.join(ROOT, 'src', 'assets', 'js', 'admin-panel.bundle.js.map'),
+      'src/assets/js/bundle.js',
+      'src/assets/js/bundle.js.map',
+      'src/assets/js/admin-panel.bundle.js',
+      'src/assets/js/admin-panel.bundle.js.map',
     ],
   });
 
   let rebuildTimer = null;
   srcWatcher.on('all', (event, filePath) => {
-    console.log(`[观测站] 检测到变化: ${event} ${path.relative(ROOT, filePath)}`);
+    console.log(`[观测站] 检测到变化: ${event} ${path.relative(process.cwd(), filePath)}`);
     clearTimeout(rebuildTimer);
     rebuildTimer = setTimeout(async () => {
       console.log('[观测站] 正在重建...');

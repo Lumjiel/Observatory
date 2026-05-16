@@ -1,16 +1,11 @@
 import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
-import { fileURLToPath } from 'url';
 import { randomUUID } from 'crypto';
 import { CATEGORIES } from './categories.mjs';
 import { slugify } from './slug.mjs';
 import { calculateReadingTime } from './reading-time.mjs';
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const ROOT = path.resolve(__dirname, '..', '..');
-export const ARTICLES_DIR = path.join(ROOT, 'content', 'articles');
-const ARTICLES_JSON = path.join(ROOT, 'src', 'articles', '_data', 'articles.json');
+import { ARTICLES_DIR, ARTICLES_JSON } from './paths.mjs';
 
 // ============================================================
 // Utilities
@@ -24,7 +19,8 @@ export function getArticlePath(category, filename) {
   const userPath = path.join(category, filename);
   const normalized = path.normalize(userPath);
   const resolved = path.resolve(ARTICLES_DIR, normalized);
-  if (!resolved.startsWith(ARTICLES_DIR)) return null;
+  const resolvedBase = path.resolve(ARTICLES_DIR);
+  if (!resolved.startsWith(resolvedBase)) return null;
   return resolved;
 }
 

@@ -3,16 +3,10 @@ import sanitizeHtml from 'sanitize-html';
 import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
-import { fileURLToPath } from 'url';
 import { CATEGORIES, CATEGORY_LABELS } from './scripts/utils/categories.mjs';
 import { slugify } from './scripts/utils/slug.mjs';
 import { scanAllArticles } from './scripts/utils/article-service.mjs';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const PROJECT_ROOT = path.resolve(__dirname);
-const CONTENT_DIR = path.join(PROJECT_ROOT, 'content');
-const IMAGES_DIR = path.join(CONTENT_DIR, 'images');
+import { CONTENT_DIR, IMAGES_DIR } from './scripts/utils/paths.mjs';
 
 const md = markdownIt();
 
@@ -56,7 +50,7 @@ export default function(eleventyConfig) {
   }
 
   eleventyConfig.addShortcode('articleContent', function(filename, category) {
-    const filePath = path.join(process.cwd(), 'content', 'articles', category, filename);
+    const filePath = path.join(CONTENT_DIR, 'articles', category, filename);
     if (fs.existsSync(filePath)) {
       const raw = fs.readFileSync(filePath, 'utf-8');
       const { data, content } = matter(raw);

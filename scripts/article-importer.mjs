@@ -1,16 +1,9 @@
 import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
-import { fileURLToPath } from 'url';
 import { CATEGORIES } from './utils/categories.mjs';
 import { slugify } from './utils/slug.mjs';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const ROOT = path.resolve(__dirname, '..');
-
-const LOGS_FILE = path.join(ROOT, 'src', '_data', 'logs.json');
-const ARTICLES_DIR = path.join(ROOT, 'content', 'articles');
+import { ARTICLES_DIR, LOGS_FILE } from './utils/paths.mjs';
 
 function parseArgs() {
     const args = process.argv.slice(2);
