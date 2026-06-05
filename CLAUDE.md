@@ -26,37 +26,18 @@
 
 ## 部署
 
-### 常规部署（GitHub 可用时）
+服务器 origin 指向 Gitee 镜像（国内可达），GitHub Actions 自动同步。
+
+### 服务器更新
 
 ```bash
-# 在 云服务器 项目下
-cd E:\claudecode\云服务器
-bash scripts/deploy-observatory.sh
+python E:\claudecode\云服务器\scripts\ssh_connect.py "cd /var/www/observatory && git pull origin server && npm run build:prod && pm2 restart observatory"
 ```
 
-### 服务器手动更新
+### 同步链路
 
-```bash
-ssh root@49.234.178.53 -p 22222
-cd /var/www/observatory
-git pull origin server
-npm run build:prod
-pm2 restart observatory
 ```
-
-### GitHub 超时备用方案（git bundle）
-
-```bash
-# 1. 本地生成 bundle
-git bundle create deploy.bundle main server
-# 2. SCP 到服务器
-scp -P 22222 deploy.bundle root@49.234.178.53:/var/www/observatory/
-# 3. 服务器上
-git fetch deploy.bundle main:refs/remotes/origin/main server:refs/remotes/origin/server
-git merge origin/server --ff-only
-npm run build:prod
-pm2 restart observatory
-rm deploy.bundle
+本地 push → GitHub → GitHub Actions → Gitee(jjmk6/Observatory) → 服务器 pull
 ```
 
 ## PM2 管理

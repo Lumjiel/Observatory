@@ -125,6 +125,8 @@ sudo certbot --nginx -d example.com
 
 ## 更新（日常运维）
 
+服务器 origin 已指向 Gitee（国内可达），GitHub Actions 自动同步：
+
 ```bash
 cd /var/www/observatory
 git pull origin server
@@ -133,24 +135,7 @@ npm run build
 pm2 restart observatory
 ```
 
-如果 `git pull` 超时（国内 GitHub 慢），本地生成 bundle 后上传：
-
-```bash
-# 本地（Windows）
-git -C E:\project\terminal-observatory bundle create deploy.bundle server
-git -C E:\project\terminal-observatory bundle create deploy.bundle main
-# 然后 SCP 到服务器
-```
-
-服务器上：
-```bash
-cd /var/www/observatory
-git fetch deploy.bundle main:refs/remotes/origin/main server:refs/remotes/origin/server
-git merge origin/server --ff-only
-npm install --production
-npm run build
-pm2 restart observatory
-```
+> 注：GitHub 上 push main/server 后，GitHub Actions 自动推送到 Gitee，服务器 pull Gitee 即可。
 
 ---
 
