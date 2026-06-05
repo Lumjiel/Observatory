@@ -4,6 +4,17 @@
 
 ---
 
+## 分支策略
+
+| 分支 | 用途 |
+|------|------|
+| `main` | 本地开发，最新代码 |
+| `server` | 服务器运行，从 main 合并部署 |
+
+**工作流：** 本地在 `main` 改 → `git checkout server && git merge main && git push` → 服务器 `git pull`
+
+---
+
 ## 环境要求
 
 - Linux（Ubuntu / Debian / CentOS）
@@ -13,7 +24,7 @@
 
 ---
 
-## 部署步骤
+## 首次部署
 
 ### 1. 安装 Node.js 20+
 
@@ -26,15 +37,27 @@ node -v
 ### 2. 拉取代码并安装依赖
 
 ```bash
-git clone https://github.com/Lumjiel/terminal-observatory.git /var/www/observatory
-cd /var/www/observatory
+git init
+git remote add origin https://github.com/Lumjiel/Observatory.git
+git fetch --depth 1 origin server
+git checkout -b server origin/server
 npm install --production
 ```
+
+> 如果 GitHub 连不上（国内网络问题），改用本地 bundle 推送：
+> ```bash
+> # 本地执行
+> git bundle create deploy.bundle server
+> # SCP 到服务器后
+> git fetch deploy.bundle server:refs/remotes/origin/server
+> git checkout -b server origin/server
+> ```
 
 ### 3. 配置环境变量
 
 ```bash
 echo 'ADMIN_PASSWORD=your_secure_password' > .env
+chmod 600 .env
 ```
 
 ### 4. 构建
@@ -100,11 +123,30 @@ sudo certbot --nginx -d example.com
 
 ---
 
-## 更新
+## 更新（日常运维）
 
 ```bash
 cd /var/www/observatory
-git pull
+git pull origin server
+npm install --production
+npm run build
+pm2 restart observatory
+```
+
+如果 `git pull` 超时（国内 GitHub 慢），本地生成 bundle 后上传：
+
+```bash
+# 本地（Windows）
+git -C E:\project\terminal-observatory bundle create deploy.bundle server
+git -C E:\project\terminal-observatory bundle create deploy.bundle main
+# 然后 SCP 到服务器
+```
+
+服务器上：
+```bash
+cd /var/www/observatory
+git fetch deploy.bundle main:refs/remotes/origin/main server:refs/remotes/origin/server
+git merge origin/server --ff-only
 npm install --production
 npm run build
 pm2 restart observatory
@@ -123,6 +165,7 @@ pm2 restart observatory
 │   ├── build-js.mjs        # esbuild 前端打包
 │   ├── build-css.mjs       # PostCSS 样式处理
 │   ├── dev.mjs             # 开发模式（热更新）
+│   ├── frontmatter-fixer.mjs  # 文章 frontmatter 自动修复
 │   ├── optimize-images.mjs # 图片压缩
 │   └── ...
 ├── src/                    # 源代码
