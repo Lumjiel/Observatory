@@ -1,55 +1,103 @@
-# CLAUDE.md
+# Terminal Observatory — 终端观测站
 
-你是顶级软件工程师。严格遵守以下规则，无例外。
+## 项目基本信息
 
-## 1. 编码前思考
-不要假设。不要隐藏困惑。呈现权衡。
+| 项目 | 值 |
+|:---|:---|
+| 本地路径 | `E:\project\terminal-observatory` |
+| GitHub | `Lumjiel/Observatory` |
+| 服务器路径 | `/var/www/observatory/` |
+| 访问地址 | https://observatory-jie.duckdns.org/observatory/ |
+| 管理后台 | `/observatory/admin` |
+| 运行方式 | Express 端口 8080，PM2 管理 |
+| 静态站点生成 | Eleventy (`npm run build`) |
 
-- 先明确：要解决什么问题？边界条件？隐含假设？
-- 存在歧义时，列出多种解释并主动提问。禁止默默选择一种就开始写。
-- 发现更简单方法时，立即提出异议。
-- 困惑时直接指出不清楚的地方，要求澄清。
+## 分支策略
 
-## 2. 简洁优先
-用最少的代码解决问题。不要过度推测。
+| 分支 | 用途 |
+|:---|:---|
+| `main` | 本地开发，最新代码。push 到 GitHub |
+| `server` | 服务器运行。从 main 合并后推送，服务器 pull |
 
-- 不添加未要求的功能、抽象、灵活性或可配置性。
-- 不为不可能发生的场景做错误处理。
-- 能用标准库则不复刻。200 行能解决的事不要写成 500 行。
-- 函数 ≤ 30 行，嵌套 ≤ 3 层。仅复用两次以上时才考虑抽象。
-- 检验标准：资深工程师会觉得过于复杂吗？复杂就简化。
+**工作流：**
+1. 本地在 `main` 改 → commit → push
+2. 部署：`git checkout server && git merge main && git push`
+3. 服务器：`git pull origin server` 或 git bundle 推送
 
-## 3. 精准修改
-只碰必须碰的。只清理自己造成的混乱。
+## 部署
 
-编辑现有代码时：
-- 不改相邻代码、注释、格式。不重构没坏的东西。
-- 匹配现有风格，即使你更倾向于不同写法。
-- 看到无关的死代码/问题，提一嘴建议，但不要擅自删除。
+### 常规部署（GitHub 可用时）
 
-改动导致孤儿代码时：
-- 可删除因你改动而变为无用的导入/变量/函数。
-- 不要删除预先存在的死代码，除非被明确要求。
+```bash
+# 在 云服务器 项目下
+cd E:\claudecode\云服务器
+bash scripts/deploy-observatory.sh
+```
 
-检验：每一行修改都能直接追溯到用户的请求。
+### 服务器手动更新
 
-## 4. 目标驱动执行
-定义成功标准。循环验证直到达成。
+```bash
+ssh root@49.234.178.53 -p 22222
+cd /var/www/observatory
+git pull origin server
+npm run build:prod
+pm2 restart observatory
+```
 
-将指令转化为可验证目标：
-- “添加验证” → 为无效输入编写测试 → 测试通过
-- “修复 bug” → 编写重现 bug 的测试 → 测试通过
-- “重构” → 确保重构前后测试全绿
+### GitHub 超时备用方案（git bundle）
 
-多步骤任务先列出计划：步骤 → 验证标准。
-完成时用 1-2 句话总结：做了什么、如何验证、结果。
+```bash
+# 1. 本地生成 bundle
+git bundle create deploy.bundle main server
+# 2. SCP 到服务器
+scp -P 22222 deploy.bundle root@49.234.178.53:/var/www/observatory/
+# 3. 服务器上
+git fetch deploy.bundle main:refs/remotes/origin/main server:refs/remotes/origin/server
+git merge origin/server --ff-only
+npm run build:prod
+pm2 restart observatory
+rm deploy.bundle
+```
 
-## 项目管理
-- **分层**：api/、services/、models/、repositories/、utils/。上层依赖下层，禁止反向依赖。
-- **日志**：根目录 DEVLOG.md，每次提交后追加：日期、关键变更、遇到的坑和方案。必须如实记录失败尝试。
-- **提交**：功能片段通过测试即提交。格式 `feat:`/`fix:`/`refactor:`/`docs:`/`test:`，写明做什么和为什么。提交前自查：测试全过、无调试代码、无敏感信息。
-- **文档同步**：改接口/配置/环境变量 → 同步更新 README。
+## PM2 管理
 
-## 补充
-无硬编码密钥/密码/令牌。用户输入需校验。复杂逻辑注释“为什么这么做”。
-如有项目 CONTRIBUTING.md，同样遵守。
+```bash
+# 服务器上
+pm2 status                     # 查看进程状态
+pm2 logs observatory --lines 100   # 查看日志
+pm2 restart observatory        # 重启
+pm2 stop observatory           # 停止
+```
+
+## 本地开发
+
+```bash
+npm run dev        # 开发模式（热更新）
+npm run build      # 完整构建
+npm run server     # 启动 Express 服务器（不构建）
+```
+
+## 关键文件
+
+| 文件 | 说明 |
+|:---|:---|
+| `scripts/article-api.mjs` | Express API 服务器（管理后台 + API） |
+| `scripts/utils/article-service.mjs` | 文章 CRUD 统一数据层 |
+| `scripts/templates/admin-panel.html` | 管理后台模板 |
+| `eleventy.config.js` | Eleventy 静态站点生成配置 |
+| `DEPLOY_SERVER.md` | 完整部署指南 |
+| `content/articles/` | Markdown 文章（被 gitignore，非代码文件） |
+
+## 架构要点
+
+- 部署在 `/observatory/` 子路径，所有资源路径通过构建时 `BASE_PATH` 注入
+- Express 运行时中间件拦截 HTML，注入最新 `SITE_DATA`
+- 管理后台使用 `__BASE_PATH__` 占位符，渲染时替换为实际路径
+- 图片上传同时写入 `content/images/` 和 `_site/img/`，无需等待重建即可访问
+
+## 运维守则
+
+- 改 `article-api.mjs` 后必须重启 PM2
+- 改模板（`admin-panel.html`）后重启 Express 服务器
+- `npm run build` 是完整构建（JS + CSS + 文章扫描 + GitHub 数据 + Eleventy）
+- 服务器上 `node_modules/`、`_site/`、`content/`、`.env`、`logs/` 被 gitignore
