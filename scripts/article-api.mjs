@@ -363,6 +363,12 @@ app.post('/api/upload-image', (req, res) => {
     fs.mkdirSync(imageDir, { recursive: true });
     fs.writeFileSync(path.join(imageDir, imageName), buffer);
 
+    // 同步到 _site/img/ 使其立即可访问
+    const siteImageDir = path.join(SITE_DIR, 'img', year, slug || 'misc');
+    fs.mkdirSync(siteImageDir, { recursive: true });
+    fs.copyFileSync(path.join(imageDir, imageName), path.join(siteImageDir, imageName));
+    scheduleBuild();
+
     const publicPath = `/img/${year}/${slug || 'misc'}/${imageName}`;
     res.json({ path: publicPath });
   } catch (e) {
