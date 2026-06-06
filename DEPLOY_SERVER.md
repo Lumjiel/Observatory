@@ -41,7 +41,7 @@ git init
 git remote add origin https://github.com/Lumjiel/Observatory.git
 git fetch --depth 1 origin server
 git checkout -b server origin/server
-npm install --production
+npm install --production=false
 ```
 
 > 如果 GitHub 连不上（国内网络问题），改用本地 bundle 推送：
@@ -130,8 +130,8 @@ sudo certbot --nginx -d example.com
 ```bash
 cd /var/www/observatory
 git pull origin server
-npm install --production
-npm run build
+npm install --production=false
+npm run build:prod
 pm2 restart observatory
 ```
 
@@ -144,7 +144,7 @@ pm2 restart observatory
 ```
 /var/www/observatory/
 ├── _site/                  # 构建产物（静态文件）
-├── content/articles/       # Markdown 文章
+├── src/articles/            # Markdown 文章（按分类：blog/tutorials/essays/projects）
 ├── scripts/                # 后端脚本
 │   ├── article-api.mjs     # Express API 服务器
 │   ├── build-js.mjs        # esbuild 前端打包
