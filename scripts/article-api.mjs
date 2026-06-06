@@ -239,6 +239,8 @@ app.get('/api/articles/:slug', (req, res) => {
     order: article.order,
     content: article.content,
     draft: article.draft,
+    date: article.date,
+    updated: article.updated,
   });
 });
 
@@ -560,7 +562,7 @@ async function startDevServer() {
   console.log('[观测站] 正在构建...');
   try {
     await new Promise((resolve, reject) => {
-      const child = spawn('node scripts/build-js.mjs && node scripts/article-scanner.mjs && npx eleventy', [], {
+      const child = spawn('node scripts/build-js.mjs && node scripts/build-css.mjs && node scripts/article-scanner.mjs && npx eleventy', [], {
         cwd: process.cwd(), stdio: 'inherit', shell: true,
       });
       child.on('close', (code) => code === 0 ? resolve() : reject(new Error(`initial-build exited with code ${code}`)));
@@ -570,6 +572,11 @@ async function startDevServer() {
     console.error('[观测站] 初始构建失败:', e.message);
     return;
   }
+
+  // github-scraper 异步执行，不阻塞启动
+  spawn('node', ['scripts/github-scraper.mjs'], { cwd: process.cwd(), stdio: 'inherit' })
+    .on('close', () => { if (DEV && lrServer) lrServer.refresh('/'); })
+    .on('error', (e) => console.error('[观测站] GitHub 数据获取失败:', e.message));
 
   const lrPort = 3002;
   lrServer = livereload.createServer({ port: lrPort }, () => {

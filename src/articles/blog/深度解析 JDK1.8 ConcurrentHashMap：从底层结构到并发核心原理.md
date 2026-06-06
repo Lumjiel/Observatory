@@ -1,3 +1,6 @@
+---
+date: '2026-05-08'
+---
 ## 一、JDK1.8 底层数据结构：彻底抛弃分段锁
 
 JDK1.7 的 `ConcurrentHashMap` 采用 **Segment 分段锁**，锁粒度较大；而 JDK1.8 直接摒弃该设计，采用与 HashMap1.8 同源的 **数组 + 链表 + 红黑树** 结构，并发控制升级为 **CAS + synchronized 桶级锁**。

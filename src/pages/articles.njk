@@ -4,19 +4,7 @@ title: "文章列表"
 permalink: /articles/
 ---
 
-{% set currentCategory = page.url | getQueryParam("category") %}
-
-{% if currentCategory %}
-  {% set filteredArticles = [] %}
-  {% for article in collections.published %}
-    {% if article.category == currentCategory %}
-      {% set filteredArticles = filteredArticles.concat([article]) %}
-    {% endif %}
-  {% endfor %}
-  {% set displayArticles = filteredArticles %}
-{% else %}
-  {% set displayArticles = collections.published %}
-{% endif %}
+<link rel="stylesheet" href="/assets/css/articles.css">
 
 <div class="articles-page">
     <div class="terminal-header">
@@ -34,56 +22,32 @@ permalink: /articles/
             <span class="command">ls -la ./articles/</span>
         </div>
         <h1 class="page-title">📚 文章列表</h1>
-        <p class="page-subtitle">共找到 {{ displayArticles.length }} 篇文章</p>
+        <p class="page-subtitle">共找到 {{ collections.published.length }} 篇文章</p>
     </header>
 
-    <div class="category-tabs">
-        <a href="/articles/" class="tab {% if not currentCategory %}active{% endif %}">
-            <span class="tab-icon">📂</span>
-            <span class="tab-label">全部</span>
-            <span class="tab-count">{{ collections.published.length }}</span>
-        </a>
-        {% set techCount = 0 %}
-        {% for a in collections.published %}
-            {% if a.category == 'tutorials' %}{% set techCount = techCount + 1 %}{% endif %}
-        {% endfor %}
-        <a href="/articles/?category=tutorials" class="tab {% if currentCategory == 'tutorials' %}active{% endif %}">
-            <span class="tab-icon">🛠️</span>
-            <span class="tab-label">教程</span>
-            <span class="tab-count">{{ techCount }}</span>
-        </a>
-        {% set readingCount = 0 %}
-        {% for a in collections.published %}
-            {% if a.category == 'blog' %}{% set readingCount = readingCount + 1 %}{% endif %}
-        {% endfor %}
-        <a href="/articles/?category=blog" class="tab {% if currentCategory == 'blog' %}active{% endif %}">
-            <span class="tab-icon">📖</span>
-            <span class="tab-label">博客</span>
-            <span class="tab-count">{{ readingCount }}</span>
-        </a>
-        {% set projectsCount = 0 %}
-        {% for a in collections.published %}
-            {% if a.category == 'projects' %}{% set projectsCount = projectsCount + 1 %}{% endif %}
-        {% endfor %}
-        <a href="/articles/?category=projects" class="tab {% if currentCategory == 'projects' %}active{% endif %}">
-            <span class="tab-icon">🚀</span>
-            <span class="tab-label">项目</span>
-            <span class="tab-count">{{ projectsCount }}</span>
-        </a>
-        {% set essaysCount = 0 %}
-        {% for a in collections.published %}
-            {% if a.category == 'essays' %}{% set essaysCount = essaysCount + 1 %}{% endif %}
-        {% endfor %}
-        <a href="/articles/?category=essays" class="tab {% if currentCategory == 'essays' %}active{% endif %}">
-            <span class="tab-icon">✍️</span>
-            <span class="tab-label">随笔</span>
-            <span class="tab-count">{{ essaysCount }}</span>
-        </a>
+    <div class="sort-controls">
+        <span class="sort-label">$ sort -</span>
+        <button class="sort-btn active" data-sort="desc">最新</button>
+        <button class="sort-btn" data-sort="asc">最早</button>
     </div>
 
-    <div class="articles-list">
-        {% for article in displayArticles %}
-        <article class="article-card">
+    <div class="filter-toolbar">
+        <div class="search-box">
+            <span class="search-prompt">$ grep -i "</span>
+            <input type="text" id="articleSearch" class="search-input" placeholder="搜索文章..." autocomplete="off">
+            <span class="search-prompt">" ./articles/</span>
+        </div>
+        <div class="tag-filter" id="tagFilter"></div>
+    </div>
+
+    <div class="articles-list" id="articlesList">
+        {% for article in collections.published %}
+        <article class="article-card"
+                 data-category="{{ article.category }}"
+                 data-date="{{ article.date }}"
+                 data-title="{{ article.title | lower }}"
+                 data-tags="{{ article.tags | join(',') | lower }}"
+                 data-excerpt="{{ article.excerpt | lower }}">
             <a href="/articles/{{ article.category }}/{{ article.slug }}/" class="article-link">
                 <div class="article-meta-row">
                     <span class="article-category {{ article.category }}">{{ article.category | categoryLabel }}</span>
@@ -107,7 +71,7 @@ permalink: /articles/
         </article>
         {% endfor %}
 
-        {% if displayArticles.length === 0 %}
+        {% if collections.published.length === 0 %}
         <div class="empty-state">
             <div class="empty-icon">📭</div>
             <p class="empty-message">暂无文章</p>
@@ -119,6 +83,8 @@ permalink: /articles/
         {% endif %}
     </div>
 
+    <div class="pagination" id="pagination"></div>
+
     <div class="page-footer">
         <span class="end-line">───</span>
         <span class="end-text">END OF LIST</span>
@@ -126,352 +92,148 @@ permalink: /articles/
     </div>
 </div>
 
-<style>
-.articles-page {
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 1.5rem 1rem;
-}
+<script>
+(function() {
+    var searchInput = document.getElementById('articleSearch');
+    var tagFilter = document.getElementById('tagFilter');
+    var articlesList = document.getElementById('articlesList');
+    var paginationEl = document.getElementById('pagination');
+    var countEl = document.querySelector('.page-subtitle');
+    var sortBtns = document.querySelectorAll('.sort-btn');
+    var cards = Array.from(document.querySelectorAll('.article-card'));
 
-/* Terminal header */
-.terminal-header {
-    display: flex;
-    align-items: center;
-    gap: 0.8rem;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 8px 8px 0 0;
-    padding: 0.6rem 1rem;
-    margin-bottom: 0;
-    border-bottom: none;
-}
+    if (!searchInput || !cards.length) return;
 
-.terminal-dots {
-    display: flex;
-    gap: 0.4rem;
-}
+    var PAGE_SIZE = 10;
+    var currentPage = 1;
+    var activeTag = null;
+    var currentSort = 'desc';
 
-.terminal-dots .dot {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-}
+    // 收集所有标签
+    var allTags = {};
+    cards.forEach(function(card) {
+        var tags = (card.dataset.tags || '').split(',');
+        tags.forEach(function(t) {
+            t = t.trim();
+            if (t) allTags[t] = (allTags[t] || 0) + 1;
+        });
+    });
 
-.terminal-dots .dot.red { background: #FF5F56; }
-.terminal-dots .dot.yellow { background: #FFBD2E; }
-.terminal-dots .dot.green { background: #27CA40; }
+    // 渲染 tag chips（按数量排序，最多 10 个）
+    var sortedTags = Object.keys(allTags).sort(function(a, b) { return allTags[b] - allTags[a]; });
+    tagFilter.innerHTML = sortedTags.slice(0, 10).map(function(t) {
+        return '<span class="tag-chip" data-tag="' + t + '">#' + t + '</span>';
+    }).join('');
 
-.terminal-title {
-    font-size: 0.75rem;
-    color: var(--gray);
-    font-family: var(--font-mono);
-}
-
-/* Page header */
-.page-header {
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-top: none;
-    padding: 1rem 1.5rem;
-    margin-bottom: 0;
-}
-
-.command-line {
-    font-family: var(--font-mono);
-    font-size: 0.8rem;
-    margin-bottom: 0.5rem;
-}
-
-.command-line .prompt {
-    color: var(--green);
-    font-weight: bold;
-}
-
-.command-line .command {
-    color: var(--text-dim);
-}
-
-.page-title {
-    font-size: 1.4rem;
-    color: var(--green);
-    margin: 0.5rem 0 0.3rem 0;
-    font-family: var(--font-mono);
-}
-
-.page-subtitle {
-    color: var(--gray);
-    font-size: 0.8rem;
-    font-family: var(--font-mono);
-}
-
-/* Category tabs */
-.category-tabs {
-    display: flex;
-    gap: 0.5rem;
-    margin-bottom: 1.5rem;
-    flex-wrap: wrap;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 0 0 8px 8px;
-    padding: 0.8rem 1rem;
-}
-
-.tab {
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    padding: 0.5rem 1rem;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    color: var(--gray);
-    text-decoration: none;
-    font-size: 0.8rem;
-    transition: all var(--transition);
-    font-family: var(--font-mono);
-}
-
-.tab:hover,
-.tab.active {
-    border-color: var(--green);
-    color: var(--green);
-    background: rgba(0, 229, 160, 0.05);
-}
-
-.tab-icon {
-    font-size: 0.9rem;
-}
-
-.tab-label {
-    font-weight: 500;
-}
-
-.tab-count {
-    font-size: 0.7rem;
-    padding: 0.1rem 0.4rem;
-    background: var(--bg);
-    border-radius: 10px;
-    color: var(--text-dim);
-}
-
-.tab.active .tab-count {
-    background: var(--green);
-    color: var(--bg);
-}
-
-/* Articles list */
-.articles-list {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
-.article-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    transition: all var(--transition);
-    position: relative;
-}
-
-/* Decorative corner */
-.article-card::before {
-    content: '│';
-    position: absolute;
-    left: -1px;
-    top: -1px;
-    bottom: -1px;
-    color: var(--green-dim);
-    font-size: 1rem;
-    opacity: 0.3;
-}
-
-.article-card:hover {
-    border-color: var(--border-active);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
-}
-
-.article-card:hover::before {
-    opacity: 0.8;
-    color: var(--green);
-}
-
-.article-link {
-    display: block;
-    padding: 1.2rem 1.5rem;
-    text-decoration: none;
-    color: inherit;
-}
-
-.article-meta-row {
-    display: flex;
-    gap: 1rem;
-    align-items: center;
-    margin-bottom: 0.6rem;
-}
-
-.article-category {
-    font-size: 0.7rem;
-    padding: 0.15rem 0.5rem;
-    border-radius: 3px;
-    text-transform: uppercase;
-    font-weight: 600;
-}
-
-.article-category.tutorials { color: var(--green); background: rgba(0, 229, 160, 0.1); }
-.article-category.blog { color: var(--blue); background: rgba(77, 184, 255, 0.1); }
-.article-category.projects { color: var(--amber); background: rgba(255, 179, 0, 0.1); }
-.article-category.essays { color: var(--magenta); background: rgba(255, 107, 157, 0.1); }
-
-.article-date {
-    font-size: 0.75rem;
-    color: var(--gray-dim);
-    font-family: var(--font-mono);
-}
-
-.article-time {
-    font-size: 0.75rem;
-    color: var(--gray);
-    font-family: var(--font-mono);
-    margin-left: auto;
-}
-
-.article-title {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 1.05rem;
-    font-weight: 600;
-    color: var(--text);
-    margin-bottom: 0.5rem;
-    line-height: 1.4;
-    font-family: var(--font-mono);
-}
-
-.title-icon {
-    font-size: 1rem;
-    opacity: 0.6;
-}
-
-.article-card:hover .article-title {
-    color: var(--green);
-}
-
-.article-excerpt {
-    font-size: 0.85rem;
-    color: var(--text-dim);
-    margin-bottom: 0.8rem;
-    line-height: 1.6;
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    font-family: var(--font-mono);
-}
-
-.article-footer-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.article-tags {
-    display: flex;
-    gap: 0.4rem;
-    flex-wrap: wrap;
-}
-
-.tag {
-    font-size: 0.7rem;
-    color: var(--text-dim);
-    font-family: var(--font-mono);
-}
-
-.read-more {
-    font-size: 0.75rem;
-    color: var(--green);
-    font-family: var(--font-mono);
-    opacity: 0;
-    transition: opacity var(--transition);
-}
-
-.article-card:hover .read-more {
-    opacity: 1;
-}
-
-/* Empty state */
-.empty-state {
-    text-align: center;
-    padding: 3rem 1rem;
-    background: var(--surface);
-    border: 1px dashed var(--border);
-    border-radius: 8px;
-}
-
-.empty-icon {
-    font-size: 3rem;
-    margin-bottom: 1rem;
-    opacity: 0.5;
-}
-
-.empty-message {
-    color: var(--gray);
-    font-size: 1rem;
-    margin-bottom: 0.5rem;
-}
-
-.empty-hint {
-    font-family: var(--font-mono);
-    font-size: 0.8rem;
-    color: var(--text-dim);
-    line-height: 1.8;
-}
-
-.empty-hint .prompt {
-    color: var(--green);
-}
-
-.empty-hint .comment {
-    color: var(--gray-dim);
-}
-
-/* Page footer */
-.page-footer {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.8rem;
-    color: var(--gray-dim);
-    font-family: var(--font-mono);
-    font-size: 0.7rem;
-    margin-top: 2rem;
-}
-
-.end-line {
-    letter-spacing: -0.2em;
-}
-
-.end-text {
-    color: var(--green-dim);
-}
-
-/* Mobile */
-@media (max-width: 768px) {
-    .articles-page {
-        padding: 0.8rem;
+    // 获取筛选后的卡片
+    function getFilteredCards() {
+        var query = searchInput.value.toLowerCase().trim();
+        return cards.filter(function(card) {
+            var matchText = !query ||
+                (card.dataset.title || '').indexOf(query) !== -1 ||
+                (card.dataset.tags || '').indexOf(query) !== -1 ||
+                (card.dataset.excerpt || '').indexOf(query) !== -1;
+            var matchTag = !activeTag ||
+                (card.dataset.tags || '').split(',').map(function(s) { return s.trim(); }).indexOf(activeTag) !== -1;
+            return matchText && matchTag;
+        });
     }
 
-    .article-link {
-        padding: 1rem;
+    // 渲染分页按钮
+    function renderPagination(total) {
+        var totalPages = Math.ceil(total / PAGE_SIZE);
+        if (totalPages <= 1) { paginationEl.innerHTML = ''; return; }
+
+        var html = '';
+        html += '<button ' + (currentPage === 1 ? 'disabled' : '') + ' data-page="' + (currentPage - 1) + '">←</button>';
+
+        var maxVisible = 5;
+        var start = Math.max(1, currentPage - Math.floor(maxVisible / 2));
+        var end = Math.min(totalPages, start + maxVisible - 1);
+        if (end - start < maxVisible - 1) start = Math.max(1, end - maxVisible + 1);
+
+        if (start > 1) {
+            html += '<button data-page="1">1</button>';
+            if (start > 2) html += '<span class="page-info">...</span>';
+        }
+        for (var i = start; i <= end; i++) {
+            html += '<button class="' + (i === currentPage ? 'active' : '') + '" data-page="' + i + '">' + i + '</button>';
+        }
+        if (end < totalPages) {
+            if (end < totalPages - 1) html += '<span class="page-info">...</span>';
+            html += '<button data-page="' + totalPages + '">' + totalPages + '</button>';
+        }
+
+        html += '<button ' + (currentPage === totalPages ? 'disabled' : '') + ' data-page="' + (currentPage + 1) + '">→</button>';
+        html += '<span class="page-info">' + currentPage + '/' + totalPages + '</span>';
+        paginationEl.innerHTML = html;
+
+        paginationEl.querySelectorAll('button').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var page = parseInt(this.dataset.page);
+                if (page && page !== currentPage) {
+                    currentPage = page;
+                    applyFilters();
+                    articlesList.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
     }
 
-    .article-meta-row {
-        flex-wrap: wrap;
+    // 主渲染
+    function applyFilters() {
+        var filtered = getFilteredCards();
+        filtered.sort(function(a, b) {
+            var da = new Date(a.dataset.date);
+            var db = new Date(b.dataset.date);
+            return currentSort === 'asc' ? da - db : db - da;
+        });
+
+        var total = filtered.length;
+        var startIdx = (currentPage - 1) * PAGE_SIZE;
+        var pageCards = filtered.slice(startIdx, startIdx + PAGE_SIZE);
+
+        cards.forEach(function(card) { card.style.display = 'none'; });
+        pageCards.forEach(function(card) { card.style.display = ''; });
+
+        if (countEl) countEl.textContent = '共找到 ' + total + ' 篇文章';
+        renderPagination(total);
     }
 
-    .article-time {
-        margin-left: 0;
-        width: 100%;
-    }
-}
-</style>
+    // 排序按钮
+    sortBtns.forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            var sort = this.dataset.sort;
+            if (sort === currentSort) return;
+            currentSort = sort;
+            currentPage = 1;
+            sortBtns.forEach(function(b) { b.classList.remove('active'); });
+            this.classList.add('active');
+            applyFilters();
+        });
+    });
+
+    // 搜索
+    searchInput.addEventListener('input', function() { currentPage = 1; applyFilters(); });
+
+    // Tag 筛选
+    tagFilter.addEventListener('click', function(e) {
+        var chip = e.target.closest('.tag-chip');
+        if (!chip) return;
+        var tag = chip.dataset.tag;
+        if (activeTag === tag) {
+            activeTag = null;
+            chip.classList.remove('active');
+        } else {
+            tagFilter.querySelectorAll('.tag-chip').forEach(function(c) { c.classList.remove('active'); });
+            activeTag = tag;
+            chip.classList.add('active');
+        }
+        currentPage = 1;
+        applyFilters();
+    });
+
+    // 初始渲染
+    applyFilters();
+})();
+</script>

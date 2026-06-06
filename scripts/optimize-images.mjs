@@ -8,8 +8,11 @@ async function getFiles(dir) {
   const entries = await readdir(dir, { withFileTypes: true });
   const files = [];
   for (const entry of entries) {
-    if (entry.isFile() && /\.(png|jpe?g|webp)$/i.test(entry.name)) {
-      files.push(join(dir, entry.name));
+    const fullPath = join(dir, entry.name);
+    if (entry.isDirectory()) {
+      files.push(...await getFiles(fullPath));
+    } else if (entry.isFile() && /\.(png|jpe?g|webp)$/i.test(entry.name)) {
+      files.push(fullPath);
     }
   }
   return files;

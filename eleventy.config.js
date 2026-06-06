@@ -92,8 +92,24 @@ export default function(eleventyConfig) {
 
   eleventyConfig.addFilter('getQueryParam', (url, param) => {
     if (!url) return '';
-    const match = url.match(/category=([^&]+)/);
+    const match = url.match(new RegExp(param + '=([^&]+)'));
     return match ? match[1] : '';
+  });
+
+  eleventyConfig.addFilter('sortByDate', (articles, ascending) => {
+    return [...articles].sort((a, b) => {
+      const da = new Date(a.date);
+      const db = new Date(b.date);
+      return ascending ? da - db : db - da;
+    });
+  });
+
+  eleventyConfig.addFilter('formatDate', (dateStr) => {
+    if (!dateStr) return '';
+    const d = new Date(dateStr);
+    if (isNaN(d)) return dateStr;
+    const pad = (n) => String(n).padStart(2, '0');
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
   });
 
   return {

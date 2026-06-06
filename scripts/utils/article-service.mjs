@@ -177,6 +177,7 @@ export function scanAllArticles() {
         excerpt,
         readingTime: typeof readingTime === 'number' ? `${readingTime} min` : readingTime,
         date,
+        updated: data.updated || null,
         filename: file,
         source: data.source || 'manual',
         sourceLogId: data.sourceLogId || null,
@@ -214,6 +215,7 @@ export function getArticle(slug) {
       order: data.order || 0,
       draft: data.draft === true || data.status === 'draft',
       date: ensureDateStr(data.date),
+      updated: data.updated || null,
       source: data.source || 'manual',
       sourceLogId: data.sourceLogId || null,
       status: data.status || 'published',
@@ -287,12 +289,14 @@ export function updateArticle(slug, { title, content, category, tags, excerpt, r
   }
 
   const mergedContent = content !== undefined ? content : article.content;
-  const dateStr = new Date().toISOString().split('T')[0];
+  const dateStr = article.date;  // 保留原始发布日期
+  const updatedStr = new Date().toISOString();
   const readingTimeStr = readingTime || (content !== undefined ? calculateReadingTime(content) : article.readingTime);
 
   const frontmatter = matter.stringify(mergedContent, {
     title: title || article.title,
     date: dateStr,
+    updated: updatedStr,
     category: newCategory,
     tags: tags !== undefined ? tags : article.tags,
     excerpt: excerpt !== undefined ? excerpt : article.excerpt,
@@ -315,6 +319,7 @@ export function updateArticle(slug, { title, content, category, tags, excerpt, r
     readingTime: readingTimeStr,
     order: order !== undefined ? order : article.order,
     date: dateStr,
+    updated: updatedStr,
     draft: draft !== undefined ? draft : article.draft,
   });
 

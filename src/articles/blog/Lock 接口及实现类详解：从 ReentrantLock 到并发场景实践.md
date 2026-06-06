@@ -1,3 +1,6 @@
+---
+date: '2026-05-08'
+---
 在 Java 并发编程领域，同步机制是保障线程安全的核心，而我们最熟悉的莫过于 synchronized 关键字。但自 JDK 5 引入 `java.util.concurrent.locks.Lock` 接口及其实现类后，Java 并发编程的灵活性得到了质的提升。Lock 接口凭借“显式控制”“可中断”“公平性配置”“多条件通信”等独有的特性，完美弥补了 synchronized 的局限性，成为复杂并发场景（如高并发调度、多线程协作）的首选方案。
 
 本文将从 Lock 接口的核心设计入手，深入拆解 ReentrantLock（可重入锁）、ReentrantReadWriteLock（读写分离锁）的底层原理与核心特性，全面对比 Lock 与 synchronized 的差异，结合实战案例讲解如何正确使用 Lock 解决并发问题、规避死锁，同时补充面试高频考点，助力开发者吃透 Lock 机制，从容应对面试与生产实战。

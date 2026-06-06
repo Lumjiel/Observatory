@@ -19,7 +19,10 @@ async function initialBuild() {
   await run('scripts/build-js.mjs', 'JS');
   await run('scripts/build-css.mjs', 'CSS');
   await run('scripts/article-scanner.mjs', 'Scanner');
-  await run('scripts/github-scraper.mjs', 'GitHub');
+  // github-scraper 异步执行，不阻塞启动
+  run('scripts/github-scraper.mjs', 'GitHub').catch(e =>
+    console.error('[dev] GitHub 数据获取失败（不影响启动）:', e.message)
+  );
 }
 
 function startEleventy() {

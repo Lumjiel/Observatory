@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "node scripts/dev.mjs",
-    "build": "node scripts/build-js.mjs && node scripts/build-css.mjs && node scripts/article-scanner.mjs && node scripts/github-scraper.mjs && eleventy",
-    "build:prod": "NODE_ENV=production node scripts/build-js.mjs && NODE_ENV=production node scripts/build-css.mjs && BASE_PATH=/observatory node scripts/article-scanner.mjs && BASE_PATH=/observatory node scripts/github-scraper.mjs && BASE_PATH=/observatory eleventy",
+    "build": "node scripts/build-js.mjs && node scripts/build-css.mjs && node scripts/article-scanner.mjs && node scripts/optimize-images.mjs && node scripts/github-scraper.mjs && eleventy",
+    "build:prod": "cross-env NODE_ENV=production node scripts/build-js.mjs && cross-env NODE_ENV=production node scripts/build-css.mjs && cross-env BASE_PATH=/observatory node scripts/article-scanner.mjs && node scripts/optimize-images.mjs && cross-env BASE_PATH=/observatory node scripts/github-scraper.mjs && cross-env BASE_PATH=/observatory eleventy",
     "build:js": "node scripts/build-js.mjs",
     "build:css": "node scripts/build-css.mjs",
     "optimize-images": "node scripts/optimize-images.mjs",
@@ -48,6 +48,7 @@
   "devDependencies": {
     "autoprefixer": "^10.5.0",
     "chokidar": "^5.0.0",
+    "cross-env": "^10.1.0",
     "cssnano": "^8.0.1",
     "esbuild": "^0.28.0",
     "livereload": "^0.10.3",
