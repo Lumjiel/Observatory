@@ -78,6 +78,22 @@ layout: base.njk
             </div>
 
             <div class="article-nav">
+                {% set foundCurrent = false %}
+                {% set prevArticle = null %}
+                {% set nextArticle = null %}
+                {% set foundNext = false %}
+                {% for a in collections.published %}
+                    {% if foundNext and not nextArticle %}
+                        {% set nextArticle = a %}
+                    {% endif %}
+                    {% if a.slug == article.slug and a.category == article.category %}
+                        {% set foundCurrent = true %}
+                    {% elif not foundCurrent %}
+                        {% set prevArticle = a %}
+                    {% elif foundNext == false %}
+                        {% set foundNext = true %}
+                    {% endif %}
+                {% endfor %}
                 {% if prevArticle %}
                 <a href="{{ env.BASE_PATH }}/articles/{{ prevArticle.category }}/{{ prevArticle.slug }}/" class="nav-link prev">
                     <span class="nav-arrow">←</span>

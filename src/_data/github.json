@@ -10,7 +10,7 @@
       "forks": 0,
       "url": "https://github.com/Lumjiel/BugPet",
       "updatedAt": "2026-05-14T08:05:40Z",
-      "updatedAgo": "1天前"
+      "updatedAgo": "22天前"
     },
     {
       "name": "chaoxing-helper",
@@ -21,7 +21,18 @@
       "forks": 0,
       "url": "https://github.com/Lumjiel/chaoxing-helper",
       "updatedAt": "2026-05-14T09:50:57Z",
-      "updatedAgo": "1天前"
+      "updatedAgo": "22天前"
+    },
+    {
+      "name": "CyberClaw",
+      "fullName": "Lumjiel/CyberClaw",
+      "description": "👾 下一代透明智能体架构 | Next-Gen Transparent Agent Architecture 🔍 全行为审计 | 🛡️ 两段式安全调用 | 🧠 双水位记忆 | ⏰ 心跳任务 📊 P0 级事故率降低 80% | 兼容 OpenClaw + Claude Code 技能生态",
+      "language": null,
+      "stars": 0,
+      "forks": 0,
+      "url": "https://github.com/Lumjiel/CyberClaw",
+      "updatedAt": "2026-05-19T08:35:34Z",
+      "updatedAgo": "17天前"
     },
     {
       "name": "Dxkyglxt",
@@ -32,7 +43,7 @@
       "forks": 0,
       "url": "https://github.com/Lumjiel/Dxkyglxt",
       "updatedAt": "2026-05-14T08:08:15Z",
-      "updatedAgo": "1天前"
+      "updatedAgo": "22天前"
     },
     {
       "name": "epic-awesome-gamer",
@@ -43,18 +54,29 @@
       "forks": 0,
       "url": "https://github.com/Lumjiel/epic-awesome-gamer",
       "updatedAt": "2026-02-02T06:35:47Z",
-      "updatedAgo": "3个月前"
+      "updatedAgo": "4个月前"
     },
     {
-      "name": "jie-open-skills",
-      "fullName": "Lumjiel/jie-open-skills",
-      "description": "杰哥的 AI Skill 公开合集。📦 把有效的方法、流程和工具沉淀为可复用、可维护、可评估的 AI 资产。",
-      "language": "HTML",
+      "name": "IRIS",
+      "fullName": "Lumjiel/IRIS",
+      "description": "面向产品/市场人员的竞品调研 Agent。基于 LangGraph 状态机实现多 Agent 协作，自动完成竞品信息检索与报告生成，质量不达标自动重查重写。",
+      "language": "Python",
       "stars": 0,
       "forks": 0,
-      "url": "https://github.com/Lumjiel/jie-open-skills",
-      "updatedAt": "2026-05-14T07:58:06Z",
-      "updatedAgo": "1天前"
+      "url": "https://github.com/Lumjiel/IRIS",
+      "updatedAt": "2026-05-31T07:53:26Z",
+      "updatedAgo": "5天前"
+    },
+    {
+      "name": "jie-skills-collection",
+      "fullName": "Lumjiel/jie-skills-collection",
+      "description": "杰哥的 AI Skill 公开合集。📦 把有效的方法、流程和工具沉淀为可复用、可维护、可评估的 AI 资产。",
+      "language": "TypeScript",
+      "stars": 0,
+      "forks": 0,
+      "url": "https://github.com/Lumjiel/jie-skills-collection",
+      "updatedAt": "2026-05-19T09:17:05Z",
+      "updatedAgo": "17天前"
     },
     {
       "name": "langchain4j",
@@ -65,7 +87,7 @@
       "forks": 0,
       "url": "https://github.com/Lumjiel/langchain4j",
       "updatedAt": "2026-04-18T14:11:45Z",
-      "updatedAgo": "27天前"
+      "updatedAgo": "1个月前"
     },
     {
       "name": "nanobot",
@@ -76,7 +98,18 @@
       "forks": 0,
       "url": "https://github.com/Lumjiel/nanobot",
       "updatedAt": "2026-05-07T05:04:13Z",
-      "updatedAgo": "9天前"
+      "updatedAgo": "29天前"
+    },
+    {
+      "name": "NJGC",
+      "fullName": "Lumjiel/NJGC",
+      "description": "暂无描述",
+      "language": "Dart",
+      "stars": 0,
+      "forks": 0,
+      "url": "https://github.com/Lumjiel/NJGC",
+      "updatedAt": "2026-05-19T13:59:35Z",
+      "updatedAgo": "17天前"
     },
     {
       "name": "Observatory",
@@ -86,8 +119,8 @@
       "stars": 0,
       "forks": 0,
       "url": "https://github.com/Lumjiel/Observatory",
-      "updatedAt": "2026-05-16T05:50:12Z",
-      "updatedAgo": "15分钟前"
+      "updatedAt": "2026-06-06T04:40:46Z",
+      "updatedAgo": "22分钟前"
     },
     {
       "name": "openclaw",
@@ -98,7 +131,7 @@
       "forks": 0,
       "url": "https://github.com/Lumjiel/openclaw",
       "updatedAt": "2026-04-18T02:14:26Z",
-      "updatedAgo": "28天前"
+      "updatedAgo": "1个月前"
     },
     {
       "name": "PBTI",
@@ -109,7 +142,7 @@
       "forks": 0,
       "url": "https://github.com/Lumjiel/PBTI",
       "updatedAt": "2026-05-14T07:59:33Z",
-      "updatedAgo": "1天前"
+      "updatedAgo": "22天前"
     },
     {
       "name": "ragent",
@@ -120,7 +153,7 @@
       "forks": 0,
       "url": "https://github.com/Lumjiel/ragent",
       "updatedAt": "2026-03-21T03:09:35Z",
-      "updatedAgo": "1个月前"
+      "updatedAgo": "2个月前"
     },
     {
       "name": "spring-ai",
@@ -131,7 +164,7 @@
       "forks": 0,
       "url": "https://github.com/Lumjiel/spring-ai",
       "updatedAt": "2026-04-17T13:18:42Z",
-      "updatedAgo": "28天前"
+      "updatedAgo": "1个月前"
     },
     {
       "name": "Todolist",
@@ -142,7 +175,18 @@
       "forks": 0,
       "url": "https://github.com/Lumjiel/Todolist",
       "updatedAt": "2026-05-14T09:12:27Z",
-      "updatedAgo": "1天前"
+      "updatedAgo": "22天前"
+    },
+    {
+      "name": "VoxCPM",
+      "fullName": "Lumjiel/VoxCPM",
+      "description": "VoxCPM2: Tokenizer-Free TTS for Multilingual Speech Generation, Creative Voice Design, and True-to-Life Cloning",
+      "language": null,
+      "stars": 0,
+      "forks": 0,
+      "url": "https://github.com/Lumjiel/VoxCPM",
+      "updatedAt": "2026-05-29T09:36:14Z",
+      "updatedAgo": "7天前"
     },
     {
       "name": "YiBan_AutoSgin",
@@ -152,8 +196,8 @@
       "stars": 0,
       "forks": 0,
       "url": "https://github.com/Lumjiel/YiBan_AutoSgin",
-      "updatedAt": "2026-02-08T23:41:28Z",
-      "updatedAgo": "3个月前"
+      "updatedAt": "2026-06-05T13:14:57Z",
+      "updatedAgo": "15小时前"
     },
     {
       "name": "zxtx",
@@ -164,24 +208,27 @@
       "forks": 0,
       "url": "https://github.com/Lumjiel/zxtx",
       "updatedAt": "2026-05-14T08:09:30Z",
-      "updatedAgo": "1天前"
+      "updatedAgo": "22天前"
     }
   ],
   "contributions": {
-    "2026-05-16": 3,
+    "2026-06-06": 1,
+    "2026-06-05": 16,
+    "2026-06-04": 1,
+    "2026-05-31": 4,
+    "2026-05-29": 3,
+    "2026-05-28": 1,
+    "2026-05-27": 1,
+    "2026-05-26": 2,
+    "2026-05-25": 1,
+    "2026-05-19": 11,
+    "2026-05-18": 3,
+    "2026-05-16": 9,
     "2026-05-15": 8,
     "2026-05-14": 14,
     "2026-05-12": 6,
     "2026-05-10": 7,
-    "2026-05-09": 11,
-    "2026-05-08": 1,
-    "2026-05-07": 17,
-    "2026-05-06": 3,
-    "2026-05-04": 10,
-    "2026-04-29": 4,
-    "2026-04-18": 1,
-    "2026-04-27": 1,
-    "2026-04-23": 10
+    "2026-05-09": 9
   },
-  "lastFetched": "2026-05-16T06:05:42.272Z"
+  "lastFetched": "2026-06-06T05:03:21.677Z"
 }

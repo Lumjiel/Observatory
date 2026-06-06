@@ -33,4 +33,6 @@ content/
 temp_repos.json
 
 # 文章索引（由 scanner 自动生成）
+src/articles/_data/.playwright-mcp/
+articles-*.png
 src/articles/_data/
