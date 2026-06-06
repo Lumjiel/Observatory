@@ -21,22 +21,25 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ```bash
 npm run dev           # 开发模式：JS/CSS 构建 + Eleventy --serve + 热更新
 npm run build         # 本地完整构建（不含 BASE_PATH）
-npm run build:prod    # 生产构建（注入 BASE_PATH=/observatory）
+npm run build:prod    # 生产构建（注入 BASE_PATH=/observatory，需 cross-env）
 npm run server        # 只启 Express API 服务器（不构建）
-npm run scan:articles # 扫描 content/ 生成 articles.json
+npm run scan:articles # 扫描 src/articles/ 生成 articles.json
 npm run fetch-github  # 抓取 GitHub 数据生成 github.json
 npm run new-article   # 交互式创建新文章
+npm run optimize-images # 压缩 src/img/ 下的图片（递归子目录）
 ```
 
 ## 环境变量
 
-`.env` 文件（被 gitignore）必须包含：
+`.env` 文件（被 gitignore）：
 
 | 变量 | 说明 |
 |:---|:---|
 | `ADMIN_PASSWORD` | 管理后台密码（必须，否则 Express 启动失败） |
 | `GITHUB_TOKEN` | GitHub API token（`github-scraper.mjs` 需要） |
-| `BASE_PATH` | 部署子路径，生产环境为 `/observatory` |
+| `BASE_PATH` | **本地留空**，生产构建由 `build:prod` 脚本设置为 `/observatory` |
+
+> ⚠️ **Git Bash 注意：** `.env` 中 `BASE_PATH=/observatory` 会被 Git Bash 转成 Windows 路径 `E:/develop/Git/Git/observatory`。本地开发时 `BASE_PATH` 必须留空，生产构建用 `cross-env` 处理。
 
 ## 分支策略
 
@@ -58,22 +61,21 @@ python E:\claudecode\云服务器\scripts\ssh_connect.py "cd /var/www/observator
 
 ## 构建管道
 
-`npm run build` 按顺序执行 5 步：
+`npm run build` 按顺序执行 6 步：
 
 1. **`build-js.mjs`** — esbuild 打包 `src/assets/js/` → `_site/js/bundle.js`
 2. **`build-css.mjs`** — PostCSS 处理 `src/assets/css/` → `_site/css/`
 3. **`article-scanner.mjs`** — 扫描 `src/articles/` 生成 `src/_data/articles.json`
-4. **`github-scraper.mjs`** — 调用 GitHub API 生成 `src/_data/github.json`
-5. **`eleventy`** — 用 Nunjucks 模板 + JSON 数据生成静态 HTML
-
-开发模式下 JS/CSS 变化由 chokidar 监听自动重建，Eleventy 自带 livereload。
+4. **`optimize-images.mjs`** — 压缩 `src/img/` 下的图片（sharp，递归子目录）
+5. **`github-scraper.mjs`** — 调用 GitHub API 生成 `src/_data/github.json`（异步不阻塞）
+6. **`eleventy`** — 用 Nunjucks 模板 + JSON 数据生成静态 HTML
 
 ## 架构
 
 ### 数据流
 
 ```
-content/articles/ (Markdown)
+src/articles/ (Markdown)
     ↓ article-scanner.mjs
 src/_data/articles.json  ← Eleventy collection
     ↓ Eleventy 渲染
@@ -82,7 +84,7 @@ _site/*.html             ← 静态输出
 Express (article-api.mjs)
     ↓ 运行时中间件拦截 HTML
     ↓ 注入最新 SITE_DATA 到 <script>
-    → 管理后台 CRUD 直接读写 content/articles/
+    → 管理后台 CRUD 直接读写 src/articles/
     → 图片上传同时写 content/images/ + _site/img/
 ```
 
@@ -94,11 +96,21 @@ Express (article-api.mjs)
 | `scripts/utils/article-service.mjs` | 文章 CRUD 统一数据层 |
 | `scripts/templates/admin-panel.html` | 管理后台 HTML 模板 |
 | `eleventy.config.js` | Eleventy 配置（filters、shortcodes、collections） |
-| `src/layouts/` | Nunjucks 布局（`base.njk`、`article.njk`） |
-| `src/pages/` | 页面模板 |
-| `src/assets/js/app.js` | 前端入口 |
+| `src/layouts/base.njk` | 基础布局（状态栏、RSS 链接、命令框） |
+| `src/layouts/article.njk` | 文章详情布局（返回顶部、prev/next 导航） |
+| `src/pages/articles.njk` | 文章列表页（排序、搜索、tag 筛选、分页） |
+| `src/pages/sitemap.njk` | sitemap.xml 生成 |
+| `src/assets/css/articles.css` | 文章列表页样式（独立文件） |
+| `src/assets/css/article-detail.css` | 文章详情页样式（独立文件） |
 | `src/assets/js/modules/` | 前端模块（router、commands、renderers） |
-| `src/articles/` | Markdown 文章（被 gitignore，非代码文件） |
+| `src/articles/` | Markdown 文章（按分类：blog/tutorials/essays/projects） |
+
+### 文章系统
+
+- **文章列表页** (`/articles/`)：排序（最新/最早）、搜索框、tag 筛选（10 个高频标签）、分页（每页 10 篇）
+- **文章详情页**：移动端 0.75x 缩放、发布/更新双日期、返回顶部按钮、prev/next 导航
+- **时间字段**：`date` 保留原始格式，`updateArticle` 不覆盖发布日期，新增 `updated` 字段
+- **图片压缩**：sharp 递归压缩 `src/img/` 子目录，构建时自动执行
 
 ### 子路径部署
 
@@ -110,4 +122,5 @@ Express (article-api.mjs)
 - 改 `admin-panel.html` 模板 → 重启 Express
 - 改前端 JS/CSS → `npm run build:js` / `npm run build:css`（或 dev 模式自动重建）
 - 服务器上 `node_modules/`、`_site/`、`content/`、`.env`、`logs/` 被 gitignore
-- `github-scraper.mjs` 有 API 限流，失败不应阻塞启动（参见 memory）
+- `github-scraper.mjs` 异步执行，不阻塞启动
+- **本地不要跑 `build:prod`**，会把路径改成 `/observatory/...`，本地预览用 `npm run build`
