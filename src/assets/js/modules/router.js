@@ -5,6 +5,7 @@ import { renderErrors } from './renderers/errors.js';
 import { renderMilestones } from './renderers/milestones.js';
 import { renderAbout } from './renderers/about.js';
 import { renderHelp } from './renderers/help.js';
+import { clearOutlines } from './events/keyboard.js';
 
 export const ROUTES = {
     'dashboard': renderDashboard,
@@ -15,6 +16,7 @@ export const ROUTES = {
 };
 
 export function showView(viewName) {
+    clearOutlines();
     const { viewContainers, mobileNav } = state.dom;
     Object.keys(viewContainers).forEach(v => viewContainers[v].classList.remove('active'));
     if (viewContainers[viewName]) viewContainers[viewName].classList.add('active');

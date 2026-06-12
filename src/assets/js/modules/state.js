@@ -86,13 +86,9 @@ export function initDOM() {
 
 // 计算分类统计
 function computeStats() {
-    state.categoryStats = {
-        tutorials: state.feed.filter(a => a.typeLabel === 'tutorials').length,
-        blog: state.feed.filter(a => a.typeLabel === 'blog').length,
-        essays: state.feed.filter(a => a.typeLabel === 'essays').length,
-        projects: state.feed.filter(a => a.typeLabel === 'projects').length,
-        total: state.feed.length
-    };
+    const stats = { tutorials: 0, blog: 0, essays: 0, projects: 0, total: state.feed.length };
+    state.feed.forEach(a => { if (a.typeLabel in stats) stats[a.typeLabel]++; });
+    state.categoryStats = stats;
 
     const counts = {};
     state.feed.forEach(l => l.tags.forEach(t => { counts[t] = (counts[t] || 0) + 1; }));

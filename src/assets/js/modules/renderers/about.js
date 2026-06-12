@@ -47,6 +47,7 @@ const OPERATIONS = [
 ];
 
 export function renderAbout() {
+  cleanupAbout();
   const container = state.dom.viewContainers.about;
   if (!container) return;
 
@@ -120,9 +121,15 @@ export function renderAbout() {
 
 const STATUS_STATES = ['摸鱼中...', '编译中...', 'debug中...', '重构中...', '看文档中...', '喝水中...'];
 let statusInterval;
+let typewriterTimer;
+
+function cleanupAbout() {
+  if (statusInterval) { clearInterval(statusInterval); statusInterval = null; }
+  if (typewriterTimer) { clearTimeout(typewriterTimer); typewriterTimer = null; }
+}
 
 function startStatusUpdater() {
-  if (statusInterval) clearInterval(statusInterval);
+  if (statusInterval) { clearInterval(statusInterval); statusInterval = null; }
   const statusEl = document.getElementById('aboutStatus');
   if (!statusEl) return;
   statusInterval = setInterval(() => {
@@ -149,14 +156,14 @@ function startTypewriter() {
     if (charIdx < fullText.length) {
       asciiEl.textContent += fullText[charIdx];
       charIdx++;
-      setTimeout(typeChar, 6);
+      typewriterTimer = setTimeout(typeChar, 6);
     } else {
       // ASCII 显示完后，淡入气泡
       bubbleTextEl.textContent = bubbleText;
       bubbleEl.style.transition = 'opacity 0.5s ease';
       bubbleEl.style.opacity = '1';
       // 气泡淡入后，显示下方卡片
-      setTimeout(() => {
+      typewriterTimer = setTimeout(() => {
         if (bodyEl) {
           bodyEl.style.display = 'block';
           bodyEl.style.animation = 'fadeIn 0.5s ease';

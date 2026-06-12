@@ -1,11 +1,12 @@
-import { readFile, writeFile } from 'node:fs/promises';
+import { readFile, writeFile, mkdir } from 'node:fs/promises';
+import { dirname } from 'node:path';
 import postcss from 'postcss';
 import autoprefixer from 'autoprefixer';
 import cssnano from 'cssnano';
 
 const CSS_FILES = [
-  'src/assets/css/main.css',
-  'src/assets/css/admin.css',
+  { src: 'src/assets/css/main.css', dest: '_site/assets/css/main.css' },
+  { src: 'src/assets/css/admin.css', dest: '_site/assets/css/admin.css' },
 ];
 
 const isProd = process.env.NODE_ENV === 'production';
@@ -17,9 +18,15 @@ const plugins = [
 
 const processor = postcss(plugins);
 
-for (const file of CSS_FILES) {
-  const css = await readFile(file, 'utf8');
-  const result = await processor.process(css, { from: file, to: file });
-  await writeFile(file, result.css);
-  console.log(`  ✓ ${file}${isProd ? ' (minified)' : ''}`);
+for (const { src, dest } of CSS_FILES) {
+  try {
+    const css = await readFile(src, 'utf8');
+    const result = await processor.process(css, { from: src });
+    await mkdir(dirname(dest), { recursive: true });
+    await writeFile(dest, result.css);
+    console.log(`  ✓ ${src} → ${dest}${isProd ? ' (minified)' : ''}`);
+  } catch (e) {
+    console.error(`  ✗ ${src} 构建失败:`, e.message);
+    process.exit(1);
+  }
 }

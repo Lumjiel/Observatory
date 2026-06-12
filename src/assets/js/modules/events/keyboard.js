@@ -2,10 +2,16 @@
 import { state } from '../state.js';
 import { closeDetail } from '../components/detail.js';
 
+function clearOutlines() {
+    document.querySelectorAll('.log-entry').forEach(el => { el.style.outline = ''; });
+    state.focusedEntryIndex = -1;
+}
+
 export function initKeyboard() {
     document.addEventListener('keydown', function(e) {
         if (e.target === state.dom.cmdInput || e.target === state.dom.mobileCmdInput) return;
         if (e.key === 'Escape') {
+            clearOutlines();
             if (state.openLogId) {
                 const entry = document.querySelector('.log-entry[data-log-id="' + state.openLogId + '"]');
                 closeDetail(state.openLogId, entry);
@@ -17,20 +23,20 @@ export function initKeyboard() {
             const entries = document.querySelectorAll('.log-entry');
             if (!entries.length) return;
             if (state.focusedEntryIndex < entries.length - 1) {
+                if (state.focusedEntryIndex >= 0) entries[state.focusedEntryIndex].style.outline = '';
                 state.focusedEntryIndex++;
                 entries[state.focusedEntryIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
                 entries[state.focusedEntryIndex].style.outline = '2px solid var(--green)';
-                if (state.focusedEntryIndex > 0) entries[state.focusedEntryIndex - 1].style.outline = '';
             }
         } else if (e.key === 'k' || e.key === 'ArrowUp') {
             e.preventDefault();
             const entries = document.querySelectorAll('.log-entry');
             if (!entries.length) return;
             if (state.focusedEntryIndex > 0) {
+                entries[state.focusedEntryIndex].style.outline = '';
                 state.focusedEntryIndex--;
                 entries[state.focusedEntryIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
                 entries[state.focusedEntryIndex].style.outline = '2px solid var(--green)';
-                if (state.focusedEntryIndex < entries.length - 1) entries[state.focusedEntryIndex + 1].style.outline = '';
             }
         } else if (e.key === 'Enter' && state.focusedEntryIndex >= 0) {
             const entries = document.querySelectorAll('.log-entry');
@@ -45,3 +51,5 @@ export function initKeyboard() {
         }
     });
 }
+
+export { clearOutlines };

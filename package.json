@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "node scripts/dev.mjs",
-    "build": "node scripts/build-js.mjs && node scripts/build-css.mjs && node scripts/article-scanner.mjs && node scripts/optimize-images.mjs && node scripts/github-scraper.mjs && eleventy",
-    "build:prod": "cross-env NODE_ENV=production node scripts/build-js.mjs && cross-env NODE_ENV=production node scripts/build-css.mjs && cross-env BASE_PATH=/observatory node scripts/article-scanner.mjs && node scripts/optimize-images.mjs && cross-env BASE_PATH=/observatory node scripts/github-scraper.mjs && cross-env BASE_PATH=/observatory eleventy",
+    "build": "node scripts/build-js.mjs && node scripts/article-scanner.mjs && node scripts/optimize-images.mjs && node scripts/github-scraper.mjs && eleventy && node scripts/build-css.mjs",
+    "build:prod": "cross-env NODE_ENV=production node scripts/build-js.mjs && cross-env BASE_PATH=/observatory node scripts/article-scanner.mjs && node scripts/optimize-images.mjs && cross-env BASE_PATH=/observatory node scripts/github-scraper.mjs && cross-env BASE_PATH=/observatory eleventy && cross-env NODE_ENV=production node scripts/build-css.mjs",
     "build:js": "node scripts/build-js.mjs",
     "build:css": "node scripts/build-css.mjs",
     "optimize-images": "node scripts/optimize-images.mjs",

@@ -593,3 +593,23 @@
 .back-to-top.visible {
     display: flex;
 }
+
+/* ============================================================
+   Light theme overrides
+   ============================================================ */
+body.light .article-content code {
+    background: rgba(0, 0, 0, 0.08);
+    border-color: var(--border);
+}
+
+body.light .article-content pre {
+    background: rgba(0, 0, 0, 0.06);
+}
+
+body.light .article-content strong {
+    color: #8b5e00;
+}
+
+body.light .related-desc code {
+    color: #8b5e00;
+}

@@ -7,7 +7,6 @@ import { renderMilestones } from './renderers/milestones.js';
 import { renderAbout } from './renderers/about.js';
 import { renderHelp } from './renderers/help.js';
 import { renderFilterChips } from './components/filterChips.js';
-import { renderSignalOverview } from './components/signalOverview.js';
 import { showView } from './router.js';
 
 const VALID_CATEGORIES = ['all', 'tutorials', 'blog', 'essays', 'projects'];
@@ -23,7 +22,6 @@ const commands = {
         setActiveKeyword(null);
         renderLogStream(state.activeFilter);
         renderFilterChips();
-        renderSignalOverview();
         showView('log');
     },
 
@@ -60,7 +58,6 @@ const commands = {
         setActiveKeyword(null);
         renderLogStream();
         renderFilterChips();
-        renderSignalOverview();
         showView('log');
     },
 

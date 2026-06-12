@@ -9,15 +9,20 @@ const entries = [
 ];
 
 for (const entry of entries) {
-  await esbuild.build({
-    entryPoints: [entry.in],
-    outfile: `src/assets/js/${entry.out}.js`,
-    bundle: true,
-    minify: isProd,
-    sourcemap: !isProd,
-    format: entry.format,
-    target: 'es2020',
-    logLevel: 'warning',
-  });
-  console.log(`  ✓ ${entry.out}.js${isProd ? ' (minified)' : ''}`);
+  try {
+    await esbuild.build({
+      entryPoints: [entry.in],
+      outfile: `src/assets/js/${entry.out}.js`,
+      bundle: true,
+      minify: isProd,
+      sourcemap: !isProd,
+      format: entry.format,
+      target: 'es2020',
+      logLevel: 'warning',
+    });
+    console.log(`  ✓ ${entry.out}.js${isProd ? ' (minified)' : ''}`);
+  } catch (e) {
+    console.error(`  ✗ ${entry.out}.js 构建失败:`, e.message);
+    process.exit(1);
+  }
 }

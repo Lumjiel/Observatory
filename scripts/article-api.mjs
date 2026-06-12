@@ -359,22 +359,23 @@ app.post('/api/upload-image', (req, res) => {
     const ext = matches[1] === 'jpeg' ? 'jpg' : matches[1];
     const buffer = Buffer.from(matches[2], 'base64');
     const year = new Date().getFullYear().toString();
-    const imageDir = path.join(IMAGES_DIR, year, slug || 'misc');
+    const safeSlug = (slug || 'misc').replace(/[^a-zA-Z0-9一-鿿_-]/g, '');
+    const imageDir = path.join(IMAGES_DIR, year, safeSlug);
     const imageName = `${randomUUID()}.${ext}`;
 
     fs.mkdirSync(imageDir, { recursive: true });
     fs.writeFileSync(path.join(imageDir, imageName), buffer);
 
     // 同步到 _site/img/ 使其立即可访问
-    const siteImageDir = path.join(SITE_DIR, 'img', year, slug || 'misc');
+    const siteImageDir = path.join(SITE_DIR, 'img', year, safeSlug);
     fs.mkdirSync(siteImageDir, { recursive: true });
     fs.copyFileSync(path.join(imageDir, imageName), path.join(siteImageDir, imageName));
     scheduleBuild();
 
-    const publicPath = `/img/${year}/${slug || 'misc'}/${imageName}`;
+    const publicPath = `/img/${year}/${safeSlug}/${imageName}`;
     res.json({ path: publicPath });
   } catch (e) {
-    res.status(500).json({ error: '图片上传失败: ' + e.message });
+    res.status(500).json({ error: '图片上传失败' });
   }
 });
 
@@ -562,7 +563,7 @@ async function startDevServer() {
   console.log('[观测站] 正在构建...');
   try {
     await new Promise((resolve, reject) => {
-      const child = spawn('node scripts/build-js.mjs && node scripts/build-css.mjs && node scripts/article-scanner.mjs && npx eleventy', [], {
+      const child = spawn('node scripts/build-js.mjs && node scripts/article-scanner.mjs && npx eleventy && node scripts/build-css.mjs', [], {
         cwd: process.cwd(), stdio: 'inherit', shell: true,
       });
       child.on('close', (code) => code === 0 ? resolve() : reject(new Error(`initial-build exited with code ${code}`)));

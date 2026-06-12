@@ -40,8 +40,8 @@ export function formatUptime() {
     const now = new Date();
     const diff = now - start;
     const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-    if (days < 1) return '🚀 今天上线';
-    return `📈 已运行 ${days} 天`;
+    if (days < 1) return '今天上线';
+    return `已运行 ${days} 天`;
 }
 
 export const CAT_LABELS = { tutorials: '教程', blog: '博客', essays: '随笔', projects: '项目' };

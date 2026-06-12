@@ -17,7 +17,6 @@ function run(script, label) {
 async function initialBuild() {
   console.log('\n[dev] 初始构建...\n');
   await run('scripts/build-js.mjs', 'JS');
-  await run('scripts/build-css.mjs', 'CSS');
   await run('scripts/article-scanner.mjs', 'Scanner');
   // github-scraper 异步执行，不阻塞启动
   run('scripts/github-scraper.mjs', 'GitHub').catch(e =>
@@ -72,11 +71,22 @@ function startWatcher() {
   return watcher;
 }
 
+// Eleventy 初始构建完成后，运行 CSS build 覆盖 passthrough 的未处理 CSS
+async function postEleventyBuild() {
+  try {
+    await run('scripts/build-css.mjs', 'CSS');
+  } catch (e) {
+    console.error('[dev] CSS 构建失败:', e.message);
+  }
+}
+
 try {
   await initialBuild();
   console.log('\n[dev] 初始构建完成，启动开发服务器...\n');
   const eleventy = startEleventy();
   const watcher = startWatcher();
+  // Eleventy 启动后延迟执行 CSS build，覆盖 passthrough 的未处理 CSS
+  setTimeout(() => postEleventyBuild(), 3000);
 
   process.on('SIGINT', () => {
     console.log('\n[dev] 正在关闭...');
