@@ -61,11 +61,11 @@ python E:\claudecode\云服务器\scripts\ssh_connect.py "cd /var/www/observator
 `npm run build` 按顺序执行 6 步：
 
 1. **`build-js.mjs`** — esbuild 打包 `src/assets/js/` → `_site/js/bundle.js`
-2. **`build-css.mjs`** — PostCSS 处理 `src/assets/css/` → `_site/css/`
-3. **`article-scanner.mjs`** — 扫描 `src/articles/` 生成 `src/_data/articles.json`
-4. **`optimize-images.mjs`** — 压缩 `src/img/` 下的图片（sharp，递归子目录）
-5. **`github-scraper.mjs`** — 调用 GitHub API 生成 `src/_data/github.json`（异步不阻塞）
-6. **`eleventy`** — 用 Nunjucks 模板 + JSON 数据生成静态 HTML
+2. **`article-scanner.mjs`** — 扫描 `src/articles/` 生成 `src/_data/articles.json`
+3. **`optimize-images.mjs`** — 压缩 `src/img/` 下的图片（sharp，递归子目录）
+4. **`github-scraper.mjs`** — 调用 GitHub API 生成 `src/_data/github.json`（异步不阻塞）
+5. **`eleventy`** — 用 Nunjucks 模板 + JSON 数据生成静态 HTML（含 passthrough 复制 `src/img/` → `_site/img/`）
+6. **`build-css.mjs`** — PostCSS 处理 `src/assets/css/` → `_site/assets/css/`（在 Eleventy 之后，覆盖 passthrough 的未处理 CSS）
 
 ## 架构
 
@@ -88,7 +88,7 @@ src/_data/articles.json       → Eleventy collection → _site/*.html
 Express article-api.mjs（运行时）
     ↓ 中间件拦截 HTML，注入最新 SITE_DATA
     → 管理后台 CRUD → 直接读写 src/articles/*.md
-    → 图片上传 → src/img/{year}/{slug}/ + _site/img/{year}/{slug}/
+    → 图片上传 → src/img/{year}/{slug}/
     → 触发异步 Eleventy 重建
 ```
 
@@ -119,7 +119,7 @@ draft: true                  # 可选，草稿不发布
 
 - **Obsidian 语法**：`![[Pasted_image_xxx.png]]` 在 Eleventy 构建和 Express 渲染时自动转换为标准 Markdown 图片语法，路径解析到 `src/img/{year}/{slug}/`
 - **构建时压缩**：`optimize-images.mjs` 使用 sharp 递归压缩 `src/img/` 下所有图片
-- **上传路径**：管理后台上传的图片同时写入 `src/img/`（源文件）和 `_site/img/`（构建产物）
+- **上传路径**：管理后台上传的图片写入 `src/img/`，Express 直接托管该目录作为静态文件
 
 ### 关键路径
 
