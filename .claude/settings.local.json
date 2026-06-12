@@ -182,7 +182,13 @@
       "Bash(python3 -c \"import json; d=json.load\\(open\\('E:/project/terminal-observatory/src/articles/_data/articles.json'\\)\\); print\\(f'Index count: {len\\(d\\)}'\\)\")",
       "Bash(python3 *)",
       "Bash(pkill -f \"node.*8082\")",
-      "Bash(git status *)"
+      "Bash(git status *)",
+      "mcp__playwright__browser_evaluate",
+      "mcp__playwright__browser_resize",
+      "mcp__playwright__browser_take_screenshot",
+      "mcp__playwright__browser_navigate",
+      "mcp__playwright__browser_type",
+      "Bash(E:/develop/nodejs/node.exe *)"
     ]
   }
 }

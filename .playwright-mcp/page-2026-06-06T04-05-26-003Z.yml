@@ -1,0 +1,219 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e5]: "> observatory.log"
+    - generic [ref=e6]:
+      - generic [ref=e8]: 📈 已运行 30 天
+      - generic [ref=e9]:
+        - text: 📡 信号
+        - generic [ref=e10]: 📋 85篇文章
+      - button "🌙" [ref=e11] [cursor=pointer]
+  - generic [ref=e15]:
+    - generic [ref=e21]: articles.sh
+    - banner [ref=e22]:
+      - generic [ref=e23]: $ ls -la ./articles/
+      - heading "📚 文章列表" [level=1] [ref=e24]
+      - paragraph [ref=e25]: 共找到 85 篇文章
+    - generic [ref=e26]:
+      - generic [ref=e27]: $ sort -
+      - button "最新" [ref=e28] [cursor=pointer]
+      - button "最早" [ref=e29] [cursor=pointer]
+    - generic [ref=e30]:
+      - generic [ref=e31]:
+        - generic [ref=e32]: $ grep -i "
+        - textbox "搜索文章..." [ref=e33]
+        - generic [ref=e34]: "\" ./articles/"
+      - generic [ref=e35]:
+        - generic [ref=e36] [cursor=pointer]: "#阅读"
+        - generic [ref=e37] [cursor=pointer]: "#数据结构"
+        - generic [ref=e38] [cursor=pointer]: "#随笔"
+        - generic [ref=e39] [cursor=pointer]: "#java"
+        - generic [ref=e40] [cursor=pointer]: "#redis"
+        - generic [ref=e41] [cursor=pointer]: "#mysql"
+        - generic [ref=e42] [cursor=pointer]: "#jdk1"
+        - generic [ref=e43] [cursor=pointer]: "#concurrenthashmap"
+        - generic [ref=e44] [cursor=pointer]: "#lock"
+        - generic [ref=e45] [cursor=pointer]: "#synchronized"
+    - generic [ref=e46]:
+      - article [ref=e47]:
+        - text: │
+        - 'link "教程 2026-06-06 ⏱ 11 min 📄 Android 开发环境搭建完整笔记 一、安装 JDK（Java 开发工具包） 1. 提前准备：创建专用文件夹 - **操作步骤**： 1. 在非 C 盘（如 F 盘）创建多层文件夹，示例路径：`F:\\Chengxusheji\\Android` 2. 在该文件夹下再创建 3 个子文件夹：`software`... #jdk17 阅读 →" [ref=e48] [cursor=pointer]':
+          - /url: /articles/tutorials/Android 开发环境搭建完整笔记/
+          - generic [ref=e49]:
+            - generic [ref=e50]: 教程
+            - generic [ref=e51]: 2026-06-06
+            - generic [ref=e52]: ⏱ 11 min
+          - heading "📄 Android 开发环境搭建完整笔记" [level=2] [ref=e53]:
+            - generic [ref=e54]: 📄
+            - text: Android 开发环境搭建完整笔记
+          - paragraph [ref=e55]: "一、安装 JDK（Java 开发工具包） 1. 提前准备：创建专用文件夹 - **操作步骤**： 1. 在非 C 盘（如 F 盘）创建多层文件夹，示例路径：`F:\\Chengxusheji\\Android` 2. 在该文件夹下再创建 3 个子文件夹：`software`..."
+          - generic [ref=e56]:
+            - generic [ref=e58]: "#jdk17"
+            - generic [ref=e59]: 阅读 →
+      - article [ref=e60]:
+        - text: │
+        - 'link "教程 2026-06-06 ⏱ 10 min 📄 Flutter 环境配置 一、前置准备：明确依赖与下载工具 1. 必备依赖清单 - 操作系统：Windows 10/11（64 位） - 基础工具： - Android Studio（用于 Android SDK、模拟器、开发工具支持） - Flutter SDK（核心开发框架） - Git（可选... #Flutter #环境配置 阅读 →" [ref=e61] [cursor=pointer]':
+          - /url: /articles/tutorials/Flutter 环境配置/
+          - generic [ref=e62]:
+            - generic [ref=e63]: 教程
+            - generic [ref=e64]: 2026-06-06
+            - generic [ref=e65]: ⏱ 10 min
+          - heading "📄 Flutter 环境配置" [level=2] [ref=e66]:
+            - generic [ref=e67]: 📄
+            - text: Flutter 环境配置
+          - paragraph [ref=e68]: 一、前置准备：明确依赖与下载工具 1. 必备依赖清单 - 操作系统：Windows 10/11（64 位） - 基础工具： - Android Studio（用于 Android SDK、模拟器、开发工具支持） - Flutter SDK（核心开发框架） - Git（可选...
+          - generic [ref=e69]:
+            - generic [ref=e70]:
+              - generic [ref=e71]: "#Flutter"
+              - generic [ref=e72]: "#环境配置"
+            - generic [ref=e73]: 阅读 →
+      - article [ref=e74]:
+        - text: │
+        - 'link "教程 2026-06-06 ⏱ 12 min 📄 Maven配置 一、Maven 简介 Maven 是基于项目对象模型（POM）的项目管理与自动化构建工具，核心功能为**依赖管理**和**项目构建自动化**。 - 主要支持 Java 平台，也兼容其他编程语言（如 Scala、Kotlin 等） - 可通过简单配置完成项目构建、文档生成、报告输出、依赖... #Maven配置 阅读 →" [ref=e75] [cursor=pointer]':
+          - /url: /articles/tutorials/Maven配置/
+          - generic [ref=e76]:
+            - generic [ref=e77]: 教程
+            - generic [ref=e78]: 2026-06-06
+            - generic [ref=e79]: ⏱ 12 min
+          - heading "📄 Maven配置" [level=2] [ref=e80]:
+            - generic [ref=e81]: 📄
+            - text: Maven配置
+          - paragraph [ref=e82]: 一、Maven 简介 Maven 是基于项目对象模型（POM）的项目管理与自动化构建工具，核心功能为**依赖管理**和**项目构建自动化**。 - 主要支持 Java 平台，也兼容其他编程语言（如 Scala、Kotlin 等） - 可通过简单配置完成项目构建、文档生成、报告输出、依赖...
+          - generic [ref=e83]:
+            - generic [ref=e85]: "#Maven配置"
+            - generic [ref=e86]: 阅读 →
+      - article [ref=e87]:
+        - text: │
+        - 'link "教程 2026-06-06 ⏱ 9 min 📄 MySql配置 0. 卸载旧版 MySQL（关键！80% 安装失败源于此） 如果电脑之前装过 MySQL，必须彻底卸载干净，否则会导致新安装启动失败！ 检查是否有旧版残留 1. 查看安装路径：默认路径一般是 `C:\\Program Files\\MySQL` 或 `D:\\Program Files\\MySQL`... #MySql配置 阅读 →" [ref=e88] [cursor=pointer]':
+          - /url: /articles/tutorials/MySql配置/
+          - generic [ref=e89]:
+            - generic [ref=e90]: 教程
+            - generic [ref=e91]: 2026-06-06
+            - generic [ref=e92]: ⏱ 9 min
+          - heading "📄 MySql配置" [level=2] [ref=e93]:
+            - generic [ref=e94]: 📄
+            - text: MySql配置
+          - paragraph [ref=e95]: "0. 卸载旧版 MySQL（关键！80% 安装失败源于此） 如果电脑之前装过 MySQL，必须彻底卸载干净，否则会导致新安装启动失败！ 检查是否有旧版残留 1. 查看安装路径：默认路径一般是 `C:\\Program Files\\MySQL` 或 `D:\\Program Files\\MySQL`..."
+          - generic [ref=e96]:
+            - generic [ref=e98]: "#MySql配置"
+            - generic [ref=e99]: 阅读 →
+      - article [ref=e100]:
+        - text: │
+        - 'link "教程 2026-06-06 ⏱ 11 min 📄 Node.js + Vue 完整安装配置 一、前置知识：Node.js 和 Vue 是什么？有什么用？ 1. Node.js - **是什么**：简单说，Node.js 是一个能让 JavaScript 脱离浏览器运行的环境（基于 Chrome 的 V8 引擎）。原本 JS 只能在网页里写交互效果，有了 Node.js 后，能直接在电脑... #Node #js #Vue #完整安装配置 阅读 →" [ref=e101] [cursor=pointer]':
+          - /url: /articles/tutorials/Node.js + Vue 完整安装配置/
+          - generic [ref=e102]:
+            - generic [ref=e103]: 教程
+            - generic [ref=e104]: 2026-06-06
+            - generic [ref=e105]: ⏱ 11 min
+          - heading "📄 Node.js + Vue 完整安装配置" [level=2] [ref=e106]:
+            - generic [ref=e107]: 📄
+            - text: Node.js + Vue 完整安装配置
+          - paragraph [ref=e108]: 一、前置知识：Node.js 和 Vue 是什么？有什么用？ 1. Node.js - **是什么**：简单说，Node.js 是一个能让 JavaScript 脱离浏览器运行的环境（基于 Chrome 的 V8 引擎）。原本 JS 只能在网页里写交互效果，有了 Node.js 后，能直接在电脑...
+          - generic [ref=e109]:
+            - generic [ref=e110]:
+              - generic [ref=e111]: "#Node"
+              - generic [ref=e112]: "#js"
+              - generic [ref=e113]: "#Vue"
+              - generic [ref=e114]: "#完整安装配置"
+            - generic [ref=e115]: 阅读 →
+      - article [ref=e116]:
+        - text: │
+        - 'link "教程 2026-06-06 ⏱ 3 min 📄 SQL Server配置 一、SQL Server 基础操作 1. 新建数据库 在 SQL Server Management Studio（SSMS）的对象资源管理器中： - 右键 “数据库” 文件夹； - 选择 “新建数据库”； - 输入数据库名称，确认默认配置（或自定义数据 / 日志文件），点击 “确定”。 2... #SQL #Server配置 阅读 →" [ref=e117] [cursor=pointer]':
+          - /url: /articles/tutorials/SQL Server配置/
+          - generic [ref=e118]:
+            - generic [ref=e119]: 教程
+            - generic [ref=e120]: 2026-06-06
+            - generic [ref=e121]: ⏱ 3 min
+          - heading "📄 SQL Server配置" [level=2] [ref=e122]:
+            - generic [ref=e123]: 📄
+            - text: SQL Server配置
+          - paragraph [ref=e124]: 一、SQL Server 基础操作 1. 新建数据库 在 SQL Server Management Studio（SSMS）的对象资源管理器中： - 右键 “数据库” 文件夹； - 选择 “新建数据库”； - 输入数据库名称，确认默认配置（或自定义数据 / 日志文件），点击 “确定”。 2...
+          - generic [ref=e125]:
+            - generic [ref=e126]:
+              - generic [ref=e127]: "#SQL"
+              - generic [ref=e128]: "#Server配置"
+            - generic [ref=e129]: 阅读 →
+      - article [ref=e130]:
+        - text: │
+        - 'link "博客 2026-06-06 ⏱ 9 min 📄 Java 值传递 一、问题引入：一段 “语法正确但逻辑失效” 的代码 1. 问题场景 实现 “查找二叉搜索树（BST）中第 k 小元素” 功能，以下代码编译无报错，但运行结果始终错误（返回 0）： ``` class TreeNode { int val; TreeNode left; ... #Java #值传递 阅读 →" [ref=e131] [cursor=pointer]':
+          - /url: /articles/blog/Java 值传递/
+          - generic [ref=e132]:
+            - generic [ref=e133]: 博客
+            - generic [ref=e134]: 2026-06-06
+            - generic [ref=e135]: ⏱ 9 min
+          - heading "📄 Java 值传递" [level=2] [ref=e136]:
+            - generic [ref=e137]: 📄
+            - text: Java 值传递
+          - paragraph [ref=e138]: "一、问题引入：一段 “语法正确但逻辑失效” 的代码 1. 问题场景 实现 “查找二叉搜索树（BST）中第 k 小元素” 功能，以下代码编译无报错，但运行结果始终错误（返回 0）： ``` class TreeNode { int val; TreeNode left; ..."
+          - generic [ref=e139]:
+            - generic [ref=e140]:
+              - generic [ref=e141]: "#Java"
+              - generic [ref=e142]: "#值传递"
+            - generic [ref=e143]: 阅读 →
+      - article [ref=e144]:
+        - text: │
+        - 'link "博客 2026-06-06 ⏱ 18 min 📄 Java 并发编程基础概念与常见问题梳理 在当今的软件开发领域，随着计算机硬件性能的不断提升（尤其是多核处理器的普及）以及业务需求的日益复杂，Java 并发编程的重要性愈发凸显。它打破了单线程程序的性能瓶颈，能够充分利用多核处理器的优势，让程序在同一时间内执行多个任务，从而极大地提高系统的执行效率和资源利用率。 然而，并发编程并非“银弹”... #Java #并发编程基础概念与常见问题梳理 阅读 →" [ref=e145] [cursor=pointer]':
+          - /url: /articles/blog/Java 并发编程基础概念与常见问题梳理/
+          - generic [ref=e146]:
+            - generic [ref=e147]: 博客
+            - generic [ref=e148]: 2026-06-06
+            - generic [ref=e149]: ⏱ 18 min
+          - heading "📄 Java 并发编程基础概念与常见问题梳理" [level=2] [ref=e150]:
+            - generic [ref=e151]: 📄
+            - text: Java 并发编程基础概念与常见问题梳理
+          - paragraph [ref=e152]: 在当今的软件开发领域，随着计算机硬件性能的不断提升（尤其是多核处理器的普及）以及业务需求的日益复杂，Java 并发编程的重要性愈发凸显。它打破了单线程程序的性能瓶颈，能够充分利用多核处理器的优势，让程序在同一时间内执行多个任务，从而极大地提高系统的执行效率和资源利用率。 然而，并发编程并非“银弹”...
+          - generic [ref=e153]:
+            - generic [ref=e154]:
+              - generic [ref=e155]: "#Java"
+              - generic [ref=e156]: "#并发编程基础概念与常见问题梳理"
+            - generic [ref=e157]: 阅读 →
+      - article [ref=e158]:
+        - text: │
+        - 'link "博客 2026-06-06 ⏱ 65 min 📄 Java垃圾回收机制 文章标签：#java #JVM #垃圾回收 #CMS #垃圾回收算法 #G1 #分代回收 #STW 一、垃圾回收核心概念 垃圾回收（Garbage Collection，简称GC），本质是JVM（Java虚拟机）提供的“自动清洁工”——它会在后台默默监控内存，把“没人用的对象”（垃圾）占用的内存... #java #JVM #CMS #G1 #STW 阅读 →" [ref=e159] [cursor=pointer]':
+          - /url: /articles/blog/Java垃圾回收机制/
+          - generic [ref=e160]:
+            - generic [ref=e161]: 博客
+            - generic [ref=e162]: 2026-06-06
+            - generic [ref=e163]: ⏱ 65 min
+          - heading "📄 Java垃圾回收机制" [level=2] [ref=e164]:
+            - generic [ref=e165]: 📄
+            - text: Java垃圾回收机制
+          - paragraph [ref=e166]: "文章标签：#java #JVM #垃圾回收 #CMS #垃圾回收算法 #G1 #分代回收 #STW 一、垃圾回收核心概念 垃圾回收（Garbage Collection，简称GC），本质是JVM（Java虚拟机）提供的“自动清洁工”——它会在后台默默监控内存，把“没人用的对象”（垃圾）占用的内存..."
+          - generic [ref=e167]:
+            - generic [ref=e168]:
+              - generic [ref=e169]: "#java"
+              - generic [ref=e170]: "#JVM"
+              - generic [ref=e171]: "#CMS"
+              - generic [ref=e172]: "#G1"
+              - generic [ref=e173]: "#STW"
+            - generic [ref=e174]: 阅读 →
+      - article [ref=e175]:
+        - text: │
+        - 'link "博客 2026-06-06 ⏱ 22 min 📄 Java日志框架 在Java开发中，日志是排查问题、监控系统运行状态的核心工具。从JDK自带的日志系统到主流的Logback、Log4j2，再到日志门面SLF4J，各类框架各有优劣。本文将基于基础知识点，对Java常用日志框架进行全面扩展补充. 一、JDK日志（java.util.logging=JUL） 1.1... #Java日志框架 阅读 →" [ref=e176] [cursor=pointer]':
+          - /url: /articles/blog/Java日志框架/
+          - generic [ref=e177]:
+            - generic [ref=e178]: 博客
+            - generic [ref=e179]: 2026-06-06
+            - generic [ref=e180]: ⏱ 22 min
+          - heading "📄 Java日志框架" [level=2] [ref=e181]:
+            - generic [ref=e182]: 📄
+            - text: Java日志框架
+          - paragraph [ref=e183]: 在Java开发中，日志是排查问题、监控系统运行状态的核心工具。从JDK自带的日志系统到主流的Logback、Log4j2，再到日志门面SLF4J，各类框架各有优劣。本文将基于基础知识点，对Java常用日志框架进行全面扩展补充. 一、JDK日志（java.util.logging=JUL） 1.1...
+          - generic [ref=e184]:
+            - generic [ref=e186]: "#Java日志框架"
+            - generic [ref=e187]: 阅读 →
+      - text: │ │ │ │ │ │ │ │ │ │ │ │ │ │ │ │ │ │ │ │ │ │ │ │ │ │ │ │ │ │ │ │ │ │ │ │ │ │ │ │ │ │ │ │ │ │ │ │ │ │ │ │ │ │ │ │ │ │ │ │ │ │ │ │ │ │ │ │ │ │ │ │ │ │ │
+    - generic [ref=e188]:
+      - button "←" [disabled] [ref=e189]
+      - button "1" [ref=e190] [cursor=pointer]
+      - button "2" [ref=e191] [cursor=pointer]
+      - button "3" [ref=e192] [cursor=pointer]
+      - button "4" [ref=e193] [cursor=pointer]
+      - button "5" [ref=e194] [cursor=pointer]
+      - generic [ref=e195]: ...
+      - button "9" [ref=e196] [cursor=pointer]
+      - button "→" [ref=e197] [cursor=pointer]
+      - generic [ref=e198]: 1/9
+    - generic [ref=e199]:
+      - generic [ref=e200]: ───
+      - generic [ref=e201]: END OF LIST
+      - generic [ref=e202]: ───

@@ -10,7 +10,7 @@
       "forks": 0,
       "url": "https://github.com/Lumjiel/BugPet",
       "updatedAt": "2026-05-14T08:05:40Z",
-      "updatedAgo": "22天前"
+      "updatedAgo": "29天前"
     },
     {
       "name": "chaoxing-helper",
@@ -21,7 +21,7 @@
       "forks": 0,
       "url": "https://github.com/Lumjiel/chaoxing-helper",
       "updatedAt": "2026-05-14T09:50:57Z",
-      "updatedAgo": "22天前"
+      "updatedAgo": "28天前"
     },
     {
       "name": "CyberClaw",
@@ -32,7 +32,18 @@
       "forks": 0,
       "url": "https://github.com/Lumjiel/CyberClaw",
       "updatedAt": "2026-05-19T08:35:34Z",
-      "updatedAgo": "17天前"
+      "updatedAgo": "24天前"
+    },
+    {
+      "name": "deepseek-pp",
+      "fullName": "Lumjiel/deepseek-pp",
+      "description": "DeepSeek Web browser extension: AI agent workspace with MCP tools, memory, Skills, automation, web search, and conversation export.",
+      "language": null,
+      "stars": 0,
+      "forks": 0,
+      "url": "https://github.com/Lumjiel/deepseek-pp",
+      "updatedAt": "2026-06-09T13:15:32Z",
+      "updatedAgo": "2天前"
     },
     {
       "name": "Dxkyglxt",
@@ -43,7 +54,7 @@
       "forks": 0,
       "url": "https://github.com/Lumjiel/Dxkyglxt",
       "updatedAt": "2026-05-14T08:08:15Z",
-      "updatedAgo": "22天前"
+      "updatedAgo": "29天前"
     },
     {
       "name": "epic-awesome-gamer",
@@ -64,7 +75,7 @@
       "stars": 0,
       "forks": 0,
       "url": "https://github.com/Lumjiel/IRIS",
-      "updatedAt": "2026-05-31T07:53:26Z",
+      "updatedAt": "2026-06-07T05:25:57Z",
       "updatedAgo": "5天前"
     },
     {
@@ -76,7 +87,7 @@
       "forks": 0,
       "url": "https://github.com/Lumjiel/jie-skills-collection",
       "updatedAt": "2026-05-19T09:17:05Z",
-      "updatedAgo": "17天前"
+      "updatedAgo": "23天前"
     },
     {
       "name": "langchain4j",
@@ -98,7 +109,7 @@
       "forks": 0,
       "url": "https://github.com/Lumjiel/nanobot",
       "updatedAt": "2026-05-07T05:04:13Z",
-      "updatedAgo": "29天前"
+      "updatedAgo": "1个月前"
     },
     {
       "name": "NJGC",
@@ -109,7 +120,7 @@
       "forks": 0,
       "url": "https://github.com/Lumjiel/NJGC",
       "updatedAt": "2026-05-19T13:59:35Z",
-      "updatedAgo": "17天前"
+      "updatedAgo": "23天前"
     },
     {
       "name": "Observatory",
@@ -119,8 +130,8 @@
       "stars": 0,
       "forks": 0,
       "url": "https://github.com/Lumjiel/Observatory",
-      "updatedAt": "2026-06-06T04:40:46Z",
-      "updatedAgo": "22分钟前"
+      "updatedAt": "2026-06-06T05:29:56Z",
+      "updatedAgo": "6天前"
     },
     {
       "name": "openclaw",
@@ -142,7 +153,7 @@
       "forks": 0,
       "url": "https://github.com/Lumjiel/PBTI",
       "updatedAt": "2026-05-14T07:59:33Z",
-      "updatedAgo": "22天前"
+      "updatedAgo": "29天前"
     },
     {
       "name": "ragent",
@@ -175,7 +186,7 @@
       "forks": 0,
       "url": "https://github.com/Lumjiel/Todolist",
       "updatedAt": "2026-05-14T09:12:27Z",
-      "updatedAgo": "22天前"
+      "updatedAgo": "28天前"
     },
     {
       "name": "VoxCPM",
@@ -186,7 +197,7 @@
       "forks": 0,
       "url": "https://github.com/Lumjiel/VoxCPM",
       "updatedAt": "2026-05-29T09:36:14Z",
-      "updatedAgo": "7天前"
+      "updatedAgo": "13天前"
     },
     {
       "name": "YiBan_AutoSgin",
@@ -196,8 +207,8 @@
       "stars": 0,
       "forks": 0,
       "url": "https://github.com/Lumjiel/YiBan_AutoSgin",
-      "updatedAt": "2026-06-05T13:14:57Z",
-      "updatedAgo": "15小时前"
+      "updatedAt": "2026-06-06T12:32:39Z",
+      "updatedAgo": "5天前"
     },
     {
       "name": "zxtx",
@@ -208,11 +219,14 @@
       "forks": 0,
       "url": "https://github.com/Lumjiel/zxtx",
       "updatedAt": "2026-05-14T08:09:30Z",
-      "updatedAgo": "22天前"
+      "updatedAgo": "29天前"
     }
   ],
   "contributions": {
-    "2026-06-06": 1,
+    "2026-06-10": 6,
+    "2026-06-09": 5,
+    "2026-06-07": 3,
+    "2026-06-06": 9,
     "2026-06-05": 16,
     "2026-06-04": 1,
     "2026-05-31": 4,
@@ -225,10 +239,7 @@
     "2026-05-18": 3,
     "2026-05-16": 9,
     "2026-05-15": 8,
-    "2026-05-14": 14,
-    "2026-05-12": 6,
-    "2026-05-10": 7,
-    "2026-05-09": 9
+    "2026-05-14": 14
   },
-  "lastFetched": "2026-06-06T05:03:21.677Z"
+  "lastFetched": "2026-06-12T08:52:28.720Z"
 }

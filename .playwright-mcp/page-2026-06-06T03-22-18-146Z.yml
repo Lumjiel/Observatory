@@ -1,0 +1,1646 @@
+- generic [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e5]: "> observatory.log"
+    - generic [ref=e6]:
+      - generic [ref=e8]: 📈 已运行 30 天
+      - generic [ref=e9]:
+        - text: 📡 信号
+        - generic [ref=e10]: 📋 85篇文章
+      - button "🌙" [ref=e11] [cursor=pointer]
+  - generic [ref=e12]:
+    - generic [ref=e14]:
+      - generic [ref=e15]: $
+      - textbox "输入命令... (help 查看全部)" [active] [ref=e16]
+      - generic [ref=e17]: ↑↓ 历史 | Tab 补全 | Enter 执行
+    - generic [ref=e18]:
+      - generic [ref=e20]:
+        - generic [ref=e26]: articles.sh
+        - banner [ref=e27]:
+          - generic [ref=e28]: $ ls -la ./articles/
+          - heading "📚 文章列表" [level=1] [ref=e29]
+          - paragraph [ref=e30]: 共找到 85 篇文章
+        - generic [ref=e31]:
+          - link "📂 全部 85" [ref=e32] [cursor=pointer]:
+            - /url: /articles/
+            - generic [ref=e33]: 📂
+            - generic [ref=e34]: 全部
+            - generic [ref=e35]: "85"
+          - link "🛠️ 教程 9" [ref=e36] [cursor=pointer]:
+            - /url: /articles/?category=tutorials
+            - generic [ref=e37]: 🛠️
+            - generic [ref=e38]: 教程
+            - generic [ref=e39]: "9"
+          - link "📖 博客 55" [ref=e40] [cursor=pointer]:
+            - /url: /articles/?category=blog
+            - generic [ref=e41]: 📖
+            - generic [ref=e42]: 博客
+            - generic [ref=e43]: "55"
+          - link "🚀 项目 14" [ref=e44] [cursor=pointer]:
+            - /url: /articles/?category=projects
+            - generic [ref=e45]: 🚀
+            - generic [ref=e46]: 项目
+            - generic [ref=e47]: "14"
+          - link "✍️ 随笔 7" [ref=e48] [cursor=pointer]:
+            - /url: /articles/?category=essays
+            - generic [ref=e49]: ✍️
+            - generic [ref=e50]: 随笔
+            - generic [ref=e51]: "7"
+        - generic [ref=e52]:
+          - generic [ref=e53]: $ sort -
+          - link "最新" [ref=e54] [cursor=pointer]:
+            - /url: /articles/
+          - link "最早" [ref=e55] [cursor=pointer]:
+            - /url: /articles/?sort=oldest
+        - generic [ref=e56]:
+          - generic [ref=e57]:
+            - generic [ref=e58]: $ grep -i "
+            - textbox "搜索文章..." [ref=e59]
+            - generic [ref=e60]: "\" ./articles/"
+          - generic [ref=e61]:
+            - generic [ref=e62] [cursor=pointer]: "#阅读"
+            - generic [ref=e63] [cursor=pointer]: "#数据结构"
+            - generic [ref=e64] [cursor=pointer]: "#随笔"
+            - generic [ref=e65] [cursor=pointer]: "#java"
+            - generic [ref=e66] [cursor=pointer]: "#redis"
+            - generic [ref=e67] [cursor=pointer]: "#mysql"
+            - generic [ref=e68] [cursor=pointer]: "#jdk1"
+            - generic [ref=e69] [cursor=pointer]: "#concurrenthashmap"
+            - generic [ref=e70] [cursor=pointer]: "#lock"
+            - generic [ref=e71] [cursor=pointer]: "#synchronized"
+            - generic [ref=e72] [cursor=pointer]: "#volatile"
+            - generic [ref=e73] [cursor=pointer]: "#从零起步学习"
+            - generic [ref=e74] [cursor=pointer]: "#第三章"
+            - generic [ref=e75] [cursor=pointer]: "#第七章"
+            - generic [ref=e76] [cursor=pointer]: "#并发编程常用工具类"
+            - generic [ref=e77] [cursor=pointer]: "#aqs"
+            - generic [ref=e78] [cursor=pointer]: "#深度解析"
+            - generic [ref=e79] [cursor=pointer]: "#复习"
+            - generic [ref=e80] [cursor=pointer]: "#jdk17"
+            - generic [ref=e81] [cursor=pointer]: "#flutter"
+            - generic [ref=e82] [cursor=pointer]: "#环境配置"
+            - generic [ref=e83] [cursor=pointer]: "#maven配置"
+            - generic [ref=e84] [cursor=pointer]: "#mysql配置"
+            - generic [ref=e85] [cursor=pointer]: "#node"
+            - generic [ref=e86] [cursor=pointer]: "#js"
+            - generic [ref=e87] [cursor=pointer]: "#vue"
+            - generic [ref=e88] [cursor=pointer]: "#完整安装配置"
+            - generic [ref=e89] [cursor=pointer]: "#sql"
+            - generic [ref=e90] [cursor=pointer]: "#server配置"
+            - generic [ref=e91] [cursor=pointer]: "#值传递"
+            - generic [ref=e92] [cursor=pointer]: "#并发编程基础概念与常见问题梳理"
+            - generic [ref=e93] [cursor=pointer]: "#jvm"
+            - generic [ref=e94] [cursor=pointer]: "#cms"
+            - generic [ref=e95] [cursor=pointer]: "#g1"
+            - generic [ref=e96] [cursor=pointer]: "#stw"
+            - generic [ref=e97] [cursor=pointer]: "#java日志框架"
+            - generic [ref=e98] [cursor=pointer]: "#底层原理详解"
+            - generic [ref=e99] [cursor=pointer]: "#接口及实现类详解"
+            - generic [ref=e100] [cursor=pointer]: "#reentrantlock"
+            - generic [ref=e101] [cursor=pointer]: "#到并发场景实践"
+            - generic [ref=e102] [cursor=pointer]: "#rabbitmq可靠性保障全指南"
+            - generic [ref=e103] [cursor=pointer]: "#生产者"
+            - generic [ref=e104] [cursor=pointer]: "#mq"
+            - generic [ref=e105] [cursor=pointer]: "#消费者三层兜底"
+            - generic [ref=e106] [cursor=pointer]: "#rabbitmq实战全解析"
+            - generic [ref=e107] [cursor=pointer]: "#从核心概念到电商订单落地"
+            - generic [ref=e108] [cursor=pointer]: "#afterpropertiesset方"
+            - generic [ref=e109] [cursor=pointer]: "#destroy方"
+            - generic [ref=e110] [cursor=pointer]: "#postprocessbeforeinitialization"
+            - generic [ref=e111] [cursor=pointer]: "#postprocessafterinitialization"
+            - generic [ref=e112] [cursor=pointer]: "#深度剖析"
+            - generic [ref=e113] [cursor=pointer]: "#从语法到锁升级的完整演进"
+            - generic [ref=e114] [cursor=pointer]: "#关键字详解"
+            - generic [ref=e115] [cursor=pointer]: "#可见性"
+            - generic [ref=e116] [cursor=pointer]: "#禁止重排与实战场景"
+            - generic [ref=e117] [cursor=pointer]: "#top"
+            - generic [ref=e118] [cursor=pointer]: "#dns"
+            - generic [ref=e119] [cursor=pointer]: "#常用数据类型深层剖析"
+            - generic [ref=e120] [cursor=pointer]: "#持久化方案的实现及底层原理解析"
+            - generic [ref=e121] [cursor=pointer]: "#匿名内部类"
+            - generic [ref=e122] [cursor=pointer]: "#增强for"
+            - generic [ref=e123] [cursor=pointer]: "#迭代器"
+            - generic [ref=e124] [cursor=pointer]: "#countdownlatch"
+            - generic [ref=e125] [cursor=pointer]: "#semaphore"
+            - generic [ref=e126] [cursor=pointer]: "#的协作应用"
+            - generic [ref=e127] [cursor=pointer]: "#cyclicbarrier"
+            - generic [ref=e128] [cursor=pointer]: "#phaser"
+            - generic [ref=e129] [cursor=pointer]: "#的协同应用"
+            - generic [ref=e130] [cursor=pointer]: "#并发编程常见问题排查与解决"
+            - generic [ref=e131] [cursor=pointer]: "#从死锁到线程竞争的实战指南"
+            - generic [ref=e132] [cursor=pointer]: "#并发编程面试实战"
+            - generic [ref=e133] [cursor=pointer]: "#arraylist"
+            - generic [ref=e134] [cursor=pointer]: "#扩容机制"
+            - generic [ref=e135] [cursor=pointer]: "#从源码到时序图全拆解"
+            - generic [ref=e136] [cursor=pointer]: "#从底层结构到并发核心原理"
+            - generic [ref=e137] [cursor=pointer]: "#第一章"
+            - generic [ref=e138] [cursor=pointer]: "#初识mysql及深入理解内部数据类型"
+            - generic [ref=e139] [cursor=pointer]: "#初识索引底层运用及性能优化"
+            - generic [ref=e140] [cursor=pointer]: "#dml语句定义及常见用法示例"
+            - generic [ref=e141] [cursor=pointer]: "#第九章"
+            - generic [ref=e142] [cursor=pointer]: "#从数据页的角度看b"
+            - generic [ref=e143] [cursor=pointer]: "#树及mysql中数据的底层存储原理"
+            - generic [ref=e144] [cursor=pointer]: "#第二章"
+            - generic [ref=e145] [cursor=pointer]: "#ddl语句定义及常见用法示例"
+            - generic [ref=e146] [cursor=pointer]: "#第五章"
+            - generic [ref=e147] [cursor=pointer]: "#select语句的执行过程是怎么样的"
+            - generic [ref=e148] [cursor=pointer]: "#第八章"
+            - generic [ref=e149] [cursor=pointer]: "#索引深入理解及高级运用"
+            - generic [ref=e150] [cursor=pointer]: "#结合常见优化问题讲解"
+            - generic [ref=e151] [cursor=pointer]: "#第六章"
+            - generic [ref=e152] [cursor=pointer]: "#mysql数据库中的一条数据是如何存储的"
+            - generic [ref=e153] [cursor=pointer]: "#第十一章"
+            - generic [ref=e154] [cursor=pointer]: "#mysql中常见的索引失效情况原因分析及解决方案"
+            - generic [ref=e155] [cursor=pointer]: "#第十三章"
+            - generic [ref=e156] [cursor=pointer]: "#事务详解"
+            - generic [ref=e157] [cursor=pointer]: "#原理"
+            - generic [ref=e158] [cursor=pointer]: "#特性"
+            - generic [ref=e159] [cursor=pointer]: "#第十二章"
+            - generic [ref=e160] [cursor=pointer]: "#mysql分页性能如何优化"
+            - generic [ref=e161] [cursor=pointer]: "#第十五章"
+            - generic [ref=e162] [cursor=pointer]: "#可重复读隔离级别"
+            - generic [ref=e163] [cursor=pointer]: "#工作原理与幻读问题解析"
+            - generic [ref=e164] [cursor=pointer]: "#第十六章"
+            - generic [ref=e165] [cursor=pointer]: "#分库分表的考量策略"
+            - generic [ref=e166] [cursor=pointer]: "#java后端实战版"
+            - generic [ref=e167] [cursor=pointer]: "#第十四章"
+            - generic [ref=e168] [cursor=pointer]: "#事务中如何解决幻读问题"
+            - generic [ref=e169] [cursor=pointer]: "#mvcc中通过readview来解决幻读问题详解"
+            - generic [ref=e170] [cursor=pointer]: "#第十章"
+            - generic [ref=e171] [cursor=pointer]: "#深入了解b"
+            - generic [ref=e172] [cursor=pointer]: "#树及b"
+            - generic [ref=e173] [cursor=pointer]: "#树的性能优势"
+            - generic [ref=e174] [cursor=pointer]: "#第四章"
+            - generic [ref=e175] [cursor=pointer]: "#dql查询全解析"
+            - generic [ref=e176] [cursor=pointer]: "#设计模式"
+            - generic [ref=e177] [cursor=pointer]: "#银行家算法"
+            - generic [ref=e178] [cursor=pointer]: "#运维"
+            - generic [ref=e179] [cursor=pointer]: "#nginx"
+            - generic [ref=e180] [cursor=pointer]: "#云服务器"
+            - generic [ref=e181] [cursor=pointer]: "#本地部署"
+            - generic [ref=e182] [cursor=pointer]: "#大模型"
+            - generic [ref=e183] [cursor=pointer]: "#图论"
+            - generic [ref=e184] [cursor=pointer]: "#队列"
+            - generic [ref=e185] [cursor=pointer]: "#openclaw"
+            - generic [ref=e186] [cursor=pointer]: "#claudecode"
+            - generic [ref=e187] [cursor=pointer]: "#cli"
+            - generic [ref=e188] [cursor=pointer]: "#tui"
+            - generic [ref=e189] [cursor=pointer]: "#gui"
+            - generic [ref=e190] [cursor=pointer]: "#多态"
+            - generic [ref=e191] [cursor=pointer]: "#接口"
+            - generic [ref=e192] [cursor=pointer]: "#c语言"
+            - generic [ref=e193] [cursor=pointer]: "#核心原理探索"
+            - generic [ref=e194] [cursor=pointer]: "#rabbitmq"
+            - generic [ref=e195] [cursor=pointer]: "#spring 源码"
+            - generic [ref=e196] [cursor=pointer]: "#spring 容器启动"
+        - generic [ref=e197]:
+          - article [ref=e198]:
+            - text: │
+            - 'link "教程 2026-06-06 ⏱ 11 min 📄 Android 开发环境搭建完整笔记 一、安装 JDK（Java 开发工具包） 1. 提前准备：创建专用文件夹 - **操作步骤**： 1. 在非 C 盘（如 F 盘）创建多层文件夹，示例路径：`F:\\Chengxusheji\\Android` 2. 在该文件夹下再创建 3 个子文件夹：`software`... #jdk17 阅读 →" [ref=e199] [cursor=pointer]':
+              - /url: /articles/tutorials/Android 开发环境搭建完整笔记/
+              - generic [ref=e200]:
+                - generic [ref=e201]: 教程
+                - generic [ref=e202]: 2026-06-06
+                - generic [ref=e203]: ⏱ 11 min
+              - heading "📄 Android 开发环境搭建完整笔记" [level=2] [ref=e204]:
+                - generic [ref=e205]: 📄
+                - text: Android 开发环境搭建完整笔记
+              - paragraph [ref=e206]: "一、安装 JDK（Java 开发工具包） 1. 提前准备：创建专用文件夹 - **操作步骤**： 1. 在非 C 盘（如 F 盘）创建多层文件夹，示例路径：`F:\\Chengxusheji\\Android` 2. 在该文件夹下再创建 3 个子文件夹：`software`..."
+              - generic [ref=e207]:
+                - generic [ref=e209]: "#jdk17"
+                - generic [ref=e210]: 阅读 →
+          - article [ref=e211]:
+            - text: │
+            - 'link "教程 2026-06-06 ⏱ 10 min 📄 Flutter 环境配置 一、前置准备：明确依赖与下载工具 1. 必备依赖清单 - 操作系统：Windows 10/11（64 位） - 基础工具： - Android Studio（用于 Android SDK、模拟器、开发工具支持） - Flutter SDK（核心开发框架） - Git（可选... #Flutter #环境配置 阅读 →" [ref=e212] [cursor=pointer]':
+              - /url: /articles/tutorials/Flutter 环境配置/
+              - generic [ref=e213]:
+                - generic [ref=e214]: 教程
+                - generic [ref=e215]: 2026-06-06
+                - generic [ref=e216]: ⏱ 10 min
+              - heading "📄 Flutter 环境配置" [level=2] [ref=e217]:
+                - generic [ref=e218]: 📄
+                - text: Flutter 环境配置
+              - paragraph [ref=e219]: 一、前置准备：明确依赖与下载工具 1. 必备依赖清单 - 操作系统：Windows 10/11（64 位） - 基础工具： - Android Studio（用于 Android SDK、模拟器、开发工具支持） - Flutter SDK（核心开发框架） - Git（可选...
+              - generic [ref=e220]:
+                - generic [ref=e221]:
+                  - generic [ref=e222]: "#Flutter"
+                  - generic [ref=e223]: "#环境配置"
+                - generic [ref=e224]: 阅读 →
+          - article [ref=e225]:
+            - text: │
+            - 'link "教程 2026-06-06 ⏱ 12 min 📄 Maven配置 一、Maven 简介 Maven 是基于项目对象模型（POM）的项目管理与自动化构建工具，核心功能为**依赖管理**和**项目构建自动化**。 - 主要支持 Java 平台，也兼容其他编程语言（如 Scala、Kotlin 等） - 可通过简单配置完成项目构建、文档生成、报告输出、依赖... #Maven配置 阅读 →" [ref=e226] [cursor=pointer]':
+              - /url: /articles/tutorials/Maven配置/
+              - generic [ref=e227]:
+                - generic [ref=e228]: 教程
+                - generic [ref=e229]: 2026-06-06
+                - generic [ref=e230]: ⏱ 12 min
+              - heading "📄 Maven配置" [level=2] [ref=e231]:
+                - generic [ref=e232]: 📄
+                - text: Maven配置
+              - paragraph [ref=e233]: 一、Maven 简介 Maven 是基于项目对象模型（POM）的项目管理与自动化构建工具，核心功能为**依赖管理**和**项目构建自动化**。 - 主要支持 Java 平台，也兼容其他编程语言（如 Scala、Kotlin 等） - 可通过简单配置完成项目构建、文档生成、报告输出、依赖...
+              - generic [ref=e234]:
+                - generic [ref=e236]: "#Maven配置"
+                - generic [ref=e237]: 阅读 →
+          - article [ref=e238]:
+            - text: │
+            - 'link "教程 2026-06-06 ⏱ 9 min 📄 MySql配置 0. 卸载旧版 MySQL（关键！80% 安装失败源于此） 如果电脑之前装过 MySQL，必须彻底卸载干净，否则会导致新安装启动失败！ 检查是否有旧版残留 1. 查看安装路径：默认路径一般是 `C:\\Program Files\\MySQL` 或 `D:\\Program Files\\MySQL`... #MySql配置 阅读 →" [ref=e239] [cursor=pointer]':
+              - /url: /articles/tutorials/MySql配置/
+              - generic [ref=e240]:
+                - generic [ref=e241]: 教程
+                - generic [ref=e242]: 2026-06-06
+                - generic [ref=e243]: ⏱ 9 min
+              - heading "📄 MySql配置" [level=2] [ref=e244]:
+                - generic [ref=e245]: 📄
+                - text: MySql配置
+              - paragraph [ref=e246]: "0. 卸载旧版 MySQL（关键！80% 安装失败源于此） 如果电脑之前装过 MySQL，必须彻底卸载干净，否则会导致新安装启动失败！ 检查是否有旧版残留 1. 查看安装路径：默认路径一般是 `C:\\Program Files\\MySQL` 或 `D:\\Program Files\\MySQL`..."
+              - generic [ref=e247]:
+                - generic [ref=e249]: "#MySql配置"
+                - generic [ref=e250]: 阅读 →
+          - article [ref=e251]:
+            - text: │
+            - 'link "教程 2026-06-06 ⏱ 11 min 📄 Node.js + Vue 完整安装配置 一、前置知识：Node.js 和 Vue 是什么？有什么用？ 1. Node.js - **是什么**：简单说，Node.js 是一个能让 JavaScript 脱离浏览器运行的环境（基于 Chrome 的 V8 引擎）。原本 JS 只能在网页里写交互效果，有了 Node.js 后，能直接在电脑... #Node #js #Vue #完整安装配置 阅读 →" [ref=e252] [cursor=pointer]':
+              - /url: /articles/tutorials/Node.js + Vue 完整安装配置/
+              - generic [ref=e253]:
+                - generic [ref=e254]: 教程
+                - generic [ref=e255]: 2026-06-06
+                - generic [ref=e256]: ⏱ 11 min
+              - heading "📄 Node.js + Vue 完整安装配置" [level=2] [ref=e257]:
+                - generic [ref=e258]: 📄
+                - text: Node.js + Vue 完整安装配置
+              - paragraph [ref=e259]: 一、前置知识：Node.js 和 Vue 是什么？有什么用？ 1. Node.js - **是什么**：简单说，Node.js 是一个能让 JavaScript 脱离浏览器运行的环境（基于 Chrome 的 V8 引擎）。原本 JS 只能在网页里写交互效果，有了 Node.js 后，能直接在电脑...
+              - generic [ref=e260]:
+                - generic [ref=e261]:
+                  - generic [ref=e262]: "#Node"
+                  - generic [ref=e263]: "#js"
+                  - generic [ref=e264]: "#Vue"
+                  - generic [ref=e265]: "#完整安装配置"
+                - generic [ref=e266]: 阅读 →
+          - article [ref=e267]:
+            - text: │
+            - 'link "教程 2026-06-06 ⏱ 3 min 📄 SQL Server配置 一、SQL Server 基础操作 1. 新建数据库 在 SQL Server Management Studio（SSMS）的对象资源管理器中： - 右键 “数据库” 文件夹； - 选择 “新建数据库”； - 输入数据库名称，确认默认配置（或自定义数据 / 日志文件），点击 “确定”。 2... #SQL #Server配置 阅读 →" [ref=e268] [cursor=pointer]':
+              - /url: /articles/tutorials/SQL Server配置/
+              - generic [ref=e269]:
+                - generic [ref=e270]: 教程
+                - generic [ref=e271]: 2026-06-06
+                - generic [ref=e272]: ⏱ 3 min
+              - heading "📄 SQL Server配置" [level=2] [ref=e273]:
+                - generic [ref=e274]: 📄
+                - text: SQL Server配置
+              - paragraph [ref=e275]: 一、SQL Server 基础操作 1. 新建数据库 在 SQL Server Management Studio（SSMS）的对象资源管理器中： - 右键 “数据库” 文件夹； - 选择 “新建数据库”； - 输入数据库名称，确认默认配置（或自定义数据 / 日志文件），点击 “确定”。 2...
+              - generic [ref=e276]:
+                - generic [ref=e277]:
+                  - generic [ref=e278]: "#SQL"
+                  - generic [ref=e279]: "#Server配置"
+                - generic [ref=e280]: 阅读 →
+          - article [ref=e281]:
+            - text: │
+            - 'link "博客 2026-06-06 ⏱ 9 min 📄 Java 值传递 一、问题引入：一段 “语法正确但逻辑失效” 的代码 1. 问题场景 实现 “查找二叉搜索树（BST）中第 k 小元素” 功能，以下代码编译无报错，但运行结果始终错误（返回 0）： ``` class TreeNode { int val; TreeNode left; ... #Java #值传递 阅读 →" [ref=e282] [cursor=pointer]':
+              - /url: /articles/blog/Java 值传递/
+              - generic [ref=e283]:
+                - generic [ref=e284]: 博客
+                - generic [ref=e285]: 2026-06-06
+                - generic [ref=e286]: ⏱ 9 min
+              - heading "📄 Java 值传递" [level=2] [ref=e287]:
+                - generic [ref=e288]: 📄
+                - text: Java 值传递
+              - paragraph [ref=e289]: "一、问题引入：一段 “语法正确但逻辑失效” 的代码 1. 问题场景 实现 “查找二叉搜索树（BST）中第 k 小元素” 功能，以下代码编译无报错，但运行结果始终错误（返回 0）： ``` class TreeNode { int val; TreeNode left; ..."
+              - generic [ref=e290]:
+                - generic [ref=e291]:
+                  - generic [ref=e292]: "#Java"
+                  - generic [ref=e293]: "#值传递"
+                - generic [ref=e294]: 阅读 →
+          - article [ref=e295]:
+            - text: │
+            - 'link "博客 2026-06-06 ⏱ 18 min 📄 Java 并发编程基础概念与常见问题梳理 在当今的软件开发领域，随着计算机硬件性能的不断提升（尤其是多核处理器的普及）以及业务需求的日益复杂，Java 并发编程的重要性愈发凸显。它打破了单线程程序的性能瓶颈，能够充分利用多核处理器的优势，让程序在同一时间内执行多个任务，从而极大地提高系统的执行效率和资源利用率。 然而，并发编程并非“银弹”... #Java #并发编程基础概念与常见问题梳理 阅读 →" [ref=e296] [cursor=pointer]':
+              - /url: /articles/blog/Java 并发编程基础概念与常见问题梳理/
+              - generic [ref=e297]:
+                - generic [ref=e298]: 博客
+                - generic [ref=e299]: 2026-06-06
+                - generic [ref=e300]: ⏱ 18 min
+              - heading "📄 Java 并发编程基础概念与常见问题梳理" [level=2] [ref=e301]:
+                - generic [ref=e302]: 📄
+                - text: Java 并发编程基础概念与常见问题梳理
+              - paragraph [ref=e303]: 在当今的软件开发领域，随着计算机硬件性能的不断提升（尤其是多核处理器的普及）以及业务需求的日益复杂，Java 并发编程的重要性愈发凸显。它打破了单线程程序的性能瓶颈，能够充分利用多核处理器的优势，让程序在同一时间内执行多个任务，从而极大地提高系统的执行效率和资源利用率。 然而，并发编程并非“银弹”...
+              - generic [ref=e304]:
+                - generic [ref=e305]:
+                  - generic [ref=e306]: "#Java"
+                  - generic [ref=e307]: "#并发编程基础概念与常见问题梳理"
+                - generic [ref=e308]: 阅读 →
+          - article [ref=e309]:
+            - text: │
+            - 'link "博客 2026-06-06 ⏱ 65 min 📄 Java垃圾回收机制 文章标签：#java #JVM #垃圾回收 #CMS #垃圾回收算法 #G1 #分代回收 #STW 一、垃圾回收核心概念 垃圾回收（Garbage Collection，简称GC），本质是JVM（Java虚拟机）提供的“自动清洁工”——它会在后台默默监控内存，把“没人用的对象”（垃圾）占用的内存... #java #JVM #CMS #G1 #STW 阅读 →" [ref=e310] [cursor=pointer]':
+              - /url: /articles/blog/Java垃圾回收机制/
+              - generic [ref=e311]:
+                - generic [ref=e312]: 博客
+                - generic [ref=e313]: 2026-06-06
+                - generic [ref=e314]: ⏱ 65 min
+              - heading "📄 Java垃圾回收机制" [level=2] [ref=e315]:
+                - generic [ref=e316]: 📄
+                - text: Java垃圾回收机制
+              - paragraph [ref=e317]: "文章标签：#java #JVM #垃圾回收 #CMS #垃圾回收算法 #G1 #分代回收 #STW 一、垃圾回收核心概念 垃圾回收（Garbage Collection，简称GC），本质是JVM（Java虚拟机）提供的“自动清洁工”——它会在后台默默监控内存，把“没人用的对象”（垃圾）占用的内存..."
+              - generic [ref=e318]:
+                - generic [ref=e319]:
+                  - generic [ref=e320]: "#java"
+                  - generic [ref=e321]: "#JVM"
+                  - generic [ref=e322]: "#CMS"
+                  - generic [ref=e323]: "#G1"
+                  - generic [ref=e324]: "#STW"
+                - generic [ref=e325]: 阅读 →
+          - article [ref=e326]:
+            - text: │
+            - 'link "博客 2026-06-06 ⏱ 22 min 📄 Java日志框架 在Java开发中，日志是排查问题、监控系统运行状态的核心工具。从JDK自带的日志系统到主流的Logback、Log4j2，再到日志门面SLF4J，各类框架各有优劣。本文将基于基础知识点，对Java常用日志框架进行全面扩展补充. 一、JDK日志（java.util.logging=JUL） 1.1... #Java日志框架 阅读 →" [ref=e327] [cursor=pointer]':
+              - /url: /articles/blog/Java日志框架/
+              - generic [ref=e328]:
+                - generic [ref=e329]: 博客
+                - generic [ref=e330]: 2026-06-06
+                - generic [ref=e331]: ⏱ 22 min
+              - heading "📄 Java日志框架" [level=2] [ref=e332]:
+                - generic [ref=e333]: 📄
+                - text: Java日志框架
+              - paragraph [ref=e334]: 在Java开发中，日志是排查问题、监控系统运行状态的核心工具。从JDK自带的日志系统到主流的Logback、Log4j2，再到日志门面SLF4J，各类框架各有优劣。本文将基于基础知识点，对Java常用日志框架进行全面扩展补充. 一、JDK日志（java.util.logging=JUL） 1.1...
+              - generic [ref=e335]:
+                - generic [ref=e337]: "#Java日志框架"
+                - generic [ref=e338]: 阅读 →
+          - article [ref=e339]:
+            - text: │
+            - 'link "博客 2026-06-06 ⏱ 5 min 📄 JDK1.8 ConcurrentHashMap 底层原理详解 一、JDK1.8 底层数据结构：彻底抛弃分段锁 JDK1.7 的 `ConcurrentHashMap` 采用 **Segment 分段锁**，锁粒度较大；而 JDK1.8 直接摒弃该设计，采用与 HashMap1.8 同源的 **数组 + 链表 + 红黑树** 结构，并发控制升级为 **C... #JDK1 #ConcurrentHashMap #底层原理详解 阅读 →" [ref=e340] [cursor=pointer]':
+              - /url: /articles/blog/JDK1.8 ConcurrentHashMap 底层原理详解/
+              - generic [ref=e341]:
+                - generic [ref=e342]: 博客
+                - generic [ref=e343]: 2026-06-06
+                - generic [ref=e344]: ⏱ 5 min
+              - heading "📄 JDK1.8 ConcurrentHashMap 底层原理详解" [level=2] [ref=e345]:
+                - generic [ref=e346]: 📄
+                - text: JDK1.8 ConcurrentHashMap 底层原理详解
+              - paragraph [ref=e347]: "一、JDK1.8 底层数据结构：彻底抛弃分段锁 JDK1.7 的 `ConcurrentHashMap` 采用 **Segment 分段锁**，锁粒度较大；而 JDK1.8 直接摒弃该设计，采用与 HashMap1.8 同源的 **数组 + 链表 + 红黑树** 结构，并发控制升级为 **C..."
+              - generic [ref=e348]:
+                - generic [ref=e349]:
+                  - generic [ref=e350]: "#JDK1"
+                  - generic [ref=e351]: "#ConcurrentHashMap"
+                  - generic [ref=e352]: "#底层原理详解"
+                - generic [ref=e353]: 阅读 →
+          - article [ref=e354]:
+            - text: │
+            - 'link "博客 2026-06-06 ⏱ 32 min 📄 Lock 接口及实现类详解：从 ReentrantLock 到并发场景实践 在 Java 并发编程领域，同步机制是保障线程安全的核心，而我们最熟悉的莫过于 synchronized 关键字。但自 JDK 5 引入 `java.util.concurrent.locks.Lock` 接口及其实现类后，Java 并发编程的灵活性得到了质的提升。Lock 接口凭借“显式控制”“可... #Lock #接口及实现类详解 #ReentrantLock #到并发场景实践 阅读 →" [ref=e355] [cursor=pointer]':
+              - /url: /articles/blog/Lock 接口及实现类详解：从 ReentrantLock 到并发场景实践/
+              - generic [ref=e356]:
+                - generic [ref=e357]: 博客
+                - generic [ref=e358]: 2026-06-06
+                - generic [ref=e359]: ⏱ 32 min
+              - heading "📄 Lock 接口及实现类详解：从 ReentrantLock 到并发场景实践" [level=2] [ref=e360]:
+                - generic [ref=e361]: 📄
+                - text: Lock 接口及实现类详解：从 ReentrantLock 到并发场景实践
+              - paragraph [ref=e362]: "在 Java 并发编程领域，同步机制是保障线程安全的核心，而我们最熟悉的莫过于 synchronized 关键字。但自 JDK 5 引入 `java.util.concurrent.locks.Lock` 接口及其实现类后，Java 并发编程的灵活性得到了质的提升。Lock 接口凭借“显式控制”“可..."
+              - generic [ref=e363]:
+                - generic [ref=e364]:
+                  - generic [ref=e365]: "#Lock"
+                  - generic [ref=e366]: "#接口及实现类详解"
+                  - generic [ref=e367]: "#ReentrantLock"
+                  - generic [ref=e368]: "#到并发场景实践"
+                - generic [ref=e369]: 阅读 →
+          - article [ref=e370]:
+            - text: │
+            - 'link "博客 2026-06-06 ⏱ 21 min 📄 RabbitMQ可靠性保障全指南 生产者,MQ,消费者三层兜底 在微服务分布式架构中，RabbitMQ作为主流消息队列，核心价值是解耦、削峰填谷和异步通信，但“消息丢失、重复消费、处理失败”等问题，往往成为线上故障的重灾区。很多开发者只掌握RabbitMQ的基础用法，却忽略了可靠性保障的核心逻辑，导致系统上线后频繁出现异常。 其实RabbitMQ的可靠性并非单... #RabbitMQ可靠性保障全指南 #生产者 #MQ #消费者三层兜底 阅读 →" [ref=e371] [cursor=pointer]':
+              - /url: /articles/blog/RabbitMQ可靠性保障全指南  生产者,MQ,消费者三层兜底/
+              - generic [ref=e372]:
+                - generic [ref=e373]: 博客
+                - generic [ref=e374]: 2026-06-06
+                - generic [ref=e375]: ⏱ 21 min
+              - heading "📄 RabbitMQ可靠性保障全指南 生产者,MQ,消费者三层兜底" [level=2] [ref=e376]:
+                - generic [ref=e377]: 📄
+                - text: RabbitMQ可靠性保障全指南 生产者,MQ,消费者三层兜底
+              - paragraph [ref=e378]: 在微服务分布式架构中，RabbitMQ作为主流消息队列，核心价值是解耦、削峰填谷和异步通信，但“消息丢失、重复消费、处理失败”等问题，往往成为线上故障的重灾区。很多开发者只掌握RabbitMQ的基础用法，却忽略了可靠性保障的核心逻辑，导致系统上线后频繁出现异常。 其实RabbitMQ的可靠性并非单...
+              - generic [ref=e379]:
+                - generic [ref=e380]:
+                  - generic [ref=e381]: "#RabbitMQ可靠性保障全指南"
+                  - generic [ref=e382]: "#生产者"
+                  - generic [ref=e383]: "#MQ"
+                  - generic [ref=e384]: "#消费者三层兜底"
+                - generic [ref=e385]: 阅读 →
+          - article [ref=e386]:
+            - text: │
+            - 'link "博客 2026-06-06 ⏱ 34 min 📄 RabbitMQ实战全解析：从核心概念到电商订单落地 在微服务与分布式系统架构中，消息队列是解决系统解耦、削峰填谷、异步通信的核心组件，而RabbitMQ作为AMQP（高级消息队列协议）的成熟实现，凭借其稳定的路由能力、完善的确认机制、灵活的持久化策略以及丰富的插件扩展，成为企业级开发中的首选方案。 很多开发者在使用RabbitMQ时，常会陷入“会用... #RabbitMQ实战全解析 #从核心概念到电商订单落地 阅读 →" [ref=e387] [cursor=pointer]':
+              - /url: /articles/blog/RabbitMQ实战全解析：从核心概念到电商订单落地/
+              - generic [ref=e388]:
+                - generic [ref=e389]: 博客
+                - generic [ref=e390]: 2026-06-06
+                - generic [ref=e391]: ⏱ 34 min
+              - heading "📄 RabbitMQ实战全解析：从核心概念到电商订单落地" [level=2] [ref=e392]:
+                - generic [ref=e393]: 📄
+                - text: RabbitMQ实战全解析：从核心概念到电商订单落地
+              - paragraph [ref=e394]: 在微服务与分布式系统架构中，消息队列是解决系统解耦、削峰填谷、异步通信的核心组件，而RabbitMQ作为AMQP（高级消息队列协议）的成熟实现，凭借其稳定的路由能力、完善的确认机制、灵活的持久化策略以及丰富的插件扩展，成为企业级开发中的首选方案。 很多开发者在使用RabbitMQ时，常会陷入“会用...
+              - generic [ref=e395]:
+                - generic [ref=e396]:
+                  - generic [ref=e397]: "#RabbitMQ实战全解析"
+                  - generic [ref=e398]: "#从核心概念到电商订单落地"
+                - generic [ref=e399]: 阅读 →
+          - article [ref=e400]:
+            - text: │
+            - 'link "博客 2026-06-06 ⏱ 14 min 📄 Spring 核心 IOC 深度解析：从原理到实战 一、IOC 核心概念：从「手动控制」到「容器托管」 1.1 什么是 IOC？ **IOC（Inversion of Control）控制反转** 是 Spring 框架的灵魂，核心是将对象的创建、依赖管理、生命周期控制从业务代码中剥离，交由 Spring 容器统一管理。 **传统开发模式**（... #afterPropertiesSet方 #destroy方 #postProcessBeforeInitialization #postProcessAfterInitialization 阅读 →" [ref=e401] [cursor=pointer]':
+              - /url: /articles/blog/Spring 核心  IOC 深度解析：从原理到实战/
+              - generic [ref=e402]:
+                - generic [ref=e403]: 博客
+                - generic [ref=e404]: 2026-06-06
+                - generic [ref=e405]: ⏱ 14 min
+              - heading "📄 Spring 核心 IOC 深度解析：从原理到实战" [level=2] [ref=e406]:
+                - generic [ref=e407]: 📄
+                - text: Spring 核心 IOC 深度解析：从原理到实战
+              - paragraph [ref=e408]: 一、IOC 核心概念：从「手动控制」到「容器托管」 1.1 什么是 IOC？ **IOC（Inversion of Control）控制反转** 是 Spring 框架的灵魂，核心是将对象的创建、依赖管理、生命周期控制从业务代码中剥离，交由 Spring 容器统一管理。 **传统开发模式**（...
+              - generic [ref=e409]:
+                - generic [ref=e410]:
+                  - generic [ref=e411]: "#afterPropertiesSet方"
+                  - generic [ref=e412]: "#destroy方"
+                  - generic [ref=e413]: "#postProcessBeforeInitialization"
+                  - generic [ref=e414]: "#postProcessAfterInitialization"
+                - generic [ref=e415]: 阅读 →
+          - article [ref=e416]:
+            - text: │
+            - 'link "博客 2026-06-06 ⏱ 28 min 📄 synchronized 深度剖析：从语法到锁升级的完整演进 在 Java 并发编程领域，synchronized 无疑是最基础、最经典的同步机制。从 JDK 1.0 诞生时的“重量级锁”，到 JDK 6 引入的锁升级机制（偏向锁→轻量级锁→重量级锁），synchronized 历经多代优化，从“性能鸡肋”蜕变为“高效可靠”的线程安全保障工具。然而，很多开发者... #synchronized #深度剖析 #从语法到锁升级的完整演进 阅读 →" [ref=e417] [cursor=pointer]':
+              - /url: /articles/blog/synchronized 深度剖析：从语法到锁升级的完整演进/
+              - generic [ref=e418]:
+                - generic [ref=e419]: 博客
+                - generic [ref=e420]: 2026-06-06
+                - generic [ref=e421]: ⏱ 28 min
+              - heading "📄 synchronized 深度剖析：从语法到锁升级的完整演进" [level=2] [ref=e422]:
+                - generic [ref=e423]: 📄
+                - text: synchronized 深度剖析：从语法到锁升级的完整演进
+              - paragraph [ref=e424]: 在 Java 并发编程领域，synchronized 无疑是最基础、最经典的同步机制。从 JDK 1.0 诞生时的“重量级锁”，到 JDK 6 引入的锁升级机制（偏向锁→轻量级锁→重量级锁），synchronized 历经多代优化，从“性能鸡肋”蜕变为“高效可靠”的线程安全保障工具。然而，很多开发者...
+              - generic [ref=e425]:
+                - generic [ref=e426]:
+                  - generic [ref=e427]: "#synchronized"
+                  - generic [ref=e428]: "#深度剖析"
+                  - generic [ref=e429]: "#从语法到锁升级的完整演进"
+                - generic [ref=e430]: 阅读 →
+          - article [ref=e431]:
+            - text: │
+            - 'link "博客 2026-06-06 ⏱ 26 min 📄 volatile 关键字详解：可见性、禁止重排与实战场景 在 Java 并发编程中，volatile 是一个看似简单却极易被误用的关键字。它常被用来修饰共享变量，以应对多线程环境下的数据可见性问题，但很多开发者仅停留在 “知道它能保证可见性” 的层面，对其底层原理（内存屏障）、适用场景和使用禁忌一知半解，甚至在项目中滥用 volatile 导致线程安全隐患... #volatile #关键字详解 #可见性 #禁止重排与实战场景 阅读 →" [ref=e432] [cursor=pointer]':
+              - /url: /articles/blog/volatile 关键字详解：可见性、禁止重排与实战场景/
+              - generic [ref=e433]:
+                - generic [ref=e434]: 博客
+                - generic [ref=e435]: 2026-06-06
+                - generic [ref=e436]: ⏱ 26 min
+              - heading "📄 volatile 关键字详解：可见性、禁止重排与实战场景" [level=2] [ref=e437]:
+                - generic [ref=e438]: 📄
+                - text: volatile 关键字详解：可见性、禁止重排与实战场景
+              - paragraph [ref=e439]: 在 Java 并发编程中，volatile 是一个看似简单却极易被误用的关键字。它常被用来修饰共享变量，以应对多线程环境下的数据可见性问题，但很多开发者仅停留在 “知道它能保证可见性” 的层面，对其底层原理（内存屏障）、适用场景和使用禁忌一知半解，甚至在项目中滥用 volatile 导致线程安全隐患...
+              - generic [ref=e440]:
+                - generic [ref=e441]:
+                  - generic [ref=e442]: "#volatile"
+                  - generic [ref=e443]: "#关键字详解"
+                  - generic [ref=e444]: "#可见性"
+                  - generic [ref=e445]: "#禁止重排与实战场景"
+                - generic [ref=e446]: 阅读 →
+          - article [ref=e447]:
+            - text: │
+            - 'link "博客 2026-06-06 ⏱ 26 min 📄 从 URL 回车到页面显示 **“输入 URL 回车后，页面是怎么显示出来的?”** —— 它能串联起计算机网络五层模型的所有核心知识点。本文会按照 **应用层→传输层→网络层→数据链路层→物理层** 的顺序，把每个环节掰开揉碎讲清楚，保证新手看完就能吃透。 首先我们过一下完整流程框架： 1. 浏览器输入 URL 并回车... #top #dns 阅读 →" [ref=e448] [cursor=pointer]':
+              - /url: /articles/blog/从 URL 回车到页面显示/
+              - generic [ref=e449]:
+                - generic [ref=e450]: 博客
+                - generic [ref=e451]: 2026-06-06
+                - generic [ref=e452]: ⏱ 26 min
+              - heading "📄 从 URL 回车到页面显示" [level=2] [ref=e453]:
+                - generic [ref=e454]: 📄
+                - text: 从 URL 回车到页面显示
+              - paragraph [ref=e455]: "**“输入 URL 回车后，页面是怎么显示出来的?”** —— 它能串联起计算机网络五层模型的所有核心知识点。本文会按照 **应用层→传输层→网络层→数据链路层→物理层** 的顺序，把每个环节掰开揉碎讲清楚，保证新手看完就能吃透。 首先我们过一下完整流程框架： 1. 浏览器输入 URL 并回车..."
+              - generic [ref=e456]:
+                - generic [ref=e457]:
+                  - generic [ref=e458]: "#top"
+                  - generic [ref=e459]: "#dns"
+                - generic [ref=e460]: 阅读 →
+          - article [ref=e461]:
+            - text: │
+            - 'link "博客 2026-06-06 ⏱ 19 min 📄 从零起步学习 Redis 第三章 Redis 常用数据类型深层剖析 前言： 在前文中，我们已经初步认识了 Redis 并完成了本地环境配置，接下来将开启 Redis 核心知识点的深入学习 ——Redis 常用数据类型的底层实现。不同于表面的 API 使用，深入底层能让我们理解 Redis 的性能优化逻辑、内存占用原理，更是后端面试中 Redis 相关考点的核心。 ... #从零起步学习 #Redis #第三章 #Redis #常用数据类型深层剖析 阅读 →" [ref=e462] [cursor=pointer]':
+              - /url: /articles/blog/从零起步学习 Redis  第三章  Redis 常用数据类型深层剖析/
+              - generic [ref=e463]:
+                - generic [ref=e464]: 博客
+                - generic [ref=e465]: 2026-06-06
+                - generic [ref=e466]: ⏱ 19 min
+              - heading "📄 从零起步学习 Redis 第三章 Redis 常用数据类型深层剖析" [level=2] [ref=e467]:
+                - generic [ref=e468]: 📄
+                - text: 从零起步学习 Redis 第三章 Redis 常用数据类型深层剖析
+              - paragraph [ref=e469]: 前言： 在前文中，我们已经初步认识了 Redis 并完成了本地环境配置，接下来将开启 Redis 核心知识点的深入学习 ——Redis 常用数据类型的底层实现。不同于表面的 API 使用，深入底层能让我们理解 Redis 的性能优化逻辑、内存占用原理，更是后端面试中 Redis 相关考点的核心。 ...
+              - generic [ref=e470]:
+                - generic [ref=e471]:
+                  - generic [ref=e472]: "#从零起步学习"
+                  - generic [ref=e473]: "#Redis"
+                  - generic [ref=e474]: "#第三章"
+                  - generic [ref=e475]: "#Redis"
+                  - generic [ref=e476]: "#常用数据类型深层剖析"
+                - generic [ref=e477]: 阅读 →
+          - article [ref=e478]:
+            - text: │
+            - 'link "博客 2026-06-06 ⏱ 13 min 📄 从零起步学习 Redis 第七章：Redis 持久化方案的实现及底层原理解析（RDB 快照与 AOF 日志） 引言 Redis 是典型的**内存型键值数据库**，其高性能、高吞吐、低延迟的核心优势，源于 “将数据主要存储在内存中” 的设计。但纯内存存储存在一个致命缺陷：一旦发生断电、进程崩溃或机器重启，内存中的所有数据都会丢失，这在生产环境中是无法接受的。 为了兼顾 “内存的速度优势” 与 “数据的持久... #从零起步学习 #Redis #第七章 #Redis #持久化方案的实现及底层原理解析 阅读 →" [ref=e479] [cursor=pointer]':
+              - /url: /articles/blog/从零起步学习 Redis 第七章：Redis 持久化方案的实现及底层原理解析（RDB 快照与 AOF 日志）/
+              - generic [ref=e480]:
+                - generic [ref=e481]: 博客
+                - generic [ref=e482]: 2026-06-06
+                - generic [ref=e483]: ⏱ 13 min
+              - heading "📄 从零起步学习 Redis 第七章：Redis 持久化方案的实现及底层原理解析（RDB 快照与 AOF 日志）" [level=2] [ref=e484]:
+                - generic [ref=e485]: 📄
+                - text: 从零起步学习 Redis 第七章：Redis 持久化方案的实现及底层原理解析（RDB 快照与 AOF 日志）
+              - paragraph [ref=e486]: 引言 Redis 是典型的**内存型键值数据库**，其高性能、高吞吐、低延迟的核心优势，源于 “将数据主要存储在内存中” 的设计。但纯内存存储存在一个致命缺陷：一旦发生断电、进程崩溃或机器重启，内存中的所有数据都会丢失，这在生产环境中是无法接受的。 为了兼顾 “内存的速度优势” 与 “数据的持久...
+              - generic [ref=e487]:
+                - generic [ref=e488]:
+                  - generic [ref=e489]: "#从零起步学习"
+                  - generic [ref=e490]: "#Redis"
+                  - generic [ref=e491]: "#第七章"
+                  - generic [ref=e492]: "#Redis"
+                  - generic [ref=e493]: "#持久化方案的实现及底层原理解析"
+                - generic [ref=e494]: 阅读 →
+          - article [ref=e495]:
+            - text: │
+            - 'link "博客 2026-06-06 ⏱ 11 min 📄 匿名内部类 在 Java 开发中，我们经常会见到这样的代码： ```java List<TreeNode> queue = new LinkedList<>() {{ add(root); }}; ``` 初看之下，这行代码是创建了一个 `LinkedList` 集合并添加了 `root` 元素，但其中的... #匿名内部类 阅读 →" [ref=e496] [cursor=pointer]':
+              - /url: /articles/blog/匿名内部类/
+              - generic [ref=e497]:
+                - generic [ref=e498]: 博客
+                - generic [ref=e499]: 2026-06-06
+                - generic [ref=e500]: ⏱ 11 min
+              - heading "📄 匿名内部类" [level=2] [ref=e501]:
+                - generic [ref=e502]: 📄
+                - text: 匿名内部类
+              - paragraph [ref=e503]: "在 Java 开发中，我们经常会见到这样的代码： ```java List<TreeNode> queue = new LinkedList<>() {{ add(root); }}; ``` 初看之下，这行代码是创建了一个 `LinkedList` 集合并添加了 `root` 元素，但其中的..."
+              - generic [ref=e504]:
+                - generic [ref=e506]: "#匿名内部类"
+                - generic [ref=e507]: 阅读 →
+          - article [ref=e508]:
+            - text: │
+            - 'link "博客 2026-06-06 ⏱ 10 min 📄 增强for(迭代器) 一、核心定义与基础语法 1. 普通 for 循环（Index-based For Loop） - **定义**：基于「索引 / 计数器」的循环，通过控制索引的起始、终止条件和步长，遍历容器或数组，支持灵活操作索引。 - **核心语法**（数组 / List 通用）： ```ja... #增强for #迭代器 阅读 →" [ref=e509] [cursor=pointer]':
+              - /url: /articles/blog/增强for(迭代器)/
+              - generic [ref=e510]:
+                - generic [ref=e511]: 博客
+                - generic [ref=e512]: 2026-06-06
+                - generic [ref=e513]: ⏱ 10 min
+              - heading "📄 增强for(迭代器)" [level=2] [ref=e514]:
+                - generic [ref=e515]: 📄
+                - text: 增强for(迭代器)
+              - paragraph [ref=e516]: "一、核心定义与基础语法 1. 普通 for 循环（Index-based For Loop） - **定义**：基于「索引 / 计数器」的循环，通过控制索引的起始、终止条件和步长，遍历容器或数组，支持灵活操作索引。 - **核心语法**（数组 / List 通用）： ```ja..."
+              - generic [ref=e517]:
+                - generic [ref=e518]:
+                  - generic [ref=e519]: "#增强for"
+                  - generic [ref=e520]: "#迭代器"
+                - generic [ref=e521]: 阅读 →
+          - article [ref=e522]:
+            - text: │
+            - 'link "博客 2026-06-06 ⏱ 28 min 📄 并发编程常用工具类（上）：CountDownLatch 与 Semaphore 的协作应用 在 Java 并发编程领域，JDK 提供的工具类是简化多线程协作的重要武器，它们就像封装好的“并发组件”，帮我们避开底层同步的复杂陷阱。这些工具类的底层核心，都依赖于 AQS（AbstractQueuedSynchronizer）框架——这个我们上一篇详细拆解过的“并发基石”，通过状态控制和队列管理... #并发编程常用工具类 #CountDownLatch #Semaphore #的协作应用 阅读 →" [ref=e523] [cursor=pointer]':
+              - /url: /articles/blog/并发编程常用工具类（上）：CountDownLatch 与 Semaphore 的协作应用/
+              - generic [ref=e524]:
+                - generic [ref=e525]: 博客
+                - generic [ref=e526]: 2026-06-06
+                - generic [ref=e527]: ⏱ 28 min
+              - heading "📄 并发编程常用工具类（上）：CountDownLatch 与 Semaphore 的协作应用" [level=2] [ref=e528]:
+                - generic [ref=e529]: 📄
+                - text: 并发编程常用工具类（上）：CountDownLatch 与 Semaphore 的协作应用
+              - paragraph [ref=e530]: 在 Java 并发编程领域，JDK 提供的工具类是简化多线程协作的重要武器，它们就像封装好的“并发组件”，帮我们避开底层同步的复杂陷阱。这些工具类的底层核心，都依赖于 AQS（AbstractQueuedSynchronizer）框架——这个我们上一篇详细拆解过的“并发基石”，通过状态控制和队列管理...
+              - generic [ref=e531]:
+                - generic [ref=e532]:
+                  - generic [ref=e533]: "#并发编程常用工具类"
+                  - generic [ref=e534]: "#CountDownLatch"
+                  - generic [ref=e535]: "#Semaphore"
+                  - generic [ref=e536]: "#的协作应用"
+                - generic [ref=e537]: 阅读 →
+          - article [ref=e538]:
+            - text: │
+            - 'link "博客 2026-06-06 ⏱ 25 min 📄 并发编程常用工具类（下）：CyclicBarrier 与 Phaser 的协同应用 在 Java 并发编程中，线程协作是实现高效并行任务的核心，除了上一篇提到的 CountDownLatch 和 Semaphore，CyclicBarrier（循环屏障）和 Phaser（阶段同步器）更是应对多阶段、动态线程场景的“利器”。它们弥补了前两者在多轮同步、动态调整线程数量上的不足，让开发... #并发编程常用工具类 #CyclicBarrier #Phaser #的协同应用 阅读 →" [ref=e539] [cursor=pointer]':
+              - /url: /articles/blog/并发编程常用工具类（下）：CyclicBarrier 与 Phaser 的协同应用/
+              - generic [ref=e540]:
+                - generic [ref=e541]: 博客
+                - generic [ref=e542]: 2026-06-06
+                - generic [ref=e543]: ⏱ 25 min
+              - heading "📄 并发编程常用工具类（下）：CyclicBarrier 与 Phaser 的协同应用" [level=2] [ref=e544]:
+                - generic [ref=e545]: 📄
+                - text: 并发编程常用工具类（下）：CyclicBarrier 与 Phaser 的协同应用
+              - paragraph [ref=e546]: 在 Java 并发编程中，线程协作是实现高效并行任务的核心，除了上一篇提到的 CountDownLatch 和 Semaphore，CyclicBarrier（循环屏障）和 Phaser（阶段同步器）更是应对多阶段、动态线程场景的“利器”。它们弥补了前两者在多轮同步、动态调整线程数量上的不足，让开发...
+              - generic [ref=e547]:
+                - generic [ref=e548]:
+                  - generic [ref=e549]: "#并发编程常用工具类"
+                  - generic [ref=e550]: "#CyclicBarrier"
+                  - generic [ref=e551]: "#Phaser"
+                  - generic [ref=e552]: "#的协同应用"
+                - generic [ref=e553]: 阅读 →
+          - article [ref=e554]:
+            - text: │
+            - 'link "博客 2026-06-06 ⏱ 31 min 📄 并发编程常见问题排查与解决：从死锁到线程竞争的实战指南 在高并发场景下，Java并发编程是提升系统吞吐量和响应速度的核心手段，但随之而来的死锁、线程竞争、线程泄漏等问题，却常常让开发者陷入困境。这些问题大多具有偶发性、隐蔽性强的特点，线下测试难以复现，线上出现时又会直接影响业务可用性，甚至导致系统崩溃。今天，就结合实际开发案例，系统梳理并发编程中最常见的... #并发编程常见问题排查与解决 #从死锁到线程竞争的实战指南 阅读 →" [ref=e555] [cursor=pointer]':
+              - /url: /articles/blog/并发编程常见问题排查与解决：从死锁到线程竞争的实战指南/
+              - generic [ref=e556]:
+                - generic [ref=e557]: 博客
+                - generic [ref=e558]: 2026-06-06
+                - generic [ref=e559]: ⏱ 31 min
+              - heading "📄 并发编程常见问题排查与解决：从死锁到线程竞争的实战指南" [level=2] [ref=e560]:
+                - generic [ref=e561]: 📄
+                - text: 并发编程常见问题排查与解决：从死锁到线程竞争的实战指南
+              - paragraph [ref=e562]: 在高并发场景下，Java并发编程是提升系统吞吐量和响应速度的核心手段，但随之而来的死锁、线程竞争、线程泄漏等问题，却常常让开发者陷入困境。这些问题大多具有偶发性、隐蔽性强的特点，线下测试难以复现，线上出现时又会直接影响业务可用性，甚至导致系统崩溃。今天，就结合实际开发案例，系统梳理并发编程中最常见的...
+              - generic [ref=e563]:
+                - generic [ref=e564]:
+                  - generic [ref=e565]: "#并发编程常见问题排查与解决"
+                  - generic [ref=e566]: "#从死锁到线程竞争的实战指南"
+                - generic [ref=e567]: 阅读 →
+          - article [ref=e568]:
+            - text: │
+            - 'link "博客 2026-06-06 ⏱ 27 min 📄 并发编程面试实战：synchronized、volatile、Lock、AQS 应答技巧 在 Java 并发编程面试中，synchronized、volatile、Lock 和 AQS 绝对是“重中之重”—— 它们既是基础同步机制的核心，也是面试官区分候选人“只会用”和“懂原理”的关键标尺。很多候选人面试时栽在这部分，不是因为不会用 API，而是无法讲清底层逻辑、不会结合实际场景分析，甚... #并发编程面试实战 #synchronized #volatile #Lock #AQS 阅读 →" [ref=e569] [cursor=pointer]':
+              - /url: /articles/blog/并发编程面试实战：synchronized、volatile、Lock、AQS 应答技巧/
+              - generic [ref=e570]:
+                - generic [ref=e571]: 博客
+                - generic [ref=e572]: 2026-06-06
+                - generic [ref=e573]: ⏱ 27 min
+              - heading "📄 并发编程面试实战：synchronized、volatile、Lock、AQS 应答技巧" [level=2] [ref=e574]:
+                - generic [ref=e575]: 📄
+                - text: 并发编程面试实战：synchronized、volatile、Lock、AQS 应答技巧
+              - paragraph [ref=e576]: 在 Java 并发编程面试中，synchronized、volatile、Lock 和 AQS 绝对是“重中之重”—— 它们既是基础同步机制的核心，也是面试官区分候选人“只会用”和“懂原理”的关键标尺。很多候选人面试时栽在这部分，不是因为不会用 API，而是无法讲清底层逻辑、不会结合实际场景分析，甚...
+              - generic [ref=e577]:
+                - generic [ref=e578]:
+                  - generic [ref=e579]: "#并发编程面试实战"
+                  - generic [ref=e580]: "#synchronized"
+                  - generic [ref=e581]: "#volatile"
+                  - generic [ref=e582]: "#Lock"
+                  - generic [ref=e583]: "#AQS"
+                - generic [ref=e584]: 阅读 →
+          - article [ref=e585]:
+            - text: │
+            - 'link "博客 2026-06-06 ⏱ 7 min 📄 深度解析 ArrayList 扩容机制：从源码到时序图全拆解 在 Java 开发中，ArrayList 是最常用的集合类之一，但其底层的扩容机制却常常成为面试和开发中的高频考点。本文将从底层数据结构出发，结合源码和时序图，完整拆解 ArrayList 的扩容流程，帮你彻底搞懂这一核心机制。 一、ArrayList 底层数据结构 ArrayList 的核心是... #深度解析 #ArrayList #扩容机制 #从源码到时序图全拆解 阅读 →" [ref=e586] [cursor=pointer]':
+              - /url: /articles/blog/深度解析 ArrayList 扩容机制：从源码到时序图全拆解/
+              - generic [ref=e587]:
+                - generic [ref=e588]: 博客
+                - generic [ref=e589]: 2026-06-06
+                - generic [ref=e590]: ⏱ 7 min
+              - heading "📄 深度解析 ArrayList 扩容机制：从源码到时序图全拆解" [level=2] [ref=e591]:
+                - generic [ref=e592]: 📄
+                - text: 深度解析 ArrayList 扩容机制：从源码到时序图全拆解
+              - paragraph [ref=e593]: 在 Java 开发中，ArrayList 是最常用的集合类之一，但其底层的扩容机制却常常成为面试和开发中的高频考点。本文将从底层数据结构出发，结合源码和时序图，完整拆解 ArrayList 的扩容流程，帮你彻底搞懂这一核心机制。 一、ArrayList 底层数据结构 ArrayList 的核心是...
+              - generic [ref=e594]:
+                - generic [ref=e595]:
+                  - generic [ref=e596]: "#深度解析"
+                  - generic [ref=e597]: "#ArrayList"
+                  - generic [ref=e598]: "#扩容机制"
+                  - generic [ref=e599]: "#从源码到时序图全拆解"
+                - generic [ref=e600]: 阅读 →
+          - article [ref=e601]:
+            - text: │
+            - 'link "博客 2026-06-06 ⏱ 5 min 📄 深度解析 JDK1.8 ConcurrentHashMap：从底层结构到并发核心原理 一、JDK1.8 底层数据结构：彻底抛弃分段锁 JDK1.7 的 `ConcurrentHashMap` 采用 **Segment 分段锁**，锁粒度较大；而 JDK1.8 直接摒弃该设计，采用与 HashMap1.8 同源的 **数组 + 链表 + 红黑树** 结构，并发控制升级为 **CAS ... #深度解析 #JDK1 #ConcurrentHashMap #从底层结构到并发核心原理 阅读 →" [ref=e602] [cursor=pointer]':
+              - /url: /articles/blog/深度解析 JDK1.8 ConcurrentHashMap：从底层结构到并发核心原理/
+              - generic [ref=e603]:
+                - generic [ref=e604]: 博客
+                - generic [ref=e605]: 2026-06-06
+                - generic [ref=e606]: ⏱ 5 min
+              - heading "📄 深度解析 JDK1.8 ConcurrentHashMap：从底层结构到并发核心原理" [level=2] [ref=e607]:
+                - generic [ref=e608]: 📄
+                - text: 深度解析 JDK1.8 ConcurrentHashMap：从底层结构到并发核心原理
+              - paragraph [ref=e609]: "一、JDK1.8 底层数据结构：彻底抛弃分段锁 JDK1.7 的 `ConcurrentHashMap` 采用 **Segment 分段锁**，锁粒度较大；而 JDK1.8 直接摒弃该设计，采用与 HashMap1.8 同源的 **数组 + 链表 + 红黑树** 结构，并发控制升级为 **CAS ..."
+              - generic [ref=e610]:
+                - generic [ref=e611]:
+                  - generic [ref=e612]: "#深度解析"
+                  - generic [ref=e613]: "#JDK1"
+                  - generic [ref=e614]: "#ConcurrentHashMap"
+                  - generic [ref=e615]: "#从底层结构到并发核心原理"
+                - generic [ref=e616]: 阅读 →
+          - article [ref=e617]:
+            - text: │
+            - 'link "博客 2026-06-06 ⏱ 16 min 📄 第一章：初识MySQL及深入理解内部数据类型 引言 从今天开始，我们正式启动MySQL的系统性学习之旅！本专栏将完全从零起步，循序渐进地带大家吃透MySQL的整个知识库——从最基础的概念、操作，到进阶的优化、调优，再到生产环境的实战技巧，全程干货无冗余。无论你是刚入门的后端新手，还是想巩固基础的开发从业者，都能从中有所收获。学习过程中，大家有... #第一章 #初识MySQL及深入理解内部数据类型 阅读 →" [ref=e618] [cursor=pointer]':
+              - /url: /articles/blog/第一章：初识MySQL及深入理解内部数据类型/
+              - generic [ref=e619]:
+                - generic [ref=e620]: 博客
+                - generic [ref=e621]: 2026-06-06
+                - generic [ref=e622]: ⏱ 16 min
+              - heading "📄 第一章：初识MySQL及深入理解内部数据类型" [level=2] [ref=e623]:
+                - generic [ref=e624]: 📄
+                - text: 第一章：初识MySQL及深入理解内部数据类型
+              - paragraph [ref=e625]: 引言 从今天开始，我们正式启动MySQL的系统性学习之旅！本专栏将完全从零起步，循序渐进地带大家吃透MySQL的整个知识库——从最基础的概念、操作，到进阶的优化、调优，再到生产环境的实战技巧，全程干货无冗余。无论你是刚入门的后端新手，还是想巩固基础的开发从业者，都能从中有所收获。学习过程中，大家有...
+              - generic [ref=e626]:
+                - generic [ref=e627]:
+                  - generic [ref=e628]: "#第一章"
+                  - generic [ref=e629]: "#初识MySQL及深入理解内部数据类型"
+                - generic [ref=e630]: 阅读 →
+          - article [ref=e631]:
+            - text: │
+            - 'link "博客 2026-06-06 ⏱ 23 min 📄 第七章：初识索引底层运用及性能优化 上一章我们讲解了MySQL数据的底层存储逻辑，了解了一行数据如何以特定行格式存储在数据页中。但当表中数据量达到几十万、几百万甚至上亿条时，单纯依靠全表扫描查询数据，速度会变得极其缓慢——就像在一本没有目录的厚书中找某个知识点，只能逐页翻找，效率极低。而索引，就是MySQL为我们打造的“图书目录”，能... #第七章 #初识索引底层运用及性能优化 阅读 →" [ref=e632] [cursor=pointer]':
+              - /url: /articles/blog/第七章：初识索引底层运用及性能优化/
+              - generic [ref=e633]:
+                - generic [ref=e634]: 博客
+                - generic [ref=e635]: 2026-06-06
+                - generic [ref=e636]: ⏱ 23 min
+              - heading "📄 第七章：初识索引底层运用及性能优化" [level=2] [ref=e637]:
+                - generic [ref=e638]: 📄
+                - text: 第七章：初识索引底层运用及性能优化
+              - paragraph [ref=e639]: 上一章我们讲解了MySQL数据的底层存储逻辑，了解了一行数据如何以特定行格式存储在数据页中。但当表中数据量达到几十万、几百万甚至上亿条时，单纯依靠全表扫描查询数据，速度会变得极其缓慢——就像在一本没有目录的厚书中找某个知识点，只能逐页翻找，效率极低。而索引，就是MySQL为我们打造的“图书目录”，能...
+              - generic [ref=e640]:
+                - generic [ref=e641]:
+                  - generic [ref=e642]: "#第七章"
+                  - generic [ref=e643]: "#初识索引底层运用及性能优化"
+                - generic [ref=e644]: 阅读 →
+          - article [ref=e645]:
+            - text: │
+            - 'link "博客 2026-06-06 ⏱ 20 min 📄 第三章：DML语句定义及常见用法示例 上一章我们学习了DDL语句，掌握了数据库和表的“创建、修改、删除”等结构定义操作，相当于搭建好了数据存储的“容器”。今天我们进入更核心的学习——DML语句，它是操作“容器”中数据的关键，学会DML，你才能真正实现数据的增、删、改、查，解锁MySQL的核心使用场景。 一、什么是DML？新手必懂的核心... #第三章 #DML语句定义及常见用法示例 阅读 →" [ref=e646] [cursor=pointer]':
+              - /url: /articles/blog/第三章：DML语句定义及常见用法示例/
+              - generic [ref=e647]:
+                - generic [ref=e648]: 博客
+                - generic [ref=e649]: 2026-06-06
+                - generic [ref=e650]: ⏱ 20 min
+              - heading "📄 第三章：DML语句定义及常见用法示例" [level=2] [ref=e651]:
+                - generic [ref=e652]: 📄
+                - text: 第三章：DML语句定义及常见用法示例
+              - paragraph [ref=e653]: 上一章我们学习了DDL语句，掌握了数据库和表的“创建、修改、删除”等结构定义操作，相当于搭建好了数据存储的“容器”。今天我们进入更核心的学习——DML语句，它是操作“容器”中数据的关键，学会DML，你才能真正实现数据的增、删、改、查，解锁MySQL的核心使用场景。 一、什么是DML？新手必懂的核心...
+              - generic [ref=e654]:
+                - generic [ref=e655]:
+                  - generic [ref=e656]: "#第三章"
+                  - generic [ref=e657]: "#DML语句定义及常见用法示例"
+                - generic [ref=e658]: 阅读 →
+          - article [ref=e659]:
+            - text: │
+            - 'link "博客 2026-06-06 ⏱ 17 min 📄 第九章：从数据页的角度看B+树及MySQL中数据的底层存储原理 在MySQL的InnoDB存储引擎中，数据的底层存储并非简单的无序存放，而是通过**表空间-段-区-页-行**的层级结构组织，并基于B+树实现高效的索引和数据查询。这也是MySQL能支撑高并发、大数据量查询的核心原因之一。上一章我们从行的角度解析了单条数据的存储格式，本章将从**数据页**这个Inn... #第九章 #从数据页的角度看B #树及MySQL中数据的底层存储原理 阅读 →" [ref=e660] [cursor=pointer]':
+              - /url: /articles/blog/第九章：从数据页的角度看B+树及MySQL中数据的底层存储原理/
+              - generic [ref=e661]:
+                - generic [ref=e662]: 博客
+                - generic [ref=e663]: 2026-06-06
+                - generic [ref=e664]: ⏱ 17 min
+              - heading "📄 第九章：从数据页的角度看B+树及MySQL中数据的底层存储原理" [level=2] [ref=e665]:
+                - generic [ref=e666]: 📄
+                - text: 第九章：从数据页的角度看B+树及MySQL中数据的底层存储原理
+              - paragraph [ref=e667]: 在MySQL的InnoDB存储引擎中，数据的底层存储并非简单的无序存放，而是通过**表空间-段-区-页-行**的层级结构组织，并基于B+树实现高效的索引和数据查询。这也是MySQL能支撑高并发、大数据量查询的核心原因之一。上一章我们从行的角度解析了单条数据的存储格式，本章将从**数据页**这个Inn...
+              - generic [ref=e668]:
+                - generic [ref=e669]:
+                  - generic [ref=e670]: "#第九章"
+                  - generic [ref=e671]: "#从数据页的角度看B"
+                  - generic [ref=e672]: "#树及MySQL中数据的底层存储原理"
+                - generic [ref=e673]: 阅读 →
+          - article [ref=e674]:
+            - text: │
+            - 'link "博客 2026-06-06 ⏱ 13 min 📄 第二章：DDL语句定义及常见用法示例 上一章我们入门了MySQL的基础概念，了解了数据库、表的核心作用，今天我们正式进入SQL语句的学习，首先要掌握的就是DDL语句——它是构建数据库结构的“基石”，学会DDL，你才能真正开始创建属于自己的数据库和表，为后续的数据存储、查询打下基础。 一、什么是DDL？新手必懂的核心定义 DDL 的全... #第二章 #DDL语句定义及常见用法示例 阅读 →" [ref=e675] [cursor=pointer]':
+              - /url: /articles/blog/第二章：DDL语句定义及常见用法示例/
+              - generic [ref=e676]:
+                - generic [ref=e677]: 博客
+                - generic [ref=e678]: 2026-06-06
+                - generic [ref=e679]: ⏱ 13 min
+              - heading "📄 第二章：DDL语句定义及常见用法示例" [level=2] [ref=e680]:
+                - generic [ref=e681]: 📄
+                - text: 第二章：DDL语句定义及常见用法示例
+              - paragraph [ref=e682]: 上一章我们入门了MySQL的基础概念，了解了数据库、表的核心作用，今天我们正式进入SQL语句的学习，首先要掌握的就是DDL语句——它是构建数据库结构的“基石”，学会DDL，你才能真正开始创建属于自己的数据库和表，为后续的数据存储、查询打下基础。 一、什么是DDL？新手必懂的核心定义 DDL 的全...
+              - generic [ref=e683]:
+                - generic [ref=e684]:
+                  - generic [ref=e685]: "#第二章"
+                  - generic [ref=e686]: "#DDL语句定义及常见用法示例"
+                - generic [ref=e687]: 阅读 →
+          - article [ref=e688]:
+            - text: │
+            - 'link "博客 2026-06-06 ⏱ 23 min 📄 第五章：select语句的执行过程是怎么样的？ 对于MySQL初学者而言，我们每天写的SELECT语句，看似只是简单的“查数据”，背后却隐藏着MySQL内核复杂的执行逻辑。很多人只会写SQL，却不懂其执行过程，遇到性能瓶颈时无从下手——比如为什么同样的查询，换个索引就快了？为什么有些查询会频繁访问磁盘？ 本章我们就从零开始，结合MySQL源码（... #第五章 #select语句的执行过程是怎么样的 阅读 →" [ref=e689] [cursor=pointer]':
+              - /url: /articles/blog/第五章：select语句的执行过程是怎么样的？/
+              - generic [ref=e690]:
+                - generic [ref=e691]: 博客
+                - generic [ref=e692]: 2026-06-06
+                - generic [ref=e693]: ⏱ 23 min
+              - heading "📄 第五章：select语句的执行过程是怎么样的？" [level=2] [ref=e694]:
+                - generic [ref=e695]: 📄
+                - text: 第五章：select语句的执行过程是怎么样的？
+              - paragraph [ref=e696]: 对于MySQL初学者而言，我们每天写的SELECT语句，看似只是简单的“查数据”，背后却隐藏着MySQL内核复杂的执行逻辑。很多人只会写SQL，却不懂其执行过程，遇到性能瓶颈时无从下手——比如为什么同样的查询，换个索引就快了？为什么有些查询会频繁访问磁盘？ 本章我们就从零开始，结合MySQL源码（...
+              - generic [ref=e697]:
+                - generic [ref=e698]:
+                  - generic [ref=e699]: "#第五章"
+                  - generic [ref=e700]: "#select语句的执行过程是怎么样的"
+                - generic [ref=e701]: 阅读 →
+          - article [ref=e702]:
+            - text: │
+            - 'link "博客 2026-06-06 ⏱ 17 min 📄 第八章：索引深入理解及高级运用（结合常见优化问题讲解） 对于后端开发者而言，MySQL 索引是提升数据库性能的核心手段，也是面试中的高频考点。很多初学者虽然知道“要建索引”，但往往陷入“索引建得越多越好”的误区，甚至建了索引却发现查询速度没提升，反而拖慢了写入性能。今天这篇文章，我们就从零深入拆解索引的核心逻辑、适用场景、优化技巧，结合实际开发中的常见问... #第八章 #索引深入理解及高级运用 #结合常见优化问题讲解 阅读 →" [ref=e703] [cursor=pointer]':
+              - /url: /articles/blog/第八章：索引深入理解及高级运用（结合常见优化问题讲解）/
+              - generic [ref=e704]:
+                - generic [ref=e705]: 博客
+                - generic [ref=e706]: 2026-06-06
+                - generic [ref=e707]: ⏱ 17 min
+              - heading "📄 第八章：索引深入理解及高级运用（结合常见优化问题讲解）" [level=2] [ref=e708]:
+                - generic [ref=e709]: 📄
+                - text: 第八章：索引深入理解及高级运用（结合常见优化问题讲解）
+              - paragraph [ref=e710]: 对于后端开发者而言，MySQL 索引是提升数据库性能的核心手段，也是面试中的高频考点。很多初学者虽然知道“要建索引”，但往往陷入“索引建得越多越好”的误区，甚至建了索引却发现查询速度没提升，反而拖慢了写入性能。今天这篇文章，我们就从零深入拆解索引的核心逻辑、适用场景、优化技巧，结合实际开发中的常见问...
+              - generic [ref=e711]:
+                - generic [ref=e712]:
+                  - generic [ref=e713]: "#第八章"
+                  - generic [ref=e714]: "#索引深入理解及高级运用"
+                  - generic [ref=e715]: "#结合常见优化问题讲解"
+                - generic [ref=e716]: 阅读 →
+          - article [ref=e717]:
+            - text: │
+            - 'link "博客 2026-06-06 ⏱ 21 min 📄 第六章：MySQL数据库中的一条数据是如何存储的？ 在MySQL的学习之路中，我们已经掌握了表的创建、SQL语句的执行，但你有没有想过一个问题：当我们执行 `INSERT INTO` 插入一条数据后，这条数据在底层到底是如何被存储的？它以什么格式存在磁盘上？为什么有的字段能存很长的内容，有的却会被限制？今天这一章，我们就结合InnoDB源码（基于My... #第六章 #MySQL数据库中的一条数据是如何存储的 阅读 →" [ref=e718] [cursor=pointer]':
+              - /url: /articles/blog/第六章：MySQL数据库中的一条数据是如何存储的？/
+              - generic [ref=e719]:
+                - generic [ref=e720]: 博客
+                - generic [ref=e721]: 2026-06-06
+                - generic [ref=e722]: ⏱ 21 min
+              - heading "📄 第六章：MySQL数据库中的一条数据是如何存储的？" [level=2] [ref=e723]:
+                - generic [ref=e724]: 📄
+                - text: 第六章：MySQL数据库中的一条数据是如何存储的？
+              - paragraph [ref=e725]: "在MySQL的学习之路中，我们已经掌握了表的创建、SQL语句的执行，但你有没有想过一个问题：当我们执行 `INSERT INTO` 插入一条数据后，这条数据在底层到底是如何被存储的？它以什么格式存在磁盘上？为什么有的字段能存很长的内容，有的却会被限制？今天这一章，我们就结合InnoDB源码（基于My..."
+              - generic [ref=e726]:
+                - generic [ref=e727]:
+                  - generic [ref=e728]: "#第六章"
+                  - generic [ref=e729]: "#MySQL数据库中的一条数据是如何存储的"
+                - generic [ref=e730]: 阅读 →
+          - article [ref=e731]:
+            - text: │
+            - 'link "博客 2026-06-06 ⏱ 6 min 📄 第十一章：MySQL中常见的索引失效情况原因分析及解决方案 **前言**： 在 MySQL 数据库中，很多时候 SQL 的 CRUD 性能极差，并不是因为数据量真的大到无法处理，而是开发者对索引底层实现不够透彻，写出了让索引 “失效” 的 SQL。本文就带你一次性搞懂：MySQL 中最常见的 6 类索引失效场景，从**本质原因**到**检测方式**，再到*... #第十一章 #MySQL中常见的索引失效情况原因分析及解决方案 阅读 →" [ref=e732] [cursor=pointer]':
+              - /url: /articles/blog/第十一章：MySQL中常见的索引失效情况原因分析及解决方案/
+              - generic [ref=e733]:
+                - generic [ref=e734]: 博客
+                - generic [ref=e735]: 2026-06-06
+                - generic [ref=e736]: ⏱ 6 min
+              - heading "📄 第十一章：MySQL中常见的索引失效情况原因分析及解决方案" [level=2] [ref=e737]:
+                - generic [ref=e738]: 📄
+                - text: 第十一章：MySQL中常见的索引失效情况原因分析及解决方案
+              - paragraph [ref=e739]: "**前言**： 在 MySQL 数据库中，很多时候 SQL 的 CRUD 性能极差，并不是因为数据量真的大到无法处理，而是开发者对索引底层实现不够透彻，写出了让索引 “失效” 的 SQL。本文就带你一次性搞懂：MySQL 中最常见的 6 类索引失效场景，从**本质原因**到**检测方式**，再到*..."
+              - generic [ref=e740]:
+                - generic [ref=e741]:
+                  - generic [ref=e742]: "#第十一章"
+                  - generic [ref=e743]: "#MySQL中常见的索引失效情况原因分析及解决方案"
+                - generic [ref=e744]: 阅读 →
+          - article [ref=e745]:
+            - text: │
+            - 'link "博客 2026-06-06 ⏱ 15 min 📄 第十三章：MySQL 事务详解：原理、特性、并发问题与隔离级别 在日常开发中，你是否遇到过这样的场景：测试库中几百条数据查询飞快，上线后生产库几十万条数据，相同的 SQL 突然慢到超时？90% 的情况下，问题都出在**索引**上。 一、索引的本质：不止是 “目录” 那么简单 1.1 索引到底是什么？ 用一个最通俗的比喻：索引就像一本书的 “目录”。 如果... #第十三章 #MySQL #事务详解 #原理 #特性 阅读 →" [ref=e746] [cursor=pointer]':
+              - /url: /articles/blog/第十三章：MySQL 事务详解：原理、特性、并发问题与隔离级别/
+              - generic [ref=e747]:
+                - generic [ref=e748]: 博客
+                - generic [ref=e749]: 2026-06-06
+                - generic [ref=e750]: ⏱ 15 min
+              - heading "📄 第十三章：MySQL 事务详解：原理、特性、并发问题与隔离级别" [level=2] [ref=e751]:
+                - generic [ref=e752]: 📄
+                - text: 第十三章：MySQL 事务详解：原理、特性、并发问题与隔离级别
+              - paragraph [ref=e753]: 在日常开发中，你是否遇到过这样的场景：测试库中几百条数据查询飞快，上线后生产库几十万条数据，相同的 SQL 突然慢到超时？90% 的情况下，问题都出在**索引**上。 一、索引的本质：不止是 “目录” 那么简单 1.1 索引到底是什么？ 用一个最通俗的比喻：索引就像一本书的 “目录”。 如果...
+              - generic [ref=e754]:
+                - generic [ref=e755]:
+                  - generic [ref=e756]: "#第十三章"
+                  - generic [ref=e757]: "#MySQL"
+                  - generic [ref=e758]: "#事务详解"
+                  - generic [ref=e759]: "#原理"
+                  - generic [ref=e760]: "#特性"
+                - generic [ref=e761]: 阅读 →
+          - article [ref=e762]:
+            - text: │
+            - 'link "博客 2026-06-06 ⏱ 27 min 📄 第十二章：MySQL分页性能如何优化 前言： 所以今天我们就来系统地讲解 MySQL 分页（pagination）在大数据量下常见的性能问题，深入分析背后的执行机制，用真实场景举例说明为什么 LIMIT OFFSET 会变慢，并给出多种实用的优化方案与实践建议（含完整 SQL 示例、优缺点详细比较与工程化落地注意事项）。本文适合后端开... #第十二章 #MySQL分页性能如何优化 阅读 →" [ref=e763] [cursor=pointer]':
+              - /url: /articles/blog/第十二章：MySQL分页性能如何优化/
+              - generic [ref=e764]:
+                - generic [ref=e765]: 博客
+                - generic [ref=e766]: 2026-06-06
+                - generic [ref=e767]: ⏱ 27 min
+              - heading "📄 第十二章：MySQL分页性能如何优化" [level=2] [ref=e768]:
+                - generic [ref=e769]: 📄
+                - text: 第十二章：MySQL分页性能如何优化
+              - paragraph [ref=e770]: 前言： 所以今天我们就来系统地讲解 MySQL 分页（pagination）在大数据量下常见的性能问题，深入分析背后的执行机制，用真实场景举例说明为什么 LIMIT OFFSET 会变慢，并给出多种实用的优化方案与实践建议（含完整 SQL 示例、优缺点详细比较与工程化落地注意事项）。本文适合后端开...
+              - generic [ref=e771]:
+                - generic [ref=e772]:
+                  - generic [ref=e773]: "#第十二章"
+                  - generic [ref=e774]: "#MySQL分页性能如何优化"
+                - generic [ref=e775]: 阅读 →
+          - article [ref=e776]:
+            - text: │
+            - 'link "博客 2026-06-06 ⏱ 15 min 📄 第十五章 MySQL 可重复读隔离级别：工作原理与幻读问题解析 本文针对 MySQL InnoDB 存储引擎默认的 REPEATABLE READ（可重复读）隔离级别，从幻读定义、工作机制、例外场景、实战验证到解决方案进行全面解析，帮助 Java 后端开发者彻底理解其核心逻辑与应用边界，规避并发场景下的数据一致性风险。 一、核心结论 MySQL InnoDB... #第十五章 #MySQL #可重复读隔离级别 #工作原理与幻读问题解析 阅读 →" [ref=e777] [cursor=pointer]':
+              - /url: /articles/blog/第十五章   MySQL 可重复读隔离级别：工作原理与幻读问题解析/
+              - generic [ref=e778]:
+                - generic [ref=e779]: 博客
+                - generic [ref=e780]: 2026-06-06
+                - generic [ref=e781]: ⏱ 15 min
+              - heading "📄 第十五章 MySQL 可重复读隔离级别：工作原理与幻读问题解析" [level=2] [ref=e782]:
+                - generic [ref=e783]: 📄
+                - text: 第十五章 MySQL 可重复读隔离级别：工作原理与幻读问题解析
+              - paragraph [ref=e784]: 本文针对 MySQL InnoDB 存储引擎默认的 REPEATABLE READ（可重复读）隔离级别，从幻读定义、工作机制、例外场景、实战验证到解决方案进行全面解析，帮助 Java 后端开发者彻底理解其核心逻辑与应用边界，规避并发场景下的数据一致性风险。 一、核心结论 MySQL InnoDB...
+              - generic [ref=e785]:
+                - generic [ref=e786]:
+                  - generic [ref=e787]: "#第十五章"
+                  - generic [ref=e788]: "#MySQL"
+                  - generic [ref=e789]: "#可重复读隔离级别"
+                  - generic [ref=e790]: "#工作原理与幻读问题解析"
+                - generic [ref=e791]: 阅读 →
+          - article [ref=e792]:
+            - text: │
+            - 'link "博客 2026-06-06 ⏱ 21 min 📄 第十六章：MySQL 分库分表的考量策略（Java后端实战版） 作为Java后端开发者，我们几乎都会经历这样一个过程：系统初期用单库单表快速上线，随着业务爆发，数据量从几十万飙升到千万、上亿，查询变慢、锁竞争加剧、数据库CPU飙升，此时分库分表就从“可选优化”变成了“必做操作”。 很多初学者面对分库分表会感到迷茫：垂直拆分和水平拆分有啥区别？什么时候该分表，什... #第十六章 #MySQL #分库分表的考量策略 #Java后端实战版 阅读 →" [ref=e793] [cursor=pointer]':
+              - /url: /articles/blog/第十六章：MySQL 分库分表的考量策略（Java后端实战版）/
+              - generic [ref=e794]:
+                - generic [ref=e795]: 博客
+                - generic [ref=e796]: 2026-06-06
+                - generic [ref=e797]: ⏱ 21 min
+              - heading "📄 第十六章：MySQL 分库分表的考量策略（Java后端实战版）" [level=2] [ref=e798]:
+                - generic [ref=e799]: 📄
+                - text: 第十六章：MySQL 分库分表的考量策略（Java后端实战版）
+              - paragraph [ref=e800]: 作为Java后端开发者，我们几乎都会经历这样一个过程：系统初期用单库单表快速上线，随着业务爆发，数据量从几十万飙升到千万、上亿，查询变慢、锁竞争加剧、数据库CPU飙升，此时分库分表就从“可选优化”变成了“必做操作”。 很多初学者面对分库分表会感到迷茫：垂直拆分和水平拆分有啥区别？什么时候该分表，什...
+              - generic [ref=e801]:
+                - generic [ref=e802]:
+                  - generic [ref=e803]: "#第十六章"
+                  - generic [ref=e804]: "#MySQL"
+                  - generic [ref=e805]: "#分库分表的考量策略"
+                  - generic [ref=e806]: "#Java后端实战版"
+                - generic [ref=e807]: 阅读 →
+          - article [ref=e808]:
+            - text: │
+            - 'link "博客 2026-06-06 ⏱ 10 min 📄 第十四章：MySQL 事务中如何解决幻读问题（MVCC中通过ReadView来解决幻读问题详解） 引言 在前文中，我们讲解到了 MySQL 中的事务和隔离级别，也知晓了在 MySQL 中默认的隔离级别是可重复读，那么在可重复读的情况下，依然可能会出现“幻读”的问题，那么此时我们又可以怎么解决？ 这就引出了我们本文要讲解的重点——MVCC（多版本并发控制）。 一、先回顾：什么是幻读（Phan... #第十四章 #MySQL #事务中如何解决幻读问题 #MVCC中通过ReadView来解决幻读问题详解 阅读 →" [ref=e809] [cursor=pointer]':
+              - /url: /articles/blog/第十四章：MySQL 事务中如何解决幻读问题（MVCC中通过ReadView来解决幻读问题详解）/
+              - generic [ref=e810]:
+                - generic [ref=e811]: 博客
+                - generic [ref=e812]: 2026-06-06
+                - generic [ref=e813]: ⏱ 10 min
+              - heading "📄 第十四章：MySQL 事务中如何解决幻读问题（MVCC中通过ReadView来解决幻读问题详解）" [level=2] [ref=e814]:
+                - generic [ref=e815]: 📄
+                - text: 第十四章：MySQL 事务中如何解决幻读问题（MVCC中通过ReadView来解决幻读问题详解）
+              - paragraph [ref=e816]: 引言 在前文中，我们讲解到了 MySQL 中的事务和隔离级别，也知晓了在 MySQL 中默认的隔离级别是可重复读，那么在可重复读的情况下，依然可能会出现“幻读”的问题，那么此时我们又可以怎么解决？ 这就引出了我们本文要讲解的重点——MVCC（多版本并发控制）。 一、先回顾：什么是幻读（Phan...
+              - generic [ref=e817]:
+                - generic [ref=e818]:
+                  - generic [ref=e819]: "#第十四章"
+                  - generic [ref=e820]: "#MySQL"
+                  - generic [ref=e821]: "#事务中如何解决幻读问题"
+                  - generic [ref=e822]: "#MVCC中通过ReadView来解决幻读问题详解"
+                - generic [ref=e823]: 阅读 →
+          - article [ref=e824]:
+            - text: │
+            - 'link "博客 2026-06-06 ⏱ 17 min 📄 第十章：深入了解B+树及B+树的性能优势 在MySQL的学习之路中，索引是提升查询性能的核心，而B+树则是MySQL索引的“灵魂”——无论是InnoDB还是MyISAM存储引擎，都以B+树作为底层索引结构。很多初学者会有疑问：为什么数据库不选择我们熟悉的二叉树、红黑树，偏偏青睐B+树？B+树的底层结构到底有什么优势，能支撑千万级、亿级数据的... #第十章 #深入了解B #树及B #树的性能优势 阅读 →" [ref=e825] [cursor=pointer]':
+              - /url: /articles/blog/第十章：深入了解B+树及B+树的性能优势/
+              - generic [ref=e826]:
+                - generic [ref=e827]: 博客
+                - generic [ref=e828]: 2026-06-06
+                - generic [ref=e829]: ⏱ 17 min
+              - heading "📄 第十章：深入了解B+树及B+树的性能优势" [level=2] [ref=e830]:
+                - generic [ref=e831]: 📄
+                - text: 第十章：深入了解B+树及B+树的性能优势
+              - paragraph [ref=e832]: 在MySQL的学习之路中，索引是提升查询性能的核心，而B+树则是MySQL索引的“灵魂”——无论是InnoDB还是MyISAM存储引擎，都以B+树作为底层索引结构。很多初学者会有疑问：为什么数据库不选择我们熟悉的二叉树、红黑树，偏偏青睐B+树？B+树的底层结构到底有什么优势，能支撑千万级、亿级数据的...
+              - generic [ref=e833]:
+                - generic [ref=e834]:
+                  - generic [ref=e835]: "#第十章"
+                  - generic [ref=e836]: "#深入了解B"
+                  - generic [ref=e837]: "#树及B"
+                  - generic [ref=e838]: "#树的性能优势"
+                - generic [ref=e839]: 阅读 →
+          - article [ref=e840]:
+            - text: │
+            - 'link "博客 2026-06-06 ⏱ 18 min 📄 第四章：DQL查询全解析 对于后端开发者、数据库初学者来说，MySQL中的DQL（数据查询语言）是日常工作中最常用、最核心的知识点之一。不同于DML（数据操纵语言）的“增删改”，DQL专注于“查数据”——如何快速、准确地从数据库中提取所需信息，直接决定了系统的性能和开发效率。今天，我们就从概念到实战，一步步拆解DQL的核心用... #第四章 #DQL查询全解析 阅读 →" [ref=e841] [cursor=pointer]':
+              - /url: /articles/blog/第四章：DQL查询全解析/
+              - generic [ref=e842]:
+                - generic [ref=e843]: 博客
+                - generic [ref=e844]: 2026-06-06
+                - generic [ref=e845]: ⏱ 18 min
+              - heading "📄 第四章：DQL查询全解析" [level=2] [ref=e846]:
+                - generic [ref=e847]: 📄
+                - text: 第四章：DQL查询全解析
+              - paragraph [ref=e848]: 对于后端开发者、数据库初学者来说，MySQL中的DQL（数据查询语言）是日常工作中最常用、最核心的知识点之一。不同于DML（数据操纵语言）的“增删改”，DQL专注于“查数据”——如何快速、准确地从数据库中提取所需信息，直接决定了系统的性能和开发效率。今天，我们就从概念到实战，一步步拆解DQL的核心用...
+              - generic [ref=e849]:
+                - generic [ref=e850]:
+                  - generic [ref=e851]: "#第四章"
+                  - generic [ref=e852]: "#DQL查询全解析"
+                - generic [ref=e853]: 阅读 →
+          - article [ref=e854]:
+            - text: │
+            - 'link "博客 2026-06-06 ⏱ 62 min 📄 设计模式 设计模式是解决特定场景软件设计问题的最佳实践，核心价值是解耦、复用、可维护。本文按三大类梳理23种模式，每个模式配套「核心逻辑图+Java实战案例+代码片段」，兼顾面试考点与开发落地，避免纯抽象定义。 一、创建型模式（5种） 核心目标：封装对象创建过程，解耦创建与使用，提高灵活性。 1. 工厂... #设计模式 阅读 →" [ref=e855] [cursor=pointer]':
+              - /url: /articles/blog/设计模式/
+              - generic [ref=e856]:
+                - generic [ref=e857]: 博客
+                - generic [ref=e858]: 2026-06-06
+                - generic [ref=e859]: ⏱ 62 min
+              - heading "📄 设计模式" [level=2] [ref=e860]:
+                - generic [ref=e861]: 📄
+                - text: 设计模式
+              - paragraph [ref=e862]: 设计模式是解决特定场景软件设计问题的最佳实践，核心价值是解耦、复用、可维护。本文按三大类梳理23种模式，每个模式配套「核心逻辑图+Java实战案例+代码片段」，兼顾面试考点与开发落地，避免纯抽象定义。 一、创建型模式（5种） 核心目标：封装对象创建过程，解耦创建与使用，提高灵活性。 1. 工厂...
+              - generic [ref=e863]:
+                - generic [ref=e865]: "#设计模式"
+                - generic [ref=e866]: 阅读 →
+          - article [ref=e867]:
+            - text: │
+            - 'link "博客 2026-06-06 ⏱ 12 min 📄 银行家算法 Dijkstra在1965年提出的银行家算法是著名的死锁避免算法，这个用于一个银行家给多个顾客贷款的算法可以直接用于操作系统给进程分配资源，这时只要把银行家换成操作系统，把顾客换成进程，把资金换成资源，把银行家决定是否放贷时所用的判断过程（即判断顾客是否有信誉和偿还能力）换成操作系统决定是否分配资源... #银行家算法 阅读 →" [ref=e868] [cursor=pointer]':
+              - /url: /articles/blog/银行家算法/
+              - generic [ref=e869]:
+                - generic [ref=e870]: 博客
+                - generic [ref=e871]: 2026-06-06
+                - generic [ref=e872]: ⏱ 12 min
+              - heading "📄 银行家算法" [level=2] [ref=e873]:
+                - generic [ref=e874]: 📄
+                - text: 银行家算法
+              - paragraph [ref=e875]: Dijkstra在1965年提出的银行家算法是著名的死锁避免算法，这个用于一个银行家给多个顾客贷款的算法可以直接用于操作系统给进程分配资源，这时只要把银行家换成操作系统，把顾客换成进程，把资金换成资源，把银行家决定是否放贷时所用的判断过程（即判断顾客是否有信誉和偿还能力）换成操作系统决定是否分配资源...
+              - generic [ref=e876]:
+                - generic [ref=e878]: "#银行家算法"
+                - generic [ref=e879]: 阅读 →
+          - article [ref=e880]:
+            - text: │
+            - 'link "博客 2026-06-04 ⏱ 9 min 📄 数据结构九 树与二叉树(2) 一、树的定义与基本概念 1. 树的定义 - 树是 n (n≥0) 个结点的有限集合。 - 非空树**有且只有一个**根结点。 - 其余结点分为 m (m>0) 个**互不相交**的集合 T₁, T₂, …, Tₘ，每个集合本身又是一棵树（子树）。 - 结点 T 称为 Tᵢ 的**父结点... #数据结构 阅读 →" [ref=e881] [cursor=pointer]':
+              - /url: /articles/blog/数据结构九-树与二叉树2/
+              - generic [ref=e882]:
+                - generic [ref=e883]: 博客
+                - generic [ref=e884]: 2026-06-04
+                - generic [ref=e885]: ⏱ 9 min
+              - heading "📄 数据结构九 树与二叉树(2)" [level=2] [ref=e886]:
+                - generic [ref=e887]: 📄
+                - text: 数据结构九 树与二叉树(2)
+              - paragraph [ref=e888]: 一、树的定义与基本概念 1. 树的定义 - 树是 n (n≥0) 个结点的有限集合。 - 非空树**有且只有一个**根结点。 - 其余结点分为 m (m>0) 个**互不相交**的集合 T₁, T₂, …, Tₘ，每个集合本身又是一棵树（子树）。 - 结点 T 称为 Tᵢ 的**父结点...
+              - generic [ref=e889]:
+                - generic [ref=e891]: "#数据结构"
+                - generic [ref=e892]: 阅读 →
+          - article [ref=e893]:
+            - text: │
+            - 'link "教程 2026-05-28 ⏱ 18 min 📄 云服务器运维核心知识点 > 这是一份关于「一条 HTTP 请求从敲回车到看到网页，中间发生了什么」的知识体系。 > > 读完脑子有一张地图，不只是知道8个知识点。 00 一条请求的完整旅程 你今天看了多少次网页？ 你有没有想过，从你敲下回车，到页面出现在屏幕上，这中间到底发生了什么？ 我... #运维 #nginx #云服务器 阅读 →" [ref=e894] [cursor=pointer]':
+              - /url: /articles/tutorials/云服务器运维核心知识点/
+              - generic [ref=e895]:
+                - generic [ref=e896]: 教程
+                - generic [ref=e897]: 2026-05-28
+                - generic [ref=e898]: ⏱ 18 min
+              - heading "📄 云服务器运维核心知识点" [level=2] [ref=e899]:
+                - generic [ref=e900]: 📄
+                - text: 云服务器运维核心知识点
+              - paragraph [ref=e901]: "> 这是一份关于「一条 HTTP 请求从敲回车到看到网页，中间发生了什么」的知识体系。 > > 读完脑子有一张地图，不只是知道8个知识点。 00 一条请求的完整旅程 你今天看了多少次网页？ 你有没有想过，从你敲下回车，到页面出现在屏幕上，这中间到底发生了什么？ 我..."
+              - generic [ref=e902]:
+                - generic [ref=e903]:
+                  - generic [ref=e904]: "#运维"
+                  - generic [ref=e905]: "#nginx"
+                  - generic [ref=e906]: "#云服务器"
+                - generic [ref=e907]: 阅读 →
+          - article [ref=e908]:
+            - text: │
+            - 'link "教程 2026-05-27 ⏱ 15 min 📄 GGUF 模型文件名指南：以后看到任何 GGUF 文件都能自己判断该用哪个 你下过模型吧。下完之后，对着一堆文件名发呆过吗？`Qwen3.5-4B-IQ4_NL.gguf`、`Qwen2.5-7B-Q4_K_M.gguf`、`Mistral-7B-v0.3-Q5_1.gguf`——这些后缀到底什么意思？我该下哪个？说实话，我之前也懵。什么叫 Q4？什么叫 IQ4？这... #本地部署 #大模型 阅读 →" [ref=e909] [cursor=pointer]':
+              - /url: /articles/tutorials/gguf-模型文件名指南以后看到任何-gguf-文件都能自己判断该用哪个/
+              - generic [ref=e910]:
+                - generic [ref=e911]: 教程
+                - generic [ref=e912]: 2026-05-27
+                - generic [ref=e913]: ⏱ 15 min
+              - heading "📄 GGUF 模型文件名指南：以后看到任何 GGUF 文件都能自己判断该用哪个" [level=2] [ref=e914]:
+                - generic [ref=e915]: 📄
+                - text: GGUF 模型文件名指南：以后看到任何 GGUF 文件都能自己判断该用哪个
+              - paragraph [ref=e916]: "你下过模型吧。下完之后，对着一堆文件名发呆过吗？`Qwen3.5-4B-IQ4_NL.gguf`、`Qwen2.5-7B-Q4_K_M.gguf`、`Mistral-7B-v0.3-Q5_1.gguf`——这些后缀到底什么意思？我该下哪个？说实话，我之前也懵。什么叫 Q4？什么叫 IQ4？这..."
+              - generic [ref=e917]:
+                - generic [ref=e918]:
+                  - generic [ref=e919]: "#本地部署"
+                  - generic [ref=e920]: "#大模型"
+                - generic [ref=e921]: 阅读 →
+          - article [ref=e922]:
+            - text: │
+            - 'link "博客 2026-05-27 ⏱ 10 min 📄 # 图论入门：用一个故事把数据结构里的\"图\"讲透 图论入门：用一个故事把数据结构里的\"图\"讲透 ![image.png](/img/2026/misc/064289c5-1bd0-409d-9150-f514d304ffb3.png) 先说个我踩过的坑 大二上数据结构期末考试，有道题让判断一个图能不能拓扑排序。我看了半天愣是没看懂... #图论 阅读 →" [ref=e923] [cursor=pointer]':
+              - /url: /articles/blog/图论入门用一个故事把数据结构里的图讲透/
+              - generic [ref=e924]:
+                - generic [ref=e925]: 博客
+                - generic [ref=e926]: 2026-05-27
+                - generic [ref=e927]: ⏱ 10 min
+              - 'heading "📄 # 图论入门：用一个故事把数据结构里的\"图\"讲透" [level=2] [ref=e928]':
+                - generic [ref=e929]: 📄
+                - text: "# 图论入门：用一个故事把数据结构里的\"图\"讲透"
+              - paragraph [ref=e930]: 图论入门：用一个故事把数据结构里的"图"讲透 ![image.png](/img/2026/misc/064289c5-1bd0-409d-9150-f514d304ffb3.png) 先说个我踩过的坑 大二上数据结构期末考试，有道题让判断一个图能不能拓扑排序。我看了半天愣是没看懂...
+              - generic [ref=e931]:
+                - generic [ref=e933]: "#图论"
+                - generic [ref=e934]: 阅读 →
+          - article [ref=e935]:
+            - text: │
+            - 'link "博客 2026-05-27 ⏱ 8 min 📄 数据结构八 图 一、图的基本概念 1. 图的定义 - 图 G = (V, E)，V是顶点集合，E是边（或弧）的集合。 - 无向图：边没有方向，(v, w) 与 (w, v) 相同。 - 有向图：弧有方向，<v, w> 表示从 v 指向 w。 2. 度、入度、出度 - 无向图：顶点v的**度**是... #数据结构 #复习 阅读 →" [ref=e936] [cursor=pointer]':
+              - /url: /articles/blog/数据结构八-图/
+              - generic [ref=e937]:
+                - generic [ref=e938]: 博客
+                - generic [ref=e939]: 2026-05-27
+                - generic [ref=e940]: ⏱ 8 min
+              - heading "📄 数据结构八 图" [level=2] [ref=e941]:
+                - generic [ref=e942]: 📄
+                - text: 数据结构八 图
+              - paragraph [ref=e943]: 一、图的基本概念 1. 图的定义 - 图 G = (V, E)，V是顶点集合，E是边（或弧）的集合。 - 无向图：边没有方向，(v, w) 与 (w, v) 相同。 - 有向图：弧有方向，<v, w> 表示从 v 指向 w。 2. 度、入度、出度 - 无向图：顶点v的**度**是...
+              - generic [ref=e944]:
+                - generic [ref=e945]:
+                  - generic [ref=e946]: "#数据结构"
+                  - generic [ref=e947]: "#复习"
+                - generic [ref=e948]: 阅读 →
+          - article [ref=e949]:
+            - text: │
+            - 'link "博客 2026-05-27 ⏱ 11 min 📄 数据结构七 中测 一、数据结构基础概念1. 数据结构三要素- **逻辑结构**：数据元素之间的逻辑关系（与计算机无关）。- **存储结构（物理结构）**：数据在计算机中的实际存储方式。- **运算**：对数据施加的操作。数据结构研究的是数据的**逻辑结构和物理结构**及它们之间的相互关系。2. 逻辑... #数据结构 阅读 →" [ref=e950] [cursor=pointer]':
+              - /url: /articles/blog/数据结构六-中测/
+              - generic [ref=e951]:
+                - generic [ref=e952]: 博客
+                - generic [ref=e953]: 2026-05-27
+                - generic [ref=e954]: ⏱ 11 min
+              - heading "📄 数据结构七 中测" [level=2] [ref=e955]:
+                - generic [ref=e956]: 📄
+                - text: 数据结构七 中测
+              - paragraph [ref=e957]: 一、数据结构基础概念1. 数据结构三要素- **逻辑结构**：数据元素之间的逻辑关系（与计算机无关）。- **存储结构（物理结构）**：数据在计算机中的实际存储方式。- **运算**：对数据施加的操作。数据结构研究的是数据的**逻辑结构和物理结构**及它们之间的相互关系。2. 逻辑...
+              - generic [ref=e958]:
+                - generic [ref=e960]: "#数据结构"
+                - generic [ref=e961]: 阅读 →
+          - article [ref=e962]:
+            - text: │
+            - 'link "博客 2026-05-26 ⏱ 12 min 📄 循环队列与普通队列：我是怎么把「假溢出」这个问题彻底想明白的 你去商场里吃饭，门口有个牌子写着「当前叫到 23 号」。你拿的是 24 号。这意味着在你前面还有一个人。这就是一个队列。 先排队的人，先被叫到，先入座。后来的人乖乖等着。 这个逻辑太简单了，简单到我们从小就知道。但当我真正去看数据结构里的队列实现时，才发现这个「简单」的背面藏着一个困扰了... #数据结构 #队列 阅读 →" [ref=e963] [cursor=pointer]':
+              - /url: /articles/blog/循环队列与普通队列我是怎么把假溢出这个问题彻底想明白的/
+              - generic [ref=e964]:
+                - generic [ref=e965]: 博客
+                - generic [ref=e966]: 2026-05-26
+                - generic [ref=e967]: ⏱ 12 min
+              - heading "📄 循环队列与普通队列：我是怎么把「假溢出」这个问题彻底想明白的" [level=2] [ref=e968]:
+                - generic [ref=e969]: 📄
+                - text: 循环队列与普通队列：我是怎么把「假溢出」这个问题彻底想明白的
+              - paragraph [ref=e970]: 你去商场里吃饭，门口有个牌子写着「当前叫到 23 号」。你拿的是 24 号。这意味着在你前面还有一个人。这就是一个队列。 先排队的人，先被叫到，先入座。后来的人乖乖等着。 这个逻辑太简单了，简单到我们从小就知道。但当我真正去看数据结构里的队列实现时，才发现这个「简单」的背面藏着一个困扰了...
+              - generic [ref=e971]:
+                - generic [ref=e972]:
+                  - generic [ref=e973]: "#数据结构"
+                  - generic [ref=e974]: "#队列"
+                - generic [ref=e975]: 阅读 →
+          - article [ref=e976]:
+            - text: │
+            - 'link "博客 2026-05-21 ⏱ 7 min 📄 数据结构六 数组、广义表与稀疏矩阵 一、数组的存储与地址计算 1. 数组的存储方式 - 数组的顺序存储有两种：**按行序存储**与**按列序存储**。 - 无论哪种方式，数组元素在内存中都是连续存放的。 2. 一维数组地址计算 若首地址为 `LOC(a₁)`，每个元素占 `L` 个存储单元，则第 `i` 个元素的地址... #数据结构 阅读 →" [ref=e977] [cursor=pointer]':
+              - /url: /articles/blog/数据结构六-数组-广义表与稀疏矩阵/
+              - generic [ref=e978]:
+                - generic [ref=e979]: 博客
+                - generic [ref=e980]: 2026-05-21
+                - generic [ref=e981]: ⏱ 7 min
+              - heading "📄 数据结构六 数组、广义表与稀疏矩阵" [level=2] [ref=e982]:
+                - generic [ref=e983]: 📄
+                - text: 数据结构六 数组、广义表与稀疏矩阵
+              - paragraph [ref=e984]: "一、数组的存储与地址计算 1. 数组的存储方式 - 数组的顺序存储有两种：**按行序存储**与**按列序存储**。 - 无论哪种方式，数组元素在内存中都是连续存放的。 2. 一维数组地址计算 若首地址为 `LOC(a₁)`，每个元素占 `L` 个存储单元，则第 `i` 个元素的地址..."
+              - generic [ref=e985]:
+                - generic [ref=e987]: "#数据结构"
+                - generic [ref=e988]: 阅读 →
+          - article [ref=e989]:
+            - text: │
+            - 'link "随笔 2026-05-21 ⏱ 6 min 📄 从 ClaudeCode 出逃，又回来了 最开始装 ClaudeCode 的理由很简单：大家都装了，想看看这玩意到底能干啥。 结果还没搞清楚怎么用，小龙虾热潮就起来了。 出逃 openclaw，小龙虾，一夜之间到处都是。 说实话那个场面有点吓人——朋友圈刷屏、群里天天有截图、各种\"第一批使用者\"开始冒出来。我一看那阵... #openclaw #claudecode 阅读 →" [ref=e990] [cursor=pointer]':
+              - /url: /articles/essays/从-claudecode-出逃-又回来了/
+              - generic [ref=e991]:
+                - generic [ref=e992]: 随笔
+                - generic [ref=e993]: 2026-05-21
+                - generic [ref=e994]: ⏱ 6 min
+              - heading "📄 从 ClaudeCode 出逃，又回来了" [level=2] [ref=e995]:
+                - generic [ref=e996]: 📄
+                - text: 从 ClaudeCode 出逃，又回来了
+              - paragraph [ref=e997]: 最开始装 ClaudeCode 的理由很简单：大家都装了，想看看这玩意到底能干啥。 结果还没搞清楚怎么用，小龙虾热潮就起来了。 出逃 openclaw，小龙虾，一夜之间到处都是。 说实话那个场面有点吓人——朋友圈刷屏、群里天天有截图、各种"第一批使用者"开始冒出来。我一看那阵...
+              - generic [ref=e998]:
+                - generic [ref=e999]:
+                  - generic [ref=e1000]: "#openclaw"
+                  - generic [ref=e1001]: "#claudecode"
+                - generic [ref=e1002]: 阅读 →
+          - article [ref=e1003]:
+            - text: │
+            - 'link "博客 2026-05-20 ⏱ 9 min 📄 数据结构五 树与二叉树 一、树的基本概念 1. 树的定义与性质 - 树是 n (n≥0) 个结点的有限集合。n=0 时为空树。 - 非空树有且仅有一个根结点，其余结点可分为 m 个互不相交的有限集，每个集合本身又是一棵树（子树）。 - 树中每个结点**最多只有一个直接前驱**（双亲），可以有多个直接后继（孩子）... #数据结构 阅读 →" [ref=e1004] [cursor=pointer]':
+              - /url: /articles/blog/数据结构五-树与二叉树/
+              - generic [ref=e1005]:
+                - generic [ref=e1006]: 博客
+                - generic [ref=e1007]: 2026-05-20
+                - generic [ref=e1008]: ⏱ 9 min
+              - heading "📄 数据结构五 树与二叉树" [level=2] [ref=e1009]:
+                - generic [ref=e1010]: 📄
+                - text: 数据结构五 树与二叉树
+              - paragraph [ref=e1011]: 一、树的基本概念 1. 树的定义与性质 - 树是 n (n≥0) 个结点的有限集合。n=0 时为空树。 - 非空树有且仅有一个根结点，其余结点可分为 m 个互不相交的有限集，每个集合本身又是一棵树（子树）。 - 树中每个结点**最多只有一个直接前驱**（双亲），可以有多个直接后继（孩子）...
+              - generic [ref=e1012]:
+                - generic [ref=e1014]: "#数据结构"
+                - generic [ref=e1015]: 阅读 →
+          - article [ref=e1016]:
+            - text: │
+            - 'link "随笔 2026-05-20 ⏱ 6 min 📄 敲键盘 vs 点鼠标：CLI、TUI、GUI 到底怎么选？ 敲键盘 vs 点鼠标：CLI、TUI、GUI 到底怎么选？最近在折腾 Claude Code，写了两周纯命令行，发现自己以前是不是对 CLI 有偏见。我是那种 GUI 长大的人。Windows 养出来的，鼠标点来点去，文件夹要能看见才安心。结果 Claude Code 一装好，全屏黑色终端，... #CLI #TUI #GUI 阅读 →" [ref=e1017] [cursor=pointer]':
+              - /url: /articles/essays/敲键盘-vs-点鼠标cli-tui-gui-到底怎么选/
+              - generic [ref=e1018]:
+                - generic [ref=e1019]: 随笔
+                - generic [ref=e1020]: 2026-05-20
+                - generic [ref=e1021]: ⏱ 6 min
+              - heading "📄 敲键盘 vs 点鼠标：CLI、TUI、GUI 到底怎么选？" [level=2] [ref=e1022]:
+                - generic [ref=e1023]: 📄
+                - text: 敲键盘 vs 点鼠标：CLI、TUI、GUI 到底怎么选？
+              - paragraph [ref=e1024]: 敲键盘 vs 点鼠标：CLI、TUI、GUI 到底怎么选？最近在折腾 Claude Code，写了两周纯命令行，发现自己以前是不是对 CLI 有偏见。我是那种 GUI 长大的人。Windows 养出来的，鼠标点来点去，文件夹要能看见才安心。结果 Claude Code 一装好，全屏黑色终端，...
+              - generic [ref=e1025]:
+                - generic [ref=e1026]:
+                  - generic [ref=e1027]: "#CLI"
+                  - generic [ref=e1028]: "#TUI"
+                  - generic [ref=e1029]: "#GUI"
+                - generic [ref=e1030]: 阅读 →
+          - article [ref=e1031]:
+            - text: │
+            - 'link "博客 2026-05-18 ⏱ 6 min 📄 Java 多态和接口：我学了三遍才真懂 说实话，Java 的多态我看了三遍才觉得自己真的理解。 第一次看：哦，就是子类可以当父类用。背下来了，面试能过。 第二次看：不对，为什么要用？什么时候用？感觉和接口有什么区别？ 第三次看：原来这俩是绑在一起的，搞懂接口，多态就懂了 80%。 这篇文章，就是我第三遍的总结。给你一个\"原... #Java #多态 #接口 阅读 →" [ref=e1032] [cursor=pointer]':
+              - /url: /articles/blog/java-多态和接口我学了三遍才真懂/
+              - generic [ref=e1033]:
+                - generic [ref=e1034]: 博客
+                - generic [ref=e1035]: 2026-05-18
+                - generic [ref=e1036]: ⏱ 6 min
+              - heading "📄 Java 多态和接口：我学了三遍才真懂" [level=2] [ref=e1037]:
+                - generic [ref=e1038]: 📄
+                - text: Java 多态和接口：我学了三遍才真懂
+              - paragraph [ref=e1039]: 说实话，Java 的多态我看了三遍才觉得自己真的理解。 第一次看：哦，就是子类可以当父类用。背下来了，面试能过。 第二次看：不对，为什么要用？什么时候用？感觉和接口有什么区别？ 第三次看：原来这俩是绑在一起的，搞懂接口，多态就懂了 80%。 这篇文章，就是我第三遍的总结。给你一个"原...
+              - generic [ref=e1040]:
+                - generic [ref=e1041]:
+                  - generic [ref=e1042]: "#Java"
+                  - generic [ref=e1043]: "#多态"
+                  - generic [ref=e1044]: "#接口"
+                - generic [ref=e1045]: 阅读 →
+          - article [ref=e1046]:
+            - text: │
+            - 'link "博客 2026-05-18 ⏱ 7 min 📄 数据结构四 串（字符串） 一、串的基本概念 1. 串的定义 - 串是**零个或多个字符组成的有限序列**。 - 记为：`S = \"a₁ a₂ ... aₙ\"`（n ≥ 0）。 - 串中的**数据元素只能是单个字符**，这使得串是一种**特殊的线性表**。 2. 串的长度 - 指串中所包含的**字符总个数*... #数据结构 阅读 →" [ref=e1047] [cursor=pointer]':
+              - /url: /articles/blog/数据结构四-串字符串/
+              - generic [ref=e1048]:
+                - generic [ref=e1049]: 博客
+                - generic [ref=e1050]: 2026-05-18
+                - generic [ref=e1051]: ⏱ 7 min
+              - heading "📄 数据结构四 串（字符串）" [level=2] [ref=e1052]:
+                - generic [ref=e1053]: 📄
+                - text: 数据结构四 串（字符串）
+              - paragraph [ref=e1054]: "一、串的基本概念 1. 串的定义 - 串是**零个或多个字符组成的有限序列**。 - 记为：`S = \"a₁ a₂ ... aₙ\"`（n ≥ 0）。 - 串中的**数据元素只能是单个字符**，这使得串是一种**特殊的线性表**。 2. 串的长度 - 指串中所包含的**字符总个数*..."
+              - generic [ref=e1055]:
+                - generic [ref=e1057]: "#数据结构"
+                - generic [ref=e1058]: 阅读 →
+          - article [ref=e1059]:
+            - text: │
+            - 'link "博客 2026-05-17 ⏱ 8 min 📄 C语言核心知识点复盘 一、字符串：初始化、常量与赋值陷阱1. 用字符串字面量初始化字符数组时，必须给`''\\0''`留位置- `char str[]=\"good!\";` 数组长度由编译器自动定为6（g,o,o,d,!,\\0）。- 若显式指定大小，例如 `char str[5]=\"good!\";`，5个字节只能放下字符... #C语言 #复习 阅读 →" [ref=e1060] [cursor=pointer]':
+              - /url: /articles/blog/c语言核心知识点复盘/
+              - generic [ref=e1061]:
+                - generic [ref=e1062]: 博客
+                - generic [ref=e1063]: 2026-05-17
+                - generic [ref=e1064]: ⏱ 8 min
+              - heading "📄 C语言核心知识点复盘" [level=2] [ref=e1065]:
+                - generic [ref=e1066]: 📄
+                - text: C语言核心知识点复盘
+              - paragraph [ref=e1067]: "一、字符串：初始化、常量与赋值陷阱1. 用字符串字面量初始化字符数组时，必须给`'\\0'`留位置- `char str[]=\"good!\";` 数组长度由编译器自动定为6（g,o,o,d,!,\\0）。- 若显式指定大小，例如 `char str[5]=\"good!\";`，5个字节只能放下字符..."
+              - generic [ref=e1068]:
+                - generic [ref=e1069]:
+                  - generic [ref=e1070]: "#C语言"
+                  - generic [ref=e1071]: "#复习"
+                - generic [ref=e1072]: 阅读 →
+          - article [ref=e1073]:
+            - text: │
+            - 'link "博客 2026-05-17 ⏱ 5 min 📄 数据结构一 数据结构基础概念 一、数据结构基础概念 1. 数据结构的定义与三要素 数据结构是研究非数值计算问题中计算机的**操作对象**、它们之间的**关系**和**运算**的学科。它包含三个层面： - **逻辑结构**：数据元素之间抽象的逻辑关系，与计算机无关。 - **存储结构（物理结构）**：数据在计算机中的实... #数据结构 阅读 →" [ref=e1074] [cursor=pointer]':
+              - /url: /articles/blog/数据结构一-数据结构基础概念/
+              - generic [ref=e1075]:
+                - generic [ref=e1076]: 博客
+                - generic [ref=e1077]: 2026-05-17
+                - generic [ref=e1078]: ⏱ 5 min
+              - heading "📄 数据结构一 数据结构基础概念" [level=2] [ref=e1079]:
+                - generic [ref=e1080]: 📄
+                - text: 数据结构一 数据结构基础概念
+              - paragraph [ref=e1081]: 一、数据结构基础概念 1. 数据结构的定义与三要素 数据结构是研究非数值计算问题中计算机的**操作对象**、它们之间的**关系**和**运算**的学科。它包含三个层面： - **逻辑结构**：数据元素之间抽象的逻辑关系，与计算机无关。 - **存储结构（物理结构）**：数据在计算机中的实...
+              - generic [ref=e1082]:
+                - generic [ref=e1084]: "#数据结构"
+                - generic [ref=e1085]: 阅读 →
+          - article [ref=e1086]:
+            - text: │
+            - 'link "博客 2026-05-17 ⏱ 7 min 📄 数据结构三 栈和队列专题知识点复习 一、栈与队列的基本概念 1. 共同点 - 都是**限制存取点的线性结构**（线性结构 = 元素间一对一关系）。 - 插入和删除操作都**只允许在端点**进行。 - 存储方式**既可以是顺序存储，也可以是链式存储**。 2. 区别与存取原则 | 结构 | 存取原则 | 插入端 ... #数据结构 阅读 →" [ref=e1087] [cursor=pointer]':
+              - /url: /articles/blog/数据结构三-栈和队列专题知识点复习/
+              - generic [ref=e1088]:
+                - generic [ref=e1089]: 博客
+                - generic [ref=e1090]: 2026-05-17
+                - generic [ref=e1091]: ⏱ 7 min
+              - heading "📄 数据结构三 栈和队列专题知识点复习" [level=2] [ref=e1092]:
+                - generic [ref=e1093]: 📄
+                - text: 数据结构三 栈和队列专题知识点复习
+              - paragraph [ref=e1094]: 一、栈与队列的基本概念 1. 共同点 - 都是**限制存取点的线性结构**（线性结构 = 元素间一对一关系）。 - 插入和删除操作都**只允许在端点**进行。 - 存储方式**既可以是顺序存储，也可以是链式存储**。 2. 区别与存取原则 | 结构 | 存取原则 | 插入端 ...
+              - generic [ref=e1095]:
+                - generic [ref=e1097]: "#数据结构"
+                - generic [ref=e1098]: 阅读 →
+          - article [ref=e1099]:
+            - text: │
+            - 'link "博客 2026-05-14T14:19:03.124Z ⏱ 1 min 📄 数据结构二 一、线性表的定义与逻辑特征 - 线性表是由 **n (n≥0)** 个数据元素组成的**有限**序列。 - 数据元素之间存在**一对一**的逻辑关系。 - 除第一个元素无前驱、最后一个元素无后继外，其余每个元素有且仅有一个直接前驱和一个直接后继。 三、链表（链式存储结构） 1. 存储特点 -... #数据结构 阅读 →" [ref=e1100] [cursor=pointer]':
+              - /url: /articles/blog/数据结构二/
+              - generic [ref=e1101]:
+                - generic [ref=e1102]: 博客
+                - generic [ref=e1103]: 2026-05-14T14:19:03.124Z
+                - generic [ref=e1104]: ⏱ 1 min
+              - heading "📄 数据结构二" [level=2] [ref=e1105]:
+                - generic [ref=e1106]: 📄
+                - text: 数据结构二
+              - paragraph [ref=e1107]: 一、线性表的定义与逻辑特征 - 线性表是由 **n (n≥0)** 个数据元素组成的**有限**序列。 - 数据元素之间存在**一对一**的逻辑关系。 - 除第一个元素无前驱、最后一个元素无后继外，其余每个元素有且仅有一个直接前驱和一个直接后继。 三、链表（链式存储结构） 1. 存储特点 -...
+              - generic [ref=e1108]:
+                - generic [ref=e1110]: "#数据结构"
+                - generic [ref=e1111]: 阅读 →
+          - article [ref=e1112]:
+            - text: │
+            - 'link "博客 2026-05-10T05:47:06.052Z ⏱ 33 min 📄 AQS（AbstractQueuedSynchronizer）核心原理探索 在 Java 并发编程的世界里，有一个“隐形基石”——AbstractQueuedSynchronizer（简称 AQS）。它就像一个通用的“同步框架模板”，几乎支撑了 Java 并发包中所有核心同步工具的实现：从我们日常开发中常用的 ReentrantLock（可重入锁），到协调多线程等待的 Co... #AQS #核心原理探索 阅读 →" [ref=e1113] [cursor=pointer]':
+              - /url: /articles/blog/aqs-abstractqueuedsynchronizer-核心原理探索/
+              - generic [ref=e1114]:
+                - generic [ref=e1115]: 博客
+                - generic [ref=e1116]: 2026-05-10T05:47:06.052Z
+                - generic [ref=e1117]: ⏱ 33 min
+              - heading "📄 AQS（AbstractQueuedSynchronizer）核心原理探索" [level=2] [ref=e1118]:
+                - generic [ref=e1119]: 📄
+                - text: AQS（AbstractQueuedSynchronizer）核心原理探索
+              - paragraph [ref=e1120]: 在 Java 并发编程的世界里，有一个“隐形基石”——AbstractQueuedSynchronizer（简称 AQS）。它就像一个通用的“同步框架模板”，几乎支撑了 Java 并发包中所有核心同步工具的实现：从我们日常开发中常用的 ReentrantLock（可重入锁），到协调多线程等待的 Co...
+              - generic [ref=e1121]:
+                - generic [ref=e1122]:
+                  - generic [ref=e1123]: "#AQS"
+                  - generic [ref=e1124]: "#核心原理探索"
+                - generic [ref=e1125]: 阅读 →
+          - article [ref=e1126]:
+            - text: │
+            - 'link "博客 2026-05-10T05:28:01.684Z ⏱ 11 min 📄 RabbitMQ的延迟消息在项目中的运用及实现剖析 对于后端开发者而言，RabbitMQ 的延迟消息不仅是项目中的高频应用，更是面试时的“必考题”——尤其是当面试官抛出这个经典场景时，很多人容易陷入“知其然不知其所以然”的困境： **用户下单后未支付，如何在指定时间（如30分钟）自动取消订单？** 相信很多同学都能说出“用 MQ”“用死信... #RabbitMQ 阅读 →" [ref=e1127] [cursor=pointer]':
+              - /url: /articles/blog/RabbitMQ的延迟消息在项目中的运用及实现剖析/
+              - generic [ref=e1128]:
+                - generic [ref=e1129]: 博客
+                - generic [ref=e1130]: 2026-05-10T05:28:01.684Z
+                - generic [ref=e1131]: ⏱ 11 min
+              - heading "📄 RabbitMQ的延迟消息在项目中的运用及实现剖析" [level=2] [ref=e1132]:
+                - generic [ref=e1133]: 📄
+                - text: RabbitMQ的延迟消息在项目中的运用及实现剖析
+              - paragraph [ref=e1134]: 对于后端开发者而言，RabbitMQ 的延迟消息不仅是项目中的高频应用，更是面试时的“必考题”——尤其是当面试官抛出这个经典场景时，很多人容易陷入“知其然不知其所以然”的困境： **用户下单后未支付，如何在指定时间（如30分钟）自动取消订单？** 相信很多同学都能说出“用 MQ”“用死信...
+              - generic [ref=e1135]:
+                - generic [ref=e1137]: "#RabbitMQ"
+                - generic [ref=e1138]: 阅读 →
+          - article [ref=e1139]:
+            - text: │
+            - 'link "教程 2026-05-10 ⏱ 21 min 📄 Spring容器启动流程 本文基于Spring Framework源码，以「AnnotationConfigApplicationContext」为入口（Java Config方式），全面拆解Spring容器启动的完整流程，包含初始化、配置类注册、容器刷新三大核心步骤，结合源码逐句分析关键逻辑，补充核心概念、扩展知识点及实战... #Spring 源码 #Spring 容器启动 阅读 →" [ref=e1140] [cursor=pointer]':
+              - /url: /articles/tutorials/Spring容器启动流程/
+              - generic [ref=e1141]:
+                - generic [ref=e1142]: 教程
+                - generic [ref=e1143]: 2026-05-10
+                - generic [ref=e1144]: ⏱ 21 min
+              - heading "📄 Spring容器启动流程" [level=2] [ref=e1145]:
+                - generic [ref=e1146]: 📄
+                - text: Spring容器启动流程
+              - paragraph [ref=e1147]: 本文基于Spring Framework源码，以「AnnotationConfigApplicationContext」为入口（Java Config方式），全面拆解Spring容器启动的完整流程，包含初始化、配置类注册、容器刷新三大核心步骤，结合源码逐句分析关键逻辑，补充核心概念、扩展知识点及实战...
+              - generic [ref=e1148]:
+                - generic [ref=e1149]:
+                  - generic [ref=e1150]: "#Spring 源码"
+                  - generic [ref=e1151]: "#Spring 容器启动"
+                - generic [ref=e1152]: 阅读 →
+          - article [ref=e1153]:
+            - text: │
+            - 'link "随笔 2026-04-24 ⏱ 6 min 📄 概率预测如何涌现智能？语言的边界与高维向量的革命 大模型已经深度嵌入我们的生活，但两个根本性的追问始终悬而未决：**一个只会预测下一个字的概率模型，凭什么被称为“智能”？语言的边界是否就是世界的边界？** #随笔 阅读 →" [ref=e1154] [cursor=pointer]':
+              - /url: /articles/essays/概率预测如何涌现智能？语言的边界与高维向量的革命/
+              - generic [ref=e1155]:
+                - generic [ref=e1156]: 随笔
+                - generic [ref=e1157]: 2026-04-24
+                - generic [ref=e1158]: ⏱ 6 min
+              - heading "📄 概率预测如何涌现智能？语言的边界与高维向量的革命" [level=2] [ref=e1159]:
+                - generic [ref=e1160]: 📄
+                - text: 概率预测如何涌现智能？语言的边界与高维向量的革命
+              - paragraph [ref=e1161]: 大模型已经深度嵌入我们的生活，但两个根本性的追问始终悬而未决：**一个只会预测下一个字的概率模型，凭什么被称为“智能”？语言的边界是否就是世界的边界？**
+              - generic [ref=e1162]:
+                - generic [ref=e1164]: "#随笔"
+                - generic [ref=e1165]: 阅读 →
+          - article [ref=e1166]:
+            - text: │
+            - 'link "项目 2026-03-31 ⏱ 37 min 📄 项目实践｜MCP协议详解:让AI模型优雅调用外部工具的标准化方案 在AI大模型应用日益深入的今天，单纯的模型对话已无法满足复杂业务需求——我们需要让AI能够联动外部工具，获取实时数据（如天气）、操作业务系统（如工单查询）、执行具体指令（如销售数据统计）。在我们的RA... #阅读 阅读 →" [ref=e1167] [cursor=pointer]':
+              - /url: /articles/projects/12  项目实践｜MCP协议详解：让AI模型优雅调用外部工具的标准化方案/
+              - generic [ref=e1168]:
+                - generic [ref=e1169]: 项目
+                - generic [ref=e1170]: 2026-03-31
+                - generic [ref=e1171]: ⏱ 37 min
+              - heading "📄 项目实践｜MCP协议详解:让AI模型优雅调用外部工具的标准化方案" [level=2] [ref=e1172]:
+                - generic [ref=e1173]: 📄
+                - text: 项目实践｜MCP协议详解:让AI模型优雅调用外部工具的标准化方案
+              - paragraph [ref=e1174]: 在AI大模型应用日益深入的今天，单纯的模型对话已无法满足复杂业务需求——我们需要让AI能够联动外部工具，获取实时数据（如天气）、操作业务系统（如工单查询）、执行具体指令（如销售数据统计）。在我们的RA...
+              - generic [ref=e1175]:
+                - generic [ref=e1177]: "#阅读"
+                - generic [ref=e1178]: 阅读 →
+          - article [ref=e1179]:
+            - text: │
+            - 'link "项目 2026-03-31 ⏱ 49 min 📄 MCP 工具实现详解 每个 MCP 工具都需要实现 `MCPToolExecutor` 接口，核心就两个方法： #阅读 阅读 →" [ref=e1180] [cursor=pointer]':
+              - /url: /articles/projects/13  MCP 工具实现详解/
+              - generic [ref=e1181]:
+                - generic [ref=e1182]: 项目
+                - generic [ref=e1183]: 2026-03-31
+                - generic [ref=e1184]: ⏱ 49 min
+              - heading "📄 MCP 工具实现详解" [level=2] [ref=e1185]:
+                - generic [ref=e1186]: 📄
+                - text: MCP 工具实现详解
+              - paragraph [ref=e1187]: "每个 MCP 工具都需要实现 `MCPToolExecutor` 接口，核心就两个方法："
+              - generic [ref=e1188]:
+                - generic [ref=e1190]: "#阅读"
+                - generic [ref=e1191]: 阅读 →
+          - article [ref=e1192]:
+            - text: │
+            - 'link "项目 2026-03-31 ⏱ 46 min 📄 项目实践｜ETL Pipeline 完整解析:从多源文档到向量库的全链路实现 在RAG（检索增强生成）项目中，“数据”是核心基石——无论是PDF、Word等本地文档，还是URL网页、飞书文档、S3云存储文件，都需要经过一套标准化流程处理，才能转化为可被检索的向量数据，存入向量数... #阅读 阅读 →" [ref=e1193] [cursor=pointer]':
+              - /url: /articles/projects/14  项目实践｜ETL Pipeline 完整解析：从多源文档到向量库的全链路实现/
+              - generic [ref=e1194]:
+                - generic [ref=e1195]: 项目
+                - generic [ref=e1196]: 2026-03-31
+                - generic [ref=e1197]: ⏱ 46 min
+              - heading "📄 项目实践｜ETL Pipeline 完整解析:从多源文档到向量库的全链路实现" [level=2] [ref=e1198]:
+                - generic [ref=e1199]: 📄
+                - text: 项目实践｜ETL Pipeline 完整解析:从多源文档到向量库的全链路实现
+              - paragraph [ref=e1200]: 在RAG（检索增强生成）项目中，“数据”是核心基石——无论是PDF、Word等本地文档，还是URL网页、飞书文档、S3云存储文件，都需要经过一套标准化流程处理，才能转化为可被检索的向量数据，存入向量数...
+              - generic [ref=e1201]:
+                - generic [ref=e1203]: "#阅读"
+                - generic [ref=e1204]: 阅读 →
+          - article [ref=e1205]:
+            - text: │
+            - 'link "项目 2026-03-26 ⏱ 37 min 📄 前端目录结构与职责划分详解 --- #阅读 阅读 →" [ref=e1206] [cursor=pointer]':
+              - /url: /articles/projects/10  前端目录结构与职责划分详解/
+              - generic [ref=e1207]:
+                - generic [ref=e1208]: 项目
+                - generic [ref=e1209]: 2026-03-26
+                - generic [ref=e1210]: ⏱ 37 min
+              - heading "📄 前端目录结构与职责划分详解" [level=2] [ref=e1211]:
+                - generic [ref=e1212]: 📄
+                - text: 前端目录结构与职责划分详解
+              - paragraph [ref=e1213]: "---"
+              - generic [ref=e1214]:
+                - generic [ref=e1216]: "#阅读"
+                - generic [ref=e1217]: 阅读 →
+          - article [ref=e1218]:
+            - text: │
+            - 'link "项目 2026-03-26 ⏱ 48 min 📄 Zustand 状态管理实战详解:轻量高效的React状态方案 在React项目开发中，状态管理是贯穿始终的核心需求——从简单的组件内状态，到复杂的跨组件、跨页面全局状态，选择一款合适的状态管理工具，能极大提升开发效率、降低维护成本。Redux作为经典方案，功能强... #阅读 阅读 →" [ref=e1219] [cursor=pointer]':
+              - /url: /articles/projects/11  Zustand 状态管理实战详解：轻量高效的React状态方案/
+              - generic [ref=e1220]:
+                - generic [ref=e1221]: 项目
+                - generic [ref=e1222]: 2026-03-26
+                - generic [ref=e1223]: ⏱ 48 min
+              - heading "📄 Zustand 状态管理实战详解:轻量高效的React状态方案" [level=2] [ref=e1224]:
+                - generic [ref=e1225]: 📄
+                - text: Zustand 状态管理实战详解:轻量高效的React状态方案
+              - paragraph [ref=e1226]: 在React项目开发中，状态管理是贯穿始终的核心需求——从简单的组件内状态，到复杂的跨组件、跨页面全局状态，选择一款合适的状态管理工具，能极大提升开发效率、降低维护成本。Redux作为经典方案，功能强...
+              - generic [ref=e1227]:
+                - generic [ref=e1229]: "#阅读"
+                - generic [ref=e1230]: 阅读 →
+          - article [ref=e1231]:
+            - text: │
+            - 'link "项目 2026-03-25 ⏱ 31 min 📄 会话记忆压缩策略揭秘，轻松解决Token爆炸难题 在AI对话系统开发中，相信很多开发者都遇到过这样的困境：随着用户与助手的对话不断深入，历史消息越积越多，Token消耗呈线性暴涨，最终导致模型无法处理请求，甚至出现服务卡顿、响应超时的问题。这不仅影响... #阅读 阅读 →" [ref=e1232] [cursor=pointer]':
+              - /url: /articles/projects/07  会话记忆压缩策略揭秘，轻松解决Token爆炸难题/
+              - generic [ref=e1233]:
+                - generic [ref=e1234]: 项目
+                - generic [ref=e1235]: 2026-03-25
+                - generic [ref=e1236]: ⏱ 31 min
+              - heading "📄 会话记忆压缩策略揭秘，轻松解决Token爆炸难题" [level=2] [ref=e1237]:
+                - generic [ref=e1238]: 📄
+                - text: 会话记忆压缩策略揭秘，轻松解决Token爆炸难题
+              - paragraph [ref=e1239]: 在AI对话系统开发中，相信很多开发者都遇到过这样的困境：随着用户与助手的对话不断深入，历史消息越积越多，Token消耗呈线性暴涨，最终导致模型无法处理请求，甚至出现服务卡顿、响应超时的问题。这不仅影响...
+              - generic [ref=e1240]:
+                - generic [ref=e1242]: "#阅读"
+                - generic [ref=e1243]: 阅读 →
+          - article [ref=e1244]:
+            - text: │
+            - 'link "项目 2026-03-25 ⏱ 62 min 📄 模型路由降级机制详解:基于断路器模式，实现高可用AI服务 在AI服务开发中，模型调用的稳定性是核心痛点之一——无论是第三方模型接口超时、限流，还是自建模型服务故障，只要单个模型异常，就可能导致整个AI服务中断，直接影响用户体验和业务连续性。为解决这一问题，我... #阅读 阅读 →" [ref=e1245] [cursor=pointer]':
+              - /url: /articles/projects/08  模型路由降级机制详解：基于断路器模式，实现高可用AI服务/
+              - generic [ref=e1246]:
+                - generic [ref=e1247]: 项目
+                - generic [ref=e1248]: 2026-03-25
+                - generic [ref=e1249]: ⏱ 62 min
+              - heading "📄 模型路由降级机制详解:基于断路器模式，实现高可用AI服务" [level=2] [ref=e1250]:
+                - generic [ref=e1251]: 📄
+                - text: 模型路由降级机制详解:基于断路器模式，实现高可用AI服务
+              - paragraph [ref=e1252]: 在AI服务开发中，模型调用的稳定性是核心痛点之一——无论是第三方模型接口超时、限流，还是自建模型服务故障，只要单个模型异常，就可能导致整个AI服务中断，直接影响用户体验和业务连续性。为解决这一问题，我...
+              - generic [ref=e1253]:
+                - generic [ref=e1255]: "#阅读"
+                - generic [ref=e1256]: 阅读 →
+          - article [ref=e1257]:
+            - text: │
+            - 'link "项目 2026-03-25 ⏱ 48 min 📄 Ragent项目7种设计模式深度解析:从源码看设计模式落地实践 在复杂项目开发中，设计模式是解决共性问题、提升代码可维护性、可扩展性的核心工具。脱离业务场景的设计模式只是“纸上谈兵”，而Ragent项目中，7种设计模式的应用的则完美诠释了“模式服务于业务”的核心思... #阅读 阅读 →" [ref=e1258] [cursor=pointer]':
+              - /url: /articles/projects/09  Ragent项目7种设计模式深度解析：从源码看设计模式落地实践/
+              - generic [ref=e1259]:
+                - generic [ref=e1260]: 项目
+                - generic [ref=e1261]: 2026-03-25
+                - generic [ref=e1262]: ⏱ 48 min
+              - heading "📄 Ragent项目7种设计模式深度解析:从源码看设计模式落地实践" [level=2] [ref=e1263]:
+                - generic [ref=e1264]: 📄
+                - text: Ragent项目7种设计模式深度解析:从源码看设计模式落地实践
+              - paragraph [ref=e1265]: 在复杂项目开发中，设计模式是解决共性问题、提升代码可维护性、可扩展性的核心工具。脱离业务场景的设计模式只是“纸上谈兵”，而Ragent项目中，7种设计模式的应用的则完美诠释了“模式服务于业务”的核心思...
+              - generic [ref=e1266]:
+                - generic [ref=e1268]: "#阅读"
+                - generic [ref=e1269]: 阅读 →
+          - article [ref=e1270]:
+            - text: │
+            - 'link "项目 2026-03-24 ⏱ 34 min 📄 从零到一理解RAG完整链路:代码逐行拆解+实战解析 在大模型应用爆发的当下，RAG（Retrieval-Augmented Generation，检索增强生成）早已不是陌生概念——它解决了大模型“知识过期”“幻觉生成”的核心痛点，让AI能基于实时、精准... #阅读 阅读 →" [ref=e1271] [cursor=pointer]':
+              - /url: /articles/projects/04  从零到一理解RAG完整链路：代码逐行拆解+实战解析/
+              - generic [ref=e1272]:
+                - generic [ref=e1273]: 项目
+                - generic [ref=e1274]: 2026-03-24
+                - generic [ref=e1275]: ⏱ 34 min
+              - heading "📄 从零到一理解RAG完整链路:代码逐行拆解+实战解析" [level=2] [ref=e1276]:
+                - generic [ref=e1277]: 📄
+                - text: 从零到一理解RAG完整链路:代码逐行拆解+实战解析
+              - paragraph [ref=e1278]: 在大模型应用爆发的当下，RAG（Retrieval-Augmented Generation，检索增强生成）早已不是陌生概念——它解决了大模型“知识过期”“幻觉生成”的核心痛点，让AI能基于实时、精准...
+              - generic [ref=e1279]:
+                - generic [ref=e1281]: "#阅读"
+                - generic [ref=e1282]: 阅读 →
+          - article [ref=e1283]:
+            - text: │
+            - 'link "项目 2026-03-24 ⏱ 22 min 📄 RAG系统核心之意图识别与意图树实现全解析 在大模型时代，RAG（检索增强生成）系统已成为企业级问答、智能客服等场景的核心架构。而支撑RAG系统“精准检索、高效响应”的关键一步，就是**意图识别**——它相当于RAG系统的“导航仪”，能快速判断... #阅读 阅读 →" [ref=e1284] [cursor=pointer]':
+              - /url: /articles/projects/05  RAG系统核心之意图识别与意图树实现全解析/
+              - generic [ref=e1285]:
+                - generic [ref=e1286]: 项目
+                - generic [ref=e1287]: 2026-03-24
+                - generic [ref=e1288]: ⏱ 22 min
+              - heading "📄 RAG系统核心之意图识别与意图树实现全解析" [level=2] [ref=e1289]:
+                - generic [ref=e1290]: 📄
+                - text: RAG系统核心之意图识别与意图树实现全解析
+              - paragraph [ref=e1291]: 在大模型时代，RAG（检索增强生成）系统已成为企业级问答、智能客服等场景的核心架构。而支撑RAG系统“精准检索、高效响应”的关键一步，就是**意图识别**——它相当于RAG系统的“导航仪”，能快速判断...
+              - generic [ref=e1292]:
+                - generic [ref=e1294]: "#阅读"
+                - generic [ref=e1295]: 阅读 →
+          - article [ref=e1296]:
+            - text: │
+            - 'link "项目 2026-03-24 ⏱ 34 min 📄 RAG系统性能天花板:多通道检索架构全解析（附代码与实践） 在RAG（检索增强生成）系统中，“检索”是连接用户问题与知识库的核心桥梁——检索的精准度、召回率和速度，直接决定了最终回答的质量。单一检索方式（如仅用向量检索或仅用关键词检索）始终存在短板：要么精准度... #阅读 阅读 →" [ref=e1297] [cursor=pointer]':
+              - /url: /articles/projects/06  RAG系统性能天花板：多通道检索架构全解析（附代码与实践）/
+              - generic [ref=e1298]:
+                - generic [ref=e1299]: 项目
+                - generic [ref=e1300]: 2026-03-24
+                - generic [ref=e1301]: ⏱ 34 min
+              - heading "📄 RAG系统性能天花板:多通道检索架构全解析（附代码与实践）" [level=2] [ref=e1302]:
+                - generic [ref=e1303]: 📄
+                - text: RAG系统性能天花板:多通道检索架构全解析（附代码与实践）
+              - paragraph [ref=e1304]: 在RAG（检索增强生成）系统中，“检索”是连接用户问题与知识库的核心桥梁——检索的精准度、召回率和速度，直接决定了最终回答的质量。单一检索方式（如仅用向量检索或仅用关键词检索）始终存在短板：要么精准度...
+              - generic [ref=e1305]:
+                - generic [ref=e1307]: "#阅读"
+                - generic [ref=e1308]: 阅读 →
+          - article [ref=e1309]:
+            - text: │
+            - 'link "项目 2026-03-23 ⏱ 17 min 📄 自研RAG项目Framework分层解析:从配置到链路追踪的全链路设计 在后端开发中，一个可复用、低耦合、易维护的Framework是项目高效迭代的基石。尤其在RAG（检索增强生成）这类涉及多组件、多流程的项目中，清晰的分层设计能让开发者聚焦业务逻辑，无需重复开发基础能力... #阅读 阅读 →" [ref=e1310] [cursor=pointer]':
+              - /url: /articles/projects/01  自研RAG项目Framework分层解析：从配置到链路追踪的全链路设计/
+              - generic [ref=e1311]:
+                - generic [ref=e1312]: 项目
+                - generic [ref=e1313]: 2026-03-23
+                - generic [ref=e1314]: ⏱ 17 min
+              - heading "📄 自研RAG项目Framework分层解析:从配置到链路追踪的全链路设计" [level=2] [ref=e1315]:
+                - generic [ref=e1316]: 📄
+                - text: 自研RAG项目Framework分层解析:从配置到链路追踪的全链路设计
+              - paragraph [ref=e1317]: 在后端开发中，一个可复用、低耦合、易维护的Framework是项目高效迭代的基石。尤其在RAG（检索增强生成）这类涉及多组件、多流程的项目中，清晰的分层设计能让开发者聚焦业务逻辑，无需重复开发基础能力...
+              - generic [ref=e1318]:
+                - generic [ref=e1320]: "#阅读"
+                - generic [ref=e1321]: 阅读 →
+          - article [ref=e1322]:
+            - text: │
+            - 'link "项目 2026-03-23 ⏱ 24 min 📄 SSE推送原理与落地实现 在现代Web开发中，实时交互已成为提升用户体验的核心需求之一——从AI流式回答的“打字机效果”，到系统实时通知、股票行情更新，都需要服务端向客户端高效、稳定地推送数据。而SSE（Server-Sent... #阅读 阅读 →" [ref=e1323] [cursor=pointer]':
+              - /url: /articles/projects/02  SSE推送原理与落地实现/
+              - generic [ref=e1324]:
+                - generic [ref=e1325]: 项目
+                - generic [ref=e1326]: 2026-03-23
+                - generic [ref=e1327]: ⏱ 24 min
+              - heading "📄 SSE推送原理与落地实现" [level=2] [ref=e1328]:
+                - generic [ref=e1329]: 📄
+                - text: SSE推送原理与落地实现
+              - paragraph [ref=e1330]: 在现代Web开发中，实时交互已成为提升用户体验的核心需求之一——从AI流式回答的“打字机效果”，到系统实时通知、股票行情更新，都需要服务端向客户端高效、稳定地推送数据。而SSE（Server-Sent...
+              - generic [ref=e1331]:
+                - generic [ref=e1333]: "#阅读"
+                - generic [ref=e1334]: 阅读 →
+          - article [ref=e1335]:
+            - text: │
+            - 'link "项目 2026-03-23 ⏱ 24 min 📄 详解RAG项目链路追踪实现:注解+AOP优雅搞定全流程监控 在RAG（检索增强生成）项目中，一次完整的对话请求往往涉及意图识别、查询改写、向量检索、重排序、LLM生成等多个环节。当系统出现响应缓慢、结果异常等问题时，如何快速定位问题环节、排查性能瓶颈？链路追踪... #阅读 阅读 →" [ref=e1336] [cursor=pointer]':
+              - /url: /articles/projects/03  详解RAG项目链路追踪实现：注解+AOP优雅搞定全流程监控/
+              - generic [ref=e1337]:
+                - generic [ref=e1338]: 项目
+                - generic [ref=e1339]: 2026-03-23
+                - generic [ref=e1340]: ⏱ 24 min
+              - heading "📄 详解RAG项目链路追踪实现:注解+AOP优雅搞定全流程监控" [level=2] [ref=e1341]:
+                - generic [ref=e1342]: 📄
+                - text: 详解RAG项目链路追踪实现:注解+AOP优雅搞定全流程监控
+              - paragraph [ref=e1343]: 在RAG（检索增强生成）项目中，一次完整的对话请求往往涉及意图识别、查询改写、向量检索、重排序、LLM生成等多个环节。当系统出现响应缓慢、结果异常等问题时，如何快速定位问题环节、排查性能瓶颈？链路追踪...
+              - generic [ref=e1344]:
+                - generic [ref=e1346]: "#阅读"
+                - generic [ref=e1347]: 阅读 →
+          - article [ref=e1348]:
+            - text: │
+            - 'link "随笔 2026-03-12 ⏱ 11 min 📄 彻底搞懂Token:大模型的“翻译官”是如何炼成的？ 相信大家在了解大模型时，总会听到一个高频词——「Context Window」（上下文窗口），比如常说的GPT 5.2上下文窗口为40万，很多人会下意识以为这是“40万个字”“40万个词”，但其实都不... #随笔 阅读 →" [ref=e1349] [cursor=pointer]':
+              - /url: /articles/essays/彻底搞懂Token：大模型的“翻译官”是如何炼成的？/
+              - generic [ref=e1350]:
+                - generic [ref=e1351]: 随笔
+                - generic [ref=e1352]: 2026-03-12
+                - generic [ref=e1353]: ⏱ 11 min
+              - heading "📄 彻底搞懂Token:大模型的“翻译官”是如何炼成的？" [level=2] [ref=e1354]:
+                - generic [ref=e1355]: 📄
+                - text: 彻底搞懂Token:大模型的“翻译官”是如何炼成的？
+              - paragraph [ref=e1356]: 相信大家在了解大模型时，总会听到一个高频词——「Context Window」（上下文窗口），比如常说的GPT 5.2上下文窗口为40万，很多人会下意识以为这是“40万个字”“40万个词”，但其实都不...
+              - generic [ref=e1357]:
+                - generic [ref=e1359]: "#随笔"
+                - generic [ref=e1360]: 阅读 →
+          - article [ref=e1361]:
+            - text: │
+            - 'link "随笔 2026-03-05 ⏱ 6 min 📄 别再用旧地图探索新大陆:一个正在被重构的商业模式 最近脑子里一直盘旋着一个词：**“失效感”**。 #随笔 阅读 →" [ref=e1362] [cursor=pointer]':
+              - /url: /articles/essays/别再用旧地图探索新大陆：一个正在被重构的商业模式/
+              - generic [ref=e1363]:
+                - generic [ref=e1364]: 随笔
+                - generic [ref=e1365]: 2026-03-05
+                - generic [ref=e1366]: ⏱ 6 min
+              - heading "📄 别再用旧地图探索新大陆:一个正在被重构的商业模式" [level=2] [ref=e1367]:
+                - generic [ref=e1368]: 📄
+                - text: 别再用旧地图探索新大陆:一个正在被重构的商业模式
+              - paragraph [ref=e1369]: 最近脑子里一直盘旋着一个词：**“失效感”**。
+              - generic [ref=e1370]:
+                - generic [ref=e1372]: "#随笔"
+                - generic [ref=e1373]: 阅读 →
+          - article [ref=e1374]:
+            - text: │
+            - 'link "随笔 2026-03-05 ⏱ 7 min 📄 当AI夺走工作，它还能夺走什么？——一份写给自己的未来生存指南 最近我陷入一种奇怪的循环：一边刷着各种“AI取代人类”的短视频，一边焦虑地刷LeetCode准备后端面试。刷到一个视频，标题大概意思是“别再学编程了，AI都能写了”，下一条又是“2026年最火的几个高... #随笔 阅读 →" [ref=e1375] [cursor=pointer]':
+              - /url: /articles/essays/当AI夺走工作，它还能夺走什么？——一份写给自己的未来生存指南/
+              - generic [ref=e1376]:
+                - generic [ref=e1377]: 随笔
+                - generic [ref=e1378]: 2026-03-05
+                - generic [ref=e1379]: ⏱ 7 min
+              - heading "📄 当AI夺走工作，它还能夺走什么？——一份写给自己的未来生存指南" [level=2] [ref=e1380]:
+                - generic [ref=e1381]: 📄
+                - text: 当AI夺走工作，它还能夺走什么？——一份写给自己的未来生存指南
+              - paragraph [ref=e1382]: 最近我陷入一种奇怪的循环：一边刷着各种“AI取代人类”的短视频，一边焦虑地刷LeetCode准备后端面试。刷到一个视频，标题大概意思是“别再学编程了，AI都能写了”，下一条又是“2026年最火的几个高...
+              - generic [ref=e1383]:
+                - generic [ref=e1385]: "#随笔"
+                - generic [ref=e1386]: 阅读 →
+          - article [ref=e1387]:
+            - text: │
+            - 'link "随笔 2026-03-04 ⏱ 6 min 📄 渐进式披露:Cloud Code团队踩坑无数后悟出的AI Agent设计真谛 如果你用过Cloud Code（或者Cline、Cursor等AI编程助手），你一定好奇过：这些工具背后的团队是怎么设计它们的？为什么它们有时候聪明得惊人，有时候又笨得让人着急？最近，Cloud Co... #随笔 阅读 →" [ref=e1388] [cursor=pointer]':
+              - /url: /articles/essays/渐进式披露：Cloud Code团队踩坑无数后悟出的AI Agent设计真谛/
+              - generic [ref=e1389]:
+                - generic [ref=e1390]: 随笔
+                - generic [ref=e1391]: 2026-03-04
+                - generic [ref=e1392]: ⏱ 6 min
+              - heading "📄 渐进式披露:Cloud Code团队踩坑无数后悟出的AI Agent设计真谛" [level=2] [ref=e1393]:
+                - generic [ref=e1394]: 📄
+                - text: 渐进式披露:Cloud Code团队踩坑无数后悟出的AI Agent设计真谛
+              - paragraph [ref=e1395]: 如果你用过Cloud Code（或者Cline、Cursor等AI编程助手），你一定好奇过：这些工具背后的团队是怎么设计它们的？为什么它们有时候聪明得惊人，有时候又笨得让人着急？最近，Cloud Co...
+              - generic [ref=e1396]:
+                - generic [ref=e1398]: "#随笔"
+                - generic [ref=e1399]: 阅读 →
+        - generic [ref=e1400]:
+          - generic [ref=e1401]: ───
+          - generic [ref=e1402]: END OF LIST
+          - generic [ref=e1403]: ───
+      - complementary [ref=e1404]:
+        - generic [ref=e1405]:
+          - heading "🌳 技能场强" [level=4] [ref=e1406]
+          - generic [ref=e1407]:
+            - generic [ref=e1408]:
+              - generic [ref=e1409]: 教程
+              - generic [ref=e1410]: 9篇
+            - generic [ref=e1413]:
+              - generic [ref=e1414]: 博客
+              - generic [ref=e1415]: 55篇
+            - generic [ref=e1418]:
+              - generic [ref=e1419]: 随笔
+              - generic [ref=e1420]: 7篇
+            - generic [ref=e1423]:
+              - generic [ref=e1424]: 项目
+              - generic [ref=e1425]: 14篇
+        - generic [ref=e1428]:
+          - heading "📝 最近更新" [level=4] [ref=e1429]
+          - list [ref=e1430]:
+            - listitem [ref=e1431]: 📄 Android 开发环境搭建完整笔记
+            - listitem [ref=e1432]: 📄 Flutter 环境配置
+            - listitem [ref=e1433]: 📄 Maven配置
+            - listitem [ref=e1434]: 📄 MySql配置
+        - generic [ref=e1435]:
+          - heading "📡 宇宙回响" [level=4] [ref=e1436]
+          - generic [ref=e1437]: 我已经在本地测试过了，绝对没问题，部署上去肯定也没问题
