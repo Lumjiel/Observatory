@@ -12,6 +12,7 @@ logs/
 # 临时文件
 *.tmp
 .cache/
+.playwright-mcp/
 
 # 本地文件
 .trae/
