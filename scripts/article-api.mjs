@@ -365,11 +365,6 @@ app.post('/api/upload-image', (req, res) => {
 
     fs.mkdirSync(imageDir, { recursive: true });
     fs.writeFileSync(path.join(imageDir, imageName), buffer);
-
-    // 同步到 _site/img/ 使其立即可访问
-    const siteImageDir = path.join(SITE_DIR, 'img', year, safeSlug);
-    fs.mkdirSync(siteImageDir, { recursive: true });
-    fs.copyFileSync(path.join(imageDir, imageName), path.join(siteImageDir, imageName));
     scheduleBuild();
 
     const publicPath = `/img/${year}/${safeSlug}/${imageName}`;
@@ -544,6 +539,8 @@ if (fs.existsSync(SITE_DIR)) {
       }
     },
   }));
+  // 图片源文件兜底：_site/img/ 没有时从 src/img/ 直接托管
+  app.use('/img', express.static(IMAGES_DIR, { maxAge: DEV ? 0 : '1h' }));
   app.use((req, res, next) => {
     if (res.headersSent) return next();
     res.sendFile(path.join(SITE_DIR, 'index.html'));

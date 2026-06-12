@@ -44,18 +44,14 @@ npm run optimize-images # 压缩 src/img/ 下的图片（递归子目录）
 
 ## 分支策略
 
-| 分支 | 用途 |
-|:---|:---|
-| `main` | 本地开发，push 到 GitHub |
-| `server` | 服务器运行，从 main 合并后推送 |
+单一 `main` 分支，本地开发和服务器运行同一分支。
 
 **部署流程：**
-1. 本地在 `main` 改 → `git push`（GitHub Actions 自动同步到 Gitee）
-2. 合并部署：`git checkout server && git merge main && git push && git checkout main`
-3. 服务器更新：
+1. 本地改完 → `git push`（GitHub Actions 自动同步到 Gitee）
+2. 服务器部署：
 
 ```bash
-python E:\claudecode\云服务器\scripts\ssh_connect.py "cd /var/www/observatory && git pull origin server && npm run build:prod && pm2 restart observatory"
+python E:\claudecode\云服务器\scripts\ssh_connect.py "cd /var/www/observatory && git pull origin main && npm run build:prod && pm2 restart observatory"
 ```
 
 同步链路：`本地 → GitHub → GitHub Actions → Gitee → 服务器 pull`
